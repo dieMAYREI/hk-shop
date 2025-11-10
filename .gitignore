@@ -43,3 +43,56 @@
 /var/package/*
 !/var/package/*.xml
 
+#--------------------------#
+# Runtime-generated files  #
+#--------------------------#
+
+/generated/*
+!/generated/.htaccess
+
+/pub/static/*
+!/pub/static/.htaccess
+
+/pub/media/*
+!/pub/media/.htaccess
+
+/pub/errors/local.xml
+
+#--------------------------#
+# Local configuration       #
+#--------------------------#
+
+/auth.json
+/app/etc/env.php
+/.env.local
+
+#--------------------------#
+# Tooling & build artifacts #
+#--------------------------#
+
+/vendor/
+/node_modules/
+/var/report/
+/var/cache/
+/var/composer_home/
+/.phpunit.result.cache
+/.phpunit.result.cache*
+/.php_cs.cache
+/.php-cs-fixer.cache
+/.phpunit.cache
+
+#--------------------------#
+# Editor / OS helpers       #
+#--------------------------#
+
+/.idea/
+/.vscode/
+/.history/
+/.sass-cache/
+/.cache/
+*.swp
+*.swo
+.*.sw?
+*.log
+Thumbs.db
+.DS_Store
