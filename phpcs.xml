@@ -7,4 +7,5 @@
     <exclude-pattern>var/*</exclude-pattern>
     <exclude-pattern>app/bootstrap.php</exclude-pattern>
     <exclude-pattern>app/autoload.php</exclude-pattern>
+    <exclude-pattern>app/etc/NonComposerComponentRegistration.php</exclude-pattern>
 </ruleset>
