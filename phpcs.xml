@@ -8,4 +8,5 @@
     <exclude-pattern>app/bootstrap.php</exclude-pattern>
     <exclude-pattern>app/autoload.php</exclude-pattern>
     <exclude-pattern>app/etc/NonComposerComponentRegistration.php</exclude-pattern>
+    <exclude-pattern>app/etc/di.xml</exclude-pattern>
 </ruleset>
