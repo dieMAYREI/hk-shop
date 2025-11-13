@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "31821a7035edec41d0344e404d620d3b",
+    "content-hash": "b0d676e8c99159b6b0a33febad20ec6f",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -2375,6 +2375,47 @@
                 }
             ],
             "time": "2025-08-23T21:21:41+00:00"
+        },
+        {
+            "name": "hyva-themes/i18n-de-de",
+            "version": "1.3.7",
+            "dist": {
+                "type": "zip",
+                "url": "https://hyva-themes.repo.packagist.com/hk-shop-de-t6mctirb5/dists/hyva-themes/i18n-de-de/1.3.7.0/68107e233404e3e5b658e0609411d7dd4bd07a55.zip",
+                "reference": "68107e233404e3e5b658e0609411d7dd4bd07a55",
+                "mirrors": [
+                    {
+                        "url": "https://hyva-themes.repo.packagist.com/hk-shop-de-t6mctirb5/dists/%package%/%version%/r%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "hyva-themes/magento2-default-theme": "*",
+                "hyva-themes/magento2-theme-module": "*"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "src/registration.php"
+                ]
+            },
+            "notification-url": "https://hyva-themes.repo.packagist.com/hk-shop-de-t6mctirb5/downloads/",
+            "license": [
+                "proprietary"
+            ],
+            "authors": [
+                {
+                    "name": "Hyvä Themes B.V.",
+                    "email": "info@hyva.io"
+                }
+            ],
+            "description": "Hyvä Theme locale de_DE",
+            "support": {
+                "source": "https://gitlab.hyva.io/hyva-themes/internationalization/i18n-de-de/-/tree/1.3.7",
+                "issues": "https://gitlab.hyva.io/hyva-themes/internationalization/i18n-de-de/-/issues"
+            },
+            "time": "2024-04-08T14:53:36+00:00"
         },
         {
             "name": "hyva-themes/magento2-base-layout-reset",
@@ -19060,6 +19101,90 @@
                 "source": "https://github.com/magento/magento-zend-pdf/tree/1.16.5"
             },
             "time": "2025-06-20T07:55:02+00:00"
+        },
+        {
+            "name": "mageplaza/magento-2-german-language-pack",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mageplaza/magento-2-german-language-pack.git",
+                "reference": "d69c6a76ebbab91e2eea9b86fc4119d834052ed1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mageplaza/magento-2-german-language-pack/zipball/d69c6a76ebbab91e2eea9b86fc4119d834052ed1",
+                "reference": "d69c6a76ebbab91e2eea9b86fc4119d834052ed1",
+                "shasum": ""
+            },
+            "require": {
+                "mageplaza/module-core": "^1.3.13"
+            },
+            "type": "magento2-language",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mageplaza team",
+                    "email": "hi@mageplaza.com",
+                    "homepage": "https://www.mageplaza.com",
+                    "role": "Leader"
+                }
+            ],
+            "description": "German language package for Magento 2",
+            "homepage": "https://www.mageplaza.com",
+            "support": {
+                "issues": "https://github.com/mageplaza/magento-2-german-language-pack/issues",
+                "source": "https://github.com/mageplaza/magento-2-german-language-pack/tree/1.0.0"
+            },
+            "time": "2019-05-23T05:06:46+00:00"
+        },
+        {
+            "name": "mageplaza/module-core",
+            "version": "1.5.15",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mageplaza/module-core.git",
+                "reference": "c527e66bf483f74d1dc3013dc64b2eefa6e8ecc6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mageplaza/module-core/zipball/c527e66bf483f74d1dc3013dc64b2eefa6e8ecc6",
+                "reference": "c527e66bf483f74d1dc3013dc64b2eefa6e8ecc6",
+                "shasum": ""
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Mageplaza\\Core\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "proprietary"
+            ],
+            "authors": [
+                {
+                    "name": "Mageplaza",
+                    "email": "support@mageplaza.com",
+                    "homepage": "https://www.mageplaza.com",
+                    "role": "Technical Support"
+                }
+            ],
+            "description": "Mageplaza Core for Magento 2",
+            "support": {
+                "source": "https://github.com/mageplaza/module-core/tree/v1.5.15"
+            },
+            "time": "2025-10-21T07:24:34+00:00"
         },
         {
             "name": "marc-mabe/php-enum",
