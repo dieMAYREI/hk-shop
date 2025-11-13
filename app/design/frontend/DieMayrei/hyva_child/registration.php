@@ -6,4 +6,3 @@ ComponentRegistrar::register(
     'frontend/DieMayrei/hyva_child',
     __DIR__
 );
-
