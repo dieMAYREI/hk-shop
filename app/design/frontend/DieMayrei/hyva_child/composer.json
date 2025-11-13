@@ -1,0 +1,10 @@
+{
+  "name": "diemayrei/theme-hyva-child",
+  "description": "Hyvä child theme for DieMayrei",
+  "type": "magento2-theme",
+  "version": "1.0.0",
+  "license": "proprietary",
+  "autoload": {
+    "files": []
+  }
+}
