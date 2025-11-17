@@ -1,0 +1,95 @@
+<?php
+
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\Customer;
+use Hyva\Theme\ViewModel\StoreConfig;
+use Hyva\Theme\ViewModel\Navigation;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var Customer $customer */
+$customer = $viewModels->require(Customer::class);
+/** @var StoreConfig $storeConfig */
+$storeConfig = $viewModels->require(StoreConfig::class);
+/** @var Navigation $navigation */
+$navigation = $viewModels->require(Navigation::class);
+
+$topCategories = $navigation->getNavigation(1) ?: [];
+?>
+<div class="md:w-1/2 w-full flex flex-wrap pr-4">
+    <div class="w-full grid grid-cols-1 sm:grid-cols-2 gap-8 xl:col-span-2">
+        <nav aria-label="Company Menu">
+            <h2 class="text-md leading-5 font-semibold tracking-wider uppercase">
+                HK-Verlag
+            </h2>
+            <ul class="mt-4 space-y-2">
+                <?php
+                $links = [
+                    [
+                        'label' => __('Kundenservice'),
+                        'url' => $block->getUrl('kundenservice')
+                    ],
+                    [
+                        'label' => __('Versand und Zahlung'),
+                        'url' => $block->getUrl('versand-und-zahlung')
+                    ],
+                    [
+                        'label' => __('FAQ'),
+                        'url' => $block->getUrl('faq')
+                    ],
+                    [
+                        'label' => __('AGB'),
+                        'url' => $block->getUrl('agb')
+                    ],
+                    [
+                        'label' => __('Impressum'),
+                        'url' => $block->getUrl('impressum')
+                    ],
+                    [
+                        'label' => __('Datenschutz'),
+                        'url' => $block->getUrl('datenschutz')
+                    ],
+                    [
+                        'label' => __('Widerrufsbelehrung'),
+                        'url' => $block->getUrl('widerrufsbelehrung')
+                    ],
+                ];
+                ?>
+
+                <?php foreach ($links as $link): ?>
+                    <li>
+                        <a href="<?= $escaper->escapeUrl($link['url']) ?>" class="text-base leading-6">
+                            <?= $escaper->escapeHtml($link['label']) ?>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </nav>
+        <nav aria-label="Legal Menu">
+            <h2 class="text-md leading-5 font-semibold tracking-wider uppercase">
+                Marken
+            </h2>
+            <ul class="mt-4 space-y-2">
+                <?php foreach ($topCategories as $category): ?>
+                    <li>
+                        <a href="<?= $escaper->escapeUrl($category['url']) ?>" class="text-base leading-6">
+                            <?= $escaper->escapeHtml($category['name']) ?>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </nav>
+    </div>
+</div>
