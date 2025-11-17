@@ -4,13 +4,11 @@ git pull origin dev
 composer install --ignore-platform-reqs
 
 echo "Building assets..."
-cd app/design/frontend/DieMayrei/hyva_child
+cd app/design/frontend/DieMayrei/hyva_child/web/tailwind
 npm ci
-npm run prod
+npm run build
 cd -
 
 echo "Starting Magento deployment..."
 bin/magento setup:upgrade -n
-bin/magento setup:di:compile
-bin/magento setup:static-content:deploy -f --jobs=$(nproc)
 bin/magento cache:flush
