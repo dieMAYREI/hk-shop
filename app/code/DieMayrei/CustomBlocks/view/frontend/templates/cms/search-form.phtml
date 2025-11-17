@@ -1,0 +1,137 @@
+<?php
+/**
+ * Hyvä based search form for CMS pages (e.g. 404)
+ */
+
+declare(strict_types=1);
+
+use DieMayrei\CustomBlocks\Block\Cms\Search;
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Magento\Framework\Escaper;
+
+/** @var Search $block */
+/** @var Escaper $escaper */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+?>
+<script>
+    'use strict';
+
+    function initCmsSearch() {
+        return {
+            minSearchLength: <?= (int) $block->getMinQueryLength() ?>,
+            <?php if ($block->isSuggestionsAllowed()): ?>
+            suggestions: [],
+            suggest() {
+                const search = this.$refs.searchInput;
+                if (search.value.length >= this.minSearchLength) {
+                    search.setCustomValidity('');
+                    search.reportValidity();
+                    this.fetchSuggestions(search.value);
+                } else {
+                    this.suggestions = [];
+                }
+            },
+            fetchSuggestions(term) {
+                fetch(
+                    window.BASE_URL + 'search/ajax/suggest?' + new URLSearchParams({q: term}),
+                    {
+                        headers: {'X-Requested-With': 'XMLHttpRequest'}
+                    }
+                )
+                .then(response => response.json())
+                .then(result => this.suggestions = result);
+            },
+            <?php endif; ?>
+            search(term) {
+                const search = this.$refs.searchInput;
+                term = term || search.value;
+                if (term.length < this.minSearchLength) {
+                    search.setCustomValidity('<?= $escaper->escapeJs(
+                        __('Minimum Search query length is %1', $block->getMinQueryLength())
+                    ) ?>');
+                    search.reportValidity();
+                } else {
+                    search.setCustomValidity('');
+                    search.value = term;
+                    this.$refs.form.submit();
+                }
+            },
+            focusElement(element) {
+                if (element && element.nodeName === 'DIV') {
+                    element.focus();
+                    return true;
+                }
+
+                return false;
+            }
+        }
+    }
+</script>
+<div class="cms-search-block space-y-6" x-data="initCmsSearch()">
+    <search title="<?= $escaper->escapeHtmlAttr(__('Store Suche')) ?>" role="search" class="mx-auto w-full">
+        <form
+            id="cms_search_form"
+            class="form minisearch flex"
+            action="<?= $escaper->escapeUrl($block->getResultUrl()) ?>"
+            method="get"
+            @submit.prevent="search()"
+            x-ref="form"
+        >
+            <label class="sr-only" for="cms-search">
+                <?= $escaper->escapeHtml(__('Search')) ?>
+            </label>
+            <input
+                id="cms-search"
+                x-ref="searchInput"
+                type="search"
+                autocomplete="off"
+                name="<?= $escaper->escapeHtmlAttr($block->getQueryParamName()) ?>"
+                value="<?= /** @noEscape */ $block->getEscapedQueryText() ?>"
+                placeholder="<?= $escaper->escapeHtmlAttr(__('Geben Sie hier einen Suchbegriff ein …')) ?>"
+                maxlength="<?= $escaper->escapeHtmlAttr($block->getMaxQueryLength()) ?>"
+                class="form-input w-full rounded-e-none"
+                @search-open.window.debounce.10="$el.focus(); $el.select()"
+                <?php if ($block->isSuggestionsAllowed()): ?>
+                    @focus.once="suggest"
+                    @input.debounce.300="suggest"
+                    @keydown.arrow-down.prevent="focusElement($root.querySelector('[tabindex]'))"
+                <?php endif; ?>
+            >
+            <button
+                type="submit"
+                class="btn btn-primary p-2.5 rounded-s-none shrink-0 outline-offset-0"
+                title="<?= $escaper->escapeHtmlAttr(__('Search')) ?>"
+                aria-label="<?= $escaper->escapeHtmlAttr(__('Search')) ?>"
+            >
+                <?= $lucideIcons->searchHtml('', 20, 20, ['aria-hidden' => 'true']); ?>
+            </button>
+        </form>
+    </search>
+    <?php if ($block->isSuggestionsAllowed()): ?>
+        <template x-if="suggestions.length > 0">
+            <nav
+                aria-label="<?= $escaper->escapeHtmlAttr(__('Search Suggestions')) ?>"
+                class="flex flex-col mt-1 text-grey-800 gap-1"
+            >
+                <template x-for="suggestion in suggestions" :key="suggestion.title">
+                    <button
+                        type="button"
+                        class="flex justify-between p-2 bg-white even:bg-gray-50 border border-gray-300 hover:bg-gray-100"
+                        @click="search(suggestion.title)"
+                        @keydown.enter="search(suggestion.title)"
+                        @keydown.arrow-up.prevent="focusElement($event.target.previousElementSibling) || $refs.searchInput.focus()"
+                        @keydown.arrow-down.prevent="focusElement($event.target.nextElementSibling)"
+                        tabindex="0"
+                    >
+                        <span x-text="suggestion.title"></span>
+                        <span x-text="suggestion.num_results"></span>
+                    </button>
+                </template>
+            </nav>
+        </template>
+    <?php endif; ?>
+</div>
