@@ -28,8 +28,7 @@ $navigation = $viewModels->require(Navigation::class);
 
 $topCategories = $navigation->getNavigation(1) ?: [];
 ?>
-<div class="md:w-1/2 w-full flex flex-wrap pr-4">
-    <div class="w-full grid grid-cols-1 sm:grid-cols-2 gap-8 xl:col-span-2">
+    <div class="w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-8">
         <nav aria-label="Company Menu">
             <h2 class="text-md leading-5 font-semibold tracking-wider uppercase">
                 HK-Verlag
@@ -79,7 +78,7 @@ $topCategories = $navigation->getNavigation(1) ?: [];
         </nav>
         <nav aria-label="Legal Menu">
             <h2 class="text-md leading-5 font-semibold tracking-wider uppercase">
-                Marken
+                Navigation
             </h2>
             <ul class="mt-4 space-y-2">
                 <?php foreach ($topCategories as $category): ?>
@@ -91,5 +90,7 @@ $topCategories = $navigation->getNavigation(1) ?: [];
                 <?php endforeach; ?>
             </ul>
         </nav>
+        <diV class="col-span-2">
+            <?= $block->getChildHtml('footer_customer_service') ?>
+        </diV>
     </div>
-</div>

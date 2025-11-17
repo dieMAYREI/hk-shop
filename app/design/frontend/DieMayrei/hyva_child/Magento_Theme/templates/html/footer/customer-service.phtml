@@ -1,0 +1,42 @@
+<?php
+
+/**
+ * Customer service teaser for the footer.
+ */
+
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+
+?>
+<div class="flex flex-col justify-between w-full">
+    <div>
+        <h2 class="text-md leading-5 font-semibold tracking-wider uppercase">
+            <?= $escaper->escapeHtml(__('Unser Kundenservice')) ?>
+        </h2>
+        <p class="mt-4 text-sm text-gray-700">
+            <?= $escaper->escapeHtml(
+                __('Sie haben noch Fragen? Unser Kundenservice hilft telefonisch oder per E-Mail weiter.')
+            ) ?>
+        </p>
+        <p class="mt-2 text-sm text-gray-700">
+            <?= $escaper->escapeHtml(__('Sie erreichen uns während unserer Geschäftszeiten von:')) ?>
+        </p>
+        <p class="mt-2 font-semibold text-sm text-gray-900">
+            <?= $escaper->escapeHtml(__('Montag – Freitag: 07:30 – 19:00 Uhr')) ?>
+        </p>
+    </div>
+    <div class="mt-6 grid grid-cols-1 gap-2 md:grid-cols-3">
+        <a href="<?= $block->getUrl('kundenservice') ?>" class="block text-center text-white font-semibold tracking-wide uppercase py-3 rounded bg-primary hover:bg-primary-darker transition duration-300 ease-in-out">
+            <?= $escaper->escapeHtml(__('Übersicht')) ?>
+        </a>
+        <a href="tel:<?= $block->getUrl('#') ?>" class="block text-center text-white font-semibold tracking-wide uppercase py-3 rounded bg-secondary hover:bg-secondary-darker transition duration-300 ease-in-out">
+            <?= $escaper->escapeHtml(__('Telefon')) ?>
+        </a>
+        <a href="mailto:<?= $block->getUrl('#') ?>" class="block text-center text-white font-semibold tracking-wide uppercase py-3 rounded bg-secondary hover:bg-secondary-darker transition duration-300 ease-in-out">
+            <?= $escaper->escapeHtml(__('E-Mail')) ?>
+        </a>
+    </div>
+</div>

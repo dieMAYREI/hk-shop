@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+    Add custom customer service teaser to footer links.
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceBlock name="footer-static-links">
+            <block class="Magento\Framework\View\Element\Template"
+                   name="footer.customer.service"
+                   as="footer_customer_service"
+                   template="Magento_Theme::html/footer/customer-service.phtml"/>
+        </referenceBlock>
+    </body>
+</page>

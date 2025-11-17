@@ -8,11 +8,8 @@
 
 @source "../../../../../../../../vendor/hyva-themes/magento2-theme-module/src/**/*.phtml";
 @source "../../../../../../../../vendor/hyva-themes/magento2-theme-module/src/**/*.xml";
-@source "../../../../../../../../vendor/mollie/magento2-hyva-compatibility/src/Mollie_HyvaCompatibility/**/*.phtml";
-@source "../../../../../../../../vendor/mollie/magento2-hyva-compatibility/src/Mollie_HyvaCompatibility/**/*.xml";
 @source "../../../../../../../../vendor/hyva-themes/magento2-default-theme/**/*.phtml";
 @source "../../../../../../../../vendor/hyva-themes/magento2-default-theme/**/*.xml";
 
-@import "../../../../../../../../vendor/mollie/magento2-hyva-compatibility/src/Mollie_HyvaCompatibility/view/frontend/tailwind/tailwind-source.css";
 
 
