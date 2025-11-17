@@ -1,0 +1,35 @@
+{
+  "tailwind": {
+    "include": [
+      {
+        "src": "vendor/hyva-themes/magento2-default-theme"
+      }
+    ],
+    "exclude": []
+  },
+  "tokens": {
+    "values": {
+      "color": {
+        "primary": {
+          "lighter": "#E5F0F7",
+          "DEFAULT": "#004899",
+          "darker": "#212E81"
+        },
+        "secondary": {
+          "lighter": "#CCCCCC",
+          "DEFAULT": "#1d1d1b",
+          "darker": "#ffffff"
+        },
+        "on": {
+          "primary": "#fff",
+          "secondary": "#fff"
+        }
+      },
+      "form": {
+        "radius": "var(--radius-lg)",
+        "stroke": "var(--color-slate-400)",
+        "active-color": "var(--color-primary)"
+      }
+    }
+  }
+}
