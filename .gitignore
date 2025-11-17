@@ -58,6 +58,8 @@
 
 /pub/errors/local.xml
 
+app/design/frontend/DieMayrei/hyva_child/web/css/**
+
 #--------------------------#
 # Local configuration       #
 #--------------------------#
