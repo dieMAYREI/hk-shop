@@ -8,47 +8,38 @@
 
 declare(strict_types=1);
 
-use Hyva\Theme\Model\ViewModelRegistry;
-use Hyva\Theme\ViewModel\LucideIcons;
-use Hyva\Theme\ViewModel\HyvaCsp;
+use DieMayrei\CategoryHero\Block\HeroList;
 use Magento\Framework\Escaper;
-use Magento\Framework\View\Element\Template;
 
 /** @var Escaper $escaper */
-/** @var Template $block */
-/** @var ViewModelRegistry $viewModels */
-/** @var HyvaCsp $hyvaCsp */
+/** @var HeroList $block */
 
-/** @var LucideIcons $lucideIcons */
-$lucideIcons = $viewModels->require(LucideIcons::class);
+/** @var array<array<string, string>> $heroes */
+$heroes = $block->getHeroItems();
+
+if (!$heroes) {
+    return;
+}
+
+$count = count($heroes);
+$gridClass = match (true) {
+    $count >= 4 => 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-4',
+    $count === 3 => 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3',
+    default => 'grid-cols-1 md:grid-cols-2',
+};
 ?>
 
-<?php
-$heros = [
-    [
-        'image' => 'images/hero/gefluegelzeitung.jpg',
-        'alt' => 'Geflügelzeitung',
-        'link' => '/gefluegelzeitung',
-    ],
-    [
-        'image' => 'images/hero/kaninchenzeitung.jpg',
-        'alt' => 'Kaninchenzeitung',
-        'link' => '/kaninchenzeitung',
-    ]
-];
-?>
-
-<section class="mb-24 lg:mt-6 grid grid-cols-1 md:grid-cols-2 gap-8" aria-labelledby="page-title">
-    <?php foreach ($heros as $hero): ?>
+<section class="mb-24 lg:mt-6 grid gap-8 <?= $escaper->escapeHtmlAttr($gridClass) ?>" aria-labelledby="category-hero">
+    <?php foreach ($heroes as $hero): ?>
         <div class="card card-interactive overflow-hidden p-0">
-            <a href="<?= $escaper->escapeHtmlAttr($hero['link']) ?>" class="block group">
+            <a href="<?= $escaper->escapeUrl($hero['link']) ?>" class="block group">
                 <img
-                    src="<?= $escaper->escapeHtmlAttr($block->getViewFileUrl($hero['image'])) ?>"
+                    src="<?= $escaper->escapeUrl($hero['image']) ?>"
                     alt="<?= $escaper->escapeHtmlAttr($hero['alt']) ?>"
-                    class="w-full h-auto">
+                    class="w-full h-auto"
+                    loading="lazy"
+                >
             </a>
         </div>
     <?php endforeach; ?>
 </section>
-
-<?php $hyvaCsp->registerInlineScript() ?>

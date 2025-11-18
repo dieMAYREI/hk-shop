@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <fieldset name="die_mayrei_category_hero" sortOrder="65">
+        <settings>
+            <collapsible>true</collapsible>
+            <label translate="true">Hero</label>
+        </settings>
+        <field name="hero_is_active" sortOrder="10" formElement="select">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">category</item>
+                </item>
+            </argument>
+            <settings>
+                <dataScope>hero_is_active</dataScope>
+                <dataType>number</dataType>
+                <label translate="true">Hero aktivieren</label>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Magento\Config\Model\Config\Source\Yesno"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+        <field name="hero_image" sortOrder="20" formElement="imageUploader">
+            <argument name="data" xsi:type="array">
+                <item name="config" xsi:type="array">
+                    <item name="source" xsi:type="string">category</item>
+                </item>
+            </argument>
+            <settings>
+                <elementTmpl>ui/form/element/uploader/image</elementTmpl>
+                <dataScope>hero_image</dataScope>
+                <dataType>string</dataType>
+                <label translate="true">Hero Bild</label>
+                <notice translate="true">Dieses Bild wird für den Hero-Teaser auf der Startseite verwendet.</notice>
+            </settings>
+            <formElements>
+                <imageUploader>
+                    <settings>
+                        <required>false</required>
+                        <uploaderConfig>
+                            <param xsi:type="url" name="url" path="catalog/category_image/upload"/>
+                        </uploaderConfig>
+                        <previewTmpl>Magento_Catalog/image-preview</previewTmpl>
+                        <openDialogTitle>Media Gallery</openDialogTitle>
+                        <initialMediaGalleryOpenSubpath>catalog/category</initialMediaGalleryOpenSubpath>
+                        <allowedExtensions>jpg jpeg gif png</allowedExtensions>
+                    </settings>
+                </imageUploader>
+            </formElements>
+        </field>
+    </fieldset>
+</form>

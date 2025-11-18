@@ -359,6 +359,7 @@ return [
         'Magento_Wishlist' => 1,
         'Magento_WishlistAnalytics' => 1,
         'Magento_WishlistGraphQl' => 1,
+        'DieMayrei_CategoryHero' => 1,
         'DieMayrei_CustomBlocks' => 1,
         'Hyva_Theme' => 1,
         'Hyva_CompatModuleFallback' => 1,
