@@ -34,4 +34,6 @@
     --color-fg: var(--color-slate-950);
     --color-fg-secondary: var(--color-slate-600);
     --color-surface: var(--color-white);
+
+    --card-radius: var(--radius-md);
 }
