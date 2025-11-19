@@ -59,6 +59,7 @@
 /pub/errors/local.xml
 
 app/design/frontend/DieMayrei/hyva_child/web/css/**
+app/design/frontend/DieMayrei/hyva_child/web/tailwind/generated/**
 
 #--------------------------#
 # Local configuration       #

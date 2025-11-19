@@ -11,14 +11,14 @@
     "values": {
       "color": {
         "primary": {
-          "lighter": "#E5F0F7",
+          "lighter": "#0054b3",
           "DEFAULT": "#004899",
           "darker": "#212E81"
         },
         "secondary": {
-          "lighter": "#CCCCCC",
+          "lighter": "#33332f",
           "DEFAULT": "#1d1d1b",
-          "darker": "#0F0F0F"
+          "darker": "#0f0f0e"
         },
         "on": {
           "primary": "#fff",
