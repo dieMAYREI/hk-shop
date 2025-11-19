@@ -16,8 +16,8 @@
 ?>
 <?php if ($description = $block->getCurrentCategory()->getDescription()): ?>
     <div class="category-description prose max-w-none">
-        <?php // phpcs:ignore Magento2.Templates.ThisInTemplate.FoundHelper -- helper used to mirror core template behavior
-        $descriptionHtml = $block->helper(Magento\Catalog\Helper\Output::class)->categoryAttribute(
+        <?php
+        $descriptionHtml = $this->helper(Magento\Catalog\Helper\Output::class)->categoryAttribute(
             $block->getCurrentCategory(),
             $description,
             'description'
