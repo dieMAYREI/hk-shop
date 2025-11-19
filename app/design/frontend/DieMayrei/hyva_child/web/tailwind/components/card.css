@@ -16,6 +16,5 @@
 
     .card-interactive:is(:hover, :focus-within) {
         box-shadow: var(--shadow-lg);
-        transform: scale(1.01);
     }
 }
