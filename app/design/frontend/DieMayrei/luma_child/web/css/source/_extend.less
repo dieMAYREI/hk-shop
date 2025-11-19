@@ -1,0 +1,28 @@
+// Primary brand color for buttons, links etc.
+@theme__color__primary: #004899;
+@theme__color__primary-alt: @theme__color__primary;
+
+// Secondary highlight/accent color.
+@theme__color__secondary: #1d1d1b;
+
+.opc-progress-bar {
+    &:before,
+    .opc-progress-bar-item._active:before {
+        background-color: @theme__color__primary;
+        border-color: @theme__color__primary;
+    }
+
+    .opc-progress-bar-item._complete,
+    .opc-progress-bar-item._active {
+        span {
+            &::before,
+            &::after {
+                border-color: @theme__color__primary;
+            }
+
+            &::before {
+                background-color: @theme__color__primary;
+            }
+        }
+    }
+}
