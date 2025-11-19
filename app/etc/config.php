@@ -367,9 +367,11 @@ return [
         'Hyva_GraphqlTokens' => 1,
         'Hyva_GraphqlViewModel' => 1,
         'Hyva_I18nDeDe' => 1,
+        'Hyva_ThemeFallback' => 1,
         'Hyva_MollieThemeBundle' => 0,
         'Hyva_OrderCancellationWebapi' => 1,
         'Hyva_BaseLayoutReset' => 1,
+        'Hyva_LumaCheckout' => 1,
         'Mageplaza_Core' => 1,
         'Mollie_Payment' => 0,
         'Mollie_HyvaCompatibility' => 0,
@@ -484,6 +486,15 @@ return [
             'area' => 'frontend',
             'type' => '0',
             'code' => 'DieMayrei/hyva_child'
+        ]
+    ],
+    'system' => [
+        'default' => [
+            'hyva_theme_fallback' => [
+                'general' => [
+                    'enable' => '1'
+                ]
+            ]
         ]
     ]
 ];
