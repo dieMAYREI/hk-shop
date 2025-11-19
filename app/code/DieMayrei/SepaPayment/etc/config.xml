@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <payment>
+            <diemayrei_sepa>
+                <active>0</active>
+                <title>SEPA-Lastschrift</title>
+                <allowspecific>0</allowspecific>
+                <sort_order>50</sort_order>
+                <instructions/>
+                <model>DieMayrei\SepaPayment\Model\Payment\Sepa</model>
+                <group>offline</group>
+            </diemayrei_sepa>
+        </payment>
+    </default>
+</config>
