@@ -26,7 +26,8 @@ $storeConfig = $viewModels->require(StoreConfig::class);
 /** @var Navigation $navigation */
 $navigation = $viewModels->require(Navigation::class);
 
-$topCategories = $navigation->getNavigation(1) ?: [];
+// Level 1 is the store root, so we ask for level 2 to receive the visible top categories.
+$topCategories = $navigation->getNavigation(2) ?: [];
 ?>
     <div class="w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-8">
         <nav aria-label="Company Menu">
