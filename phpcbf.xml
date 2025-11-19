@@ -23,4 +23,8 @@
   <exclude-pattern>app/etc/di.xml</exclude-pattern>
 
   <file>app</file>
+
+  <rule ref="Magento2.Templates.ThisInTemplate.FoundHelper">
+    <exclude-pattern>app/design/frontend/DieMayrei/hyva_child/Magento_PageBuilder/templates/catalog/category/view/description.phtml</exclude-pattern>
+  </rule>
 </ruleset>
