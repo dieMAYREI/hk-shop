@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * Hyvä Themes - https://hyva.io
+ * Copyright © Hyvä Themes. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+declare(strict_types=1);
+
+/**
+ * Category CMS content override.
+ *
+ * Adds the prose utility so headings/typography inside Page Builder or CMS
+ * blocks render with the global styles automatically.
+ *
+ * @var \Magento\Catalog\Block\Category\View $block
+ */
+?>
+<?php if ($block->isContentMode() || $block->isMixedMode()) :?>
+    <div class="category-cms prose max-w-none">
+        <?= $block->getCmsBlockHtml() ?>
+    </div>
+<?php endif; ?>
