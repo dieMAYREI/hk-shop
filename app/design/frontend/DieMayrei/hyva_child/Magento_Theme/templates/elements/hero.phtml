@@ -31,7 +31,7 @@ $gridClass = match (true) {
 
 <section class="mb-24 lg:mt-6 grid gap-8 <?= $escaper->escapeHtmlAttr($gridClass) ?>" aria-labelledby="category-hero">
     <?php foreach ($heroes as $hero): ?>
-        <div class="card card-interactive overflow-hidden p-0 hover:transform-scale-101">
+        <div class="card card-interactive overflow-hidden p-0 hover:transform hover:scale-101 transition duration-300 ease-in-out">
             <a href="<?= $escaper->escapeUrl($hero['link']) ?>" class="block group">
                 <img
                     src="<?= $escaper->escapeUrl($hero['image']) ?>"
