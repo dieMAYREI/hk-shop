@@ -17,7 +17,7 @@ declare(strict_types=1);
  * @var \Magento\Catalog\Block\Category\View $block
  */
 ?>
-<?php if ($block->isContentMode() || $block->isMixedMode()) :?>
+<?php if ($block->isContentMode() || $block->isMixedMode()):?>
     <div class="category-cms prose max-w-none">
         <?= $block->getCmsBlockHtml() ?>
     </div>

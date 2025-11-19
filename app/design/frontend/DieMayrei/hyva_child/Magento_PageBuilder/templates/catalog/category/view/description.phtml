@@ -16,7 +16,7 @@
 ?>
 <?php if ($description = $block->getCurrentCategory()->getDescription()): ?>
     <div class="category-description prose max-w-none">
-        <?php $descriptionHtml = $this->helper(Magento\Catalog\Helper\Output::class)->categoryAttribute(
+        <?php $descriptionHtml = $block->helper(Magento\Catalog\Helper\Output::class)->categoryAttribute(
             $block->getCurrentCategory(),
             $description,
             'description'
