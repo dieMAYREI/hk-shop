@@ -24,7 +24,8 @@
         "magento/composer-dependency-version-audit-plugin": "~0.1",
         "magento/composer-root-update-plugin": "^2.0.4",
         "magento/product-community-edition": "2.4.8-p3",
-        "mageplaza/magento-2-german-language-pack": "^1.0"
+        "mageplaza/magento-2-german-language-pack": "^1.0",
+        "mageworx/module-shippingrulesmeta": "^2.12"
     },
     "autoload": {
         "exclude-from-classmap": [
@@ -83,6 +84,10 @@
         "0": {
             "type": "composer",
             "url": "https://repo.magento.com/"
+        },
+        "mageworx_packages": {
+            "type": "composer",
+            "url": "https://packages.mageworx.com/"
         }
     },
     "extra": {

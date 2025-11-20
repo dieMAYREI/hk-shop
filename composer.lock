@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "95cf5aff52507dca6d462daabf0260ef",
+    "content-hash": "214197b6a84f994fcfd9ef28c31a30da",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -2052,6 +2052,64 @@
                 "source": "https://github.com/firebase/php-jwt/tree/v6.11.1"
             },
             "time": "2025-04-09T20:32:01+00:00"
+        },
+        {
+            "name": "geoip2/geoip2",
+            "version": "v2.13.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/maxmind/GeoIP2-php.git",
+                "reference": "6a41d8fbd6b90052bc34dff3b4252d0f88067b23"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/maxmind/GeoIP2-php/zipball/6a41d8fbd6b90052bc34dff3b4252d0f88067b23",
+                "reference": "6a41d8fbd6b90052bc34dff3b4252d0f88067b23",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "maxmind-db/reader": "~1.8",
+                "maxmind/web-service-common": "~0.8",
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "3.*",
+                "phpstan/phpstan": "*",
+                "phpunit/phpunit": "^8.0 || ^9.0",
+                "squizlabs/php_codesniffer": "3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "GeoIp2\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Gregory J. Oschwald",
+                    "email": "goschwald@maxmind.com",
+                    "homepage": "https://www.maxmind.com/"
+                }
+            ],
+            "description": "MaxMind GeoIP2 PHP API",
+            "homepage": "https://github.com/maxmind/GeoIP2-php",
+            "keywords": [
+                "IP",
+                "geoip",
+                "geoip2",
+                "geolocation",
+                "maxmind"
+            ],
+            "support": {
+                "issues": "https://github.com/maxmind/GeoIP2-php/issues",
+                "source": "https://github.com/maxmind/GeoIP2-php/tree/v2.13.0"
+            },
+            "time": "2022-08-05T20:32:58+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -19277,6 +19335,118 @@
             "time": "2025-10-21T07:24:34+00:00"
         },
         {
+            "name": "mageworx/module-geoip",
+            "version": "2.4.0",
+            "dist": {
+                "type": "zip",
+                "url": "https://packages.mageworx.com//dist/mageworx/module-geoip/mageworx-module-geoip-2.4.0.zip"
+            },
+            "require": {
+                "geoip2/geoip2": ">=2.12 < 3",
+                "laminas/laminas-http": ">=2.0",
+                "magento/framework": ">=100.0.0 < 104",
+                "magento/module-customer": ">=100.0.0 < 104",
+                "magento/module-store": ">=100.0.0 < 102"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageWorx\\GeoIP\\": ""
+                }
+            },
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "description": "Geo IP module for Magento 2"
+        },
+        {
+            "name": "mageworx/module-info",
+            "version": "1.3.1",
+            "dist": {
+                "type": "zip",
+                "url": "https://packages.mageworx.com//dist/mageworx/module-info/mageworx-module-info-1.3.1.zip"
+            },
+            "require": {
+                "magento/module-catalog": ">=100.0.0 <105",
+                "magento/module-cms": ">=100.0.0 <105"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageWorx\\Info\\": ""
+                }
+            },
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "description": "MageWorx Notifications & Extensions List"
+        },
+        {
+            "name": "mageworx/module-shippingrules",
+            "version": "2.12.3",
+            "dist": {
+                "type": "zip",
+                "url": "https://packages.mageworx.com//dist/mageworx/module-shippingrules/mageworx-module-shippingrules-2.12.3.zip"
+            },
+            "require": {
+                "magento/framework": ">=103.0.0",
+                "magento/module-backend": ">=100.1.0 < 103",
+                "magento/module-catalog": ">=102.0.0 < 105",
+                "magento/module-catalog-rule": ">=101.1.0 < 102",
+                "magento/module-checkout": ">=100.3.0 < 102",
+                "magento/module-customer": ">=101.0.0 < 104",
+                "magento/module-directory": ">=100.3.0 < 102",
+                "magento/module-eav": ">=102.0.0 < 103",
+                "magento/module-quote": ">=101.0.0 < 102",
+                "magento/module-rule": ">=100.3.0 < 102",
+                "magento/module-sales-rule": ">=101.1.0 < 102",
+                "magento/module-shipping": ">=100.3.0 < 101",
+                "magento/module-store": ">=101.0.0 < 102",
+                "magento/module-ui": ">=101.0.0 < 102",
+                "psr/log": "*"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "MageWorx\\ShippingRules\\": ""
+                }
+            },
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "description": "Shipping Rules"
+        },
+        {
+            "name": "mageworx/module-shippingrulesmeta",
+            "version": "2.12.3",
+            "dist": {
+                "type": "zip",
+                "url": "/mw-modules/MageWorx_ShippingRulesMeta_v2.12.3.zip",
+                "shasum": "527599368e96b006529191848991b08a21fcd498"
+            },
+            "require": {
+                "mageworx/module-geoip": ">=2.3.12",
+                "mageworx/module-info": ">=1.0.0",
+                "mageworx/module-shippingrules": "2.12.3"
+            },
+            "suggest": {
+                "mageworx/module-shippingrules-product-stock-data": "~1.0 for correct rules validation with MSI"
+            },
+            "type": "metapackage"
+        },
+        {
             "name": "marc-mabe/php-enum",
             "version": "v4.7.2",
             "source": {
@@ -19348,6 +19518,120 @@
                 "source": "https://github.com/marc-mabe/php-enum/tree/v4.7.2"
             },
             "time": "2025-09-14T11:18:39+00:00"
+        },
+        {
+            "name": "maxmind-db/reader",
+            "version": "v1.12.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/maxmind/MaxMind-DB-Reader-php.git",
+                "reference": "815939e006b7e68062b540ec9e86aaa8be2b6ce4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/maxmind/MaxMind-DB-Reader-php/zipball/815939e006b7e68062b540ec9e86aaa8be2b6ce4",
+                "reference": "815939e006b7e68062b540ec9e86aaa8be2b6ce4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "conflict": {
+                "ext-maxminddb": "<1.11.1 || >=2.0.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "3.*",
+                "phpstan/phpstan": "*",
+                "phpunit/phpunit": ">=8.0.0,<10.0.0",
+                "squizlabs/php_codesniffer": "3.*"
+            },
+            "suggest": {
+                "ext-bcmath": "bcmath or gmp is required for decoding larger integers with the pure PHP decoder",
+                "ext-gmp": "bcmath or gmp is required for decoding larger integers with the pure PHP decoder",
+                "ext-maxminddb": "A C-based database decoder that provides significantly faster lookups"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "MaxMind\\Db\\": "src/MaxMind/Db"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Gregory J. Oschwald",
+                    "email": "goschwald@maxmind.com",
+                    "homepage": "https://www.maxmind.com/"
+                }
+            ],
+            "description": "MaxMind DB Reader API",
+            "homepage": "https://github.com/maxmind/MaxMind-DB-Reader-php",
+            "keywords": [
+                "database",
+                "geoip",
+                "geoip2",
+                "geolocation",
+                "maxmind"
+            ],
+            "support": {
+                "issues": "https://github.com/maxmind/MaxMind-DB-Reader-php/issues",
+                "source": "https://github.com/maxmind/MaxMind-DB-Reader-php/tree/v1.12.1"
+            },
+            "time": "2025-05-05T20:56:32+00:00"
+        },
+        {
+            "name": "maxmind/web-service-common",
+            "version": "v0.10.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/maxmind/web-service-common-php.git",
+                "reference": "d7c7c42fc31bff26e0ded73a6e187bcfb193f9c4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/maxmind/web-service-common-php/zipball/d7c7c42fc31bff26e0ded73a6e187bcfb193f9c4",
+                "reference": "d7c7c42fc31bff26e0ded73a6e187bcfb193f9c4",
+                "shasum": ""
+            },
+            "require": {
+                "composer/ca-bundle": "^1.0.3",
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "3.*",
+                "phpstan/phpstan": "*",
+                "phpunit/phpunit": "^8.0 || ^9.0",
+                "squizlabs/php_codesniffer": "3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "MaxMind\\Exception\\": "src/Exception",
+                    "MaxMind\\WebService\\": "src/WebService"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Gregory Oschwald",
+                    "email": "goschwald@maxmind.com"
+                }
+            ],
+            "description": "Internal MaxMind Web Service API",
+            "homepage": "https://github.com/maxmind/web-service-common-php",
+            "support": {
+                "issues": "https://github.com/maxmind/web-service-common-php/issues",
+                "source": "https://github.com/maxmind/web-service-common-php/tree/v0.10.0"
+            },
+            "time": "2024-11-14T23:14:52+00:00"
         },
         {
             "name": "mollie/magento2",
