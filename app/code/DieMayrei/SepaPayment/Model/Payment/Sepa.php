@@ -39,6 +39,11 @@ class Sepa extends AbstractMethod
     protected $_isOffline = true;
 
     /**
+     * @var string
+     */
+    protected $_infoBlockType = \DieMayrei\SepaPayment\Block\Info\Sepa::class;
+
+    /**
      * @var IbanValidator
      */
     private IbanValidator $ibanValidator;
