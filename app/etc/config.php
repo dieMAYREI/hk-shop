@@ -379,13 +379,16 @@ return [
         'Mageplaza_Core' => 1,
         'Mollie_Payment' => 0,
         'Mollie_HyvaCompatibility' => 0,
+        'Netresearch_ConfigFields' => 1,
         'PayPal_Braintree' => 1,
         'PayPal_BraintreeCustomerBalance' => 1,
         'PayPal_BraintreeGiftCard' => 1,
         'PayPal_BraintreeGiftCardAccount' => 1,
         'PayPal_BraintreeGiftWrapping' => 1,
         'PayPal_BraintreeGraphQl' => 1,
-        'PayPal_BraintreeReward' => 1
+        'PayPal_BraintreeReward' => 1,
+        'PostDirekt_Autocomplete' => 1,
+        'PostDirekt_Core' => 1
     ],
     'scopes' => [
         'websites' => [
