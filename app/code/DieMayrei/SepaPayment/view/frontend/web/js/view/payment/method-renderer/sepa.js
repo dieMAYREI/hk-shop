@@ -52,7 +52,6 @@ define([
             this.iban.subscribe(function (value) {
                 self.ibanValidated(false);
                 self.ibanStatusMessage('');
-                self.resetBankData();
                 self.scheduleIbanValidation(value);
             });
 
@@ -187,7 +186,6 @@ define([
                 } else {
                     self.ibanValidated(false);
                     self.ibanStatusMessage('');
-                    self.resetBankData();
                     self.ibanError($.mage.__('Die IBAN konnte nicht geprüft werden.'));
                 }
             }).fail(function (response) {
@@ -197,7 +195,6 @@ define([
                 }
                 self.ibanValidated(false);
                 self.ibanStatusMessage('');
-                self.resetBankData();
                 self.ibanError(message);
             }).always(function () {
                 self.isIbanLoading(false);
