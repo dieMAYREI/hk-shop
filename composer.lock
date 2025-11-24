@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c9d242844df84ba177f6483a5bf00c35",
+    "content-hash": "42a49058dd62ffb92eebea26dfe914f9",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -20909,6 +20909,46 @@
                 "source": "https://github.com/paragonie/sodium_compat/tree/v2.4.0"
             },
             "time": "2025-10-06T08:47:40+00:00"
+        },
+        {
+            "name": "payone-gmbh/magento-2",
+            "version": "3.16.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PAYONE-GmbH/magento-2.git",
+                "reference": "08cb8f2ba5c33ba6113a7d1336e0657f70ee1c7b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PAYONE-GmbH/magento-2/zipball/08cb8f2ba5c33ba6113a7d1336e0657f70ee1c7b",
+                "reference": "08cb8f2ba5c33ba6113a7d1336e0657f70ee1c7b",
+                "shasum": ""
+            },
+            "require": {
+                "magento/framework": "^100.0.0|^101.0.0|^102.0.0|^103.0.0|^104.0.0",
+                "php": "~7.1.0|~7.2.0|~7.3.0|~7.4.0|~8.0.0|~8.1.0|~8.2.0|~8.3.0|~8.4.0"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "Payone\\Core\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0",
+                "AFL-3.0"
+            ],
+            "description": "PAYONE payment gateway for all German online and offline payment methods including PayPal, all major Credit Cards.",
+            "support": {
+                "email": "tech.support@payone.com",
+                "issues": "https://github.com/PAYONE-GmbH/magento-2/issues",
+                "source": "https://github.com/PAYONE-GmbH/magento-2/tree/v3.16.1"
+            },
+            "time": "2025-11-19T12:29:45+00:00"
         },
         {
             "name": "paypal/module-braintree",

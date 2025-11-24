@@ -26,7 +26,8 @@
         "magento/composer-root-update-plugin": "^2.0.4",
         "magento/product-community-edition": "2.4.8-p3",
         "mageplaza/magento-2-german-language-pack": "^1.0",
-        "mageworx/module-shippingrulesmeta": "^2.12"
+        "mageworx/module-shippingrulesmeta": "^2.12",
+        "payone-gmbh/magento-2": "^3.16"
     },
     "autoload": {
         "exclude-from-classmap": [
