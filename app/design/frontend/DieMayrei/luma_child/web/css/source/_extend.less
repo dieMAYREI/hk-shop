@@ -1,9 +1,9 @@
-// Primary brand color for buttons, links etc.
 @theme__color__primary: #004899;
 @theme__color__primary-alt: #0054b3;
 
-// Secondary highlight/accent color.
 @theme__color__secondary: #1d1d1b;
+
+@theme__color__warning: #f5cb00;
 
 .button {
     &.action.primary,
@@ -40,6 +40,23 @@
             &::before {
                 background-color: @theme__color__primary;
             }
+        }
+    }
+}
+
+// Custom styling for checkout agreements (replaces Tailwind classes in the template).
+.checkout-agreements {
+    .checkout-agreement-highlight {
+        border-left: 4px solid @theme__color__warning;
+        background-color: lighten(@theme__color__warning, 40%);
+        padding: 1rem;
+
+        input[type="checkbox"] {
+            margin-right: 1rem;
+        }
+
+        a {
+            font-weight: 600;
         }
     }
 }

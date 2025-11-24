@@ -1,0 +1,39 @@
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<div data-role="checkout-agreements">
+    <div class="checkout-agreements fieldset" data-bind="visible: isVisible">
+        <!-- ko foreach: agreements -->
+        <!-- ko if: ($parent.isAgreementRequired($data)) -->
+        <div class="checkout-agreement field choice required checkout-agreement-highlight">
+            <input type="checkbox" class="required-entry"
+                   data-bind="attr: {
+                                    'id': $parent.getCheckboxId($parentContext, agreementId),
+                                    'name': 'agreement[' + agreementId + ']',
+                                    'value': agreementId
+                                    }"/>
+            <label data-bind="attr: {'for': $parent.getCheckboxId($parentContext, agreementId)}">
+                <span>
+                    Ich stimme den <a href="https://www.hk-verlag.de/agb/" target="_blank">Allgemeinen Geschäftsbedingungen</a>
+                    und Nutzungsbedingungen zu. Informationen zum Widerrufsrecht finden Sie <a href="https://www.hk-verlag.de/widerrufsrecht/" target="_blank">hier.</a>
+                </span>
+            </label>
+        </div>
+        <!-- /ko -->
+        <!-- ko ifnot: ($parent.isAgreementRequired($data)) -->
+        <div class="checkout-agreement">
+            <button type="button" class="action action-show"
+                    data-bind="click: function(data, event) { return $parent.showContent(data, event) }">
+                <span data-bind="html: checkboxText"></span>
+            </button>
+        </div>
+        <!-- /ko -->
+        <!-- /ko -->
+        <div id="checkout-agreements-modal" data-bind="afterRender: initModal" style="display: none">
+            <div class="checkout-agreements-item-content" data-bind="html: modalContent, style: {height: contentHeight, overflow:'auto' }"></div>
+        </div>
+    </div>
+</div>
