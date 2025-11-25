@@ -6,6 +6,7 @@
   "dependencies": {
     "@hyva-themes/hyva-modules": "^1.2.2",
     "@tailwindcss/cli": "^4.1.12",
+    "bootstrap-icons": "^1.13.1",
     "tailwindcss": "^4.1.15"
   },
   "scripts": {
