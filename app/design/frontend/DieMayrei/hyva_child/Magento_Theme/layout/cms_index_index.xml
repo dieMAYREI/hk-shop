@@ -3,8 +3,6 @@
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceBlock name="hero" remove="true"/>
-        <referenceBlock name="slider-1" remove="true"/>
-        <referenceBlock name="slider-2" remove="true"/>
         <referenceContainer name="content">
             <block class="DieMayrei\CategoryHero\Block\HeroList"
                    name="category-hero"
