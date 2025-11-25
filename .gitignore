@@ -99,3 +99,4 @@ app/design/frontend/DieMayrei/hyva_child/web/tailwind/generated/**
 Thumbs.db
 .DS_Store
 *.sql
+productupload/**
