@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Cron:etc/crontab.xsd">
+    <group id="default">
+        <job instance="DieMayrei\ProductStock\Command\Update" method="runImport" name="diemayrei_stock_update">
+            <schedule>12 * * * *</schedule>
+        </job>
+        <job instance="DieMayrei\ProductStock\Cron\DeactivateObsoleteProducts" method="execute" name="diemayrei_deactivate_obsolete_products">
+            <schedule>15 2 * * *</schedule>
+        </job>
+    </group>
+</config>
