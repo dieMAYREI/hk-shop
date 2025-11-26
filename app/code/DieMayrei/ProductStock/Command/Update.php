@@ -27,6 +27,11 @@ class Update extends Command
     public const MELDECODE_VERGRIFFEN_KEINE_NEUAUFLAGE = '07';
     public const MELDECODE_ERSCHEINUNG_IN_KUERZE = '11';
 
+    public const ALLOWED_ATTRIBUTE_SETS = [
+        4, // Zeitschrift
+        9, // Sonderprodukt
+    ];
+
     /**
      * @var Csv
      */
@@ -174,7 +179,7 @@ class Update extends Command
 
                 foreach ($rows as $row) {
                     foreach ($products as $product) {
-                        if (in_array($product->getAttributeSetId(), [9, 11]) && !$product->getDigital()) {
+                        if (in_array($product->getAttributeSetId(), self::ALLOWED_ATTRIBUTE_SETS) && !$this->isDigitalProduct($product)) {
                             $meldecode = isset($row[21]) ? trim($row[21]) : '';
                             $saved = $this->updateProduct($product, $row[1], $row[2], $meldecode);
 
@@ -432,11 +437,11 @@ class Update extends Command
         $collection = $this->productCollectionFactory->create();
         $collection->addAttributeToSelect([
             'attribute_set_id',
-            'digital',
             'verlag',
             'status',
             'meldecode',
             'erscheinungsdatum',
+            'weight',
         ]);
 
         if (!empty($conditions)) {
@@ -526,5 +531,38 @@ class Update extends Command
     protected function getLogPrefix(): string
     {
         return '[Stock Update]';
+    }
+
+    /**
+     * Prüft, ob es sich um ein digitales Produkt handelt.
+     * Digitale Produkte haben keinen physischen Bestand.
+     *
+     * - virtual: Virtuelle Produkte
+     * - downloadable: Download-Produkte
+     * - simple ohne Gewicht: Einfache Produkte ohne physischen Versand
+     *
+     * @param Product $product
+     * @return bool
+     */
+    private function isDigitalProduct(Product $product): bool
+    {
+        $digitalTypes = [
+            \Magento\Catalog\Model\Product\Type::TYPE_VIRTUAL,
+            \Magento\Downloadable\Model\Product\Type::TYPE_DOWNLOADABLE,
+        ];
+
+        if (in_array($product->getTypeId(), $digitalTypes, true)) {
+            return true;
+        }
+
+        // Einfache Produkte ohne Gewicht gelten als digital
+        if ($product->getTypeId() === \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE) {
+            $weight = (float)$product->getWeight();
+            if ($weight <= 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
