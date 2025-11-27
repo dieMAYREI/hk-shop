@@ -293,6 +293,7 @@ class Order2Cover implements ObserverInterface
                 return;
             }
         }
+
         /** @var  Address $address */
         if ($type === 'billing') {
             $address = $order->getBillingAddress();
@@ -300,6 +301,7 @@ class Order2Cover implements ObserverInterface
                 return;
             }
         }
+
         $return = [];
         if ($type === 'billing') {
             $return['timestamp'] = $this->getConfig('timestamp');
@@ -308,6 +310,7 @@ class Order2Cover implements ObserverInterface
             $return['erp_system_id'] = $this->getConfig('erp_system_id');
             $this->addErpCustomer($return, $order);
         }
+
         $return['salutation_code'] = $this->getAnrede($this->getSalutationCode($address->getPrefix()));
         $return['title_code'] = $this->getTitleCode($this->getTitle($address->getSuffix()));
         $return['firstname'] = $address->getFirstname();
@@ -320,11 +323,14 @@ class Order2Cover implements ObserverInterface
         $return['city'] = $address->getCity();
         $return['vat_number'] = $address->getVatId();
         $return['email'] = $address->getEmail();
+
         if ($type === 'billing') {
             $return['invoice_email'] = $address->getEmail();
             $return['EMAIL'] = $address->getEmail();
         }
+
         $return['phone'] = $address->getTelephone();
+
         if (trim($address->getTelephone() ?: '')) {
             $phoneUtil = PhoneNumberUtil::getInstance();
             try {
@@ -341,7 +347,6 @@ class Order2Cover implements ObserverInterface
             }
         }
 
-
         $this->_orders4cover[$order->getId()]['addresses'][$type] = $return;
     }
 
@@ -356,6 +361,7 @@ class Order2Cover implements ObserverInterface
         if (!$order->getCustomerId()) {
             return;
         }
+
         $customer = $this->_customerRepositoryInterface->getById($order->getCustomerId());
 
         if ($customer->getCustomAttribute('cover_id') && $cover_id = $customer->getCustomAttribute('cover_id')->getValue()) {
@@ -510,91 +516,12 @@ class Order2Cover implements ObserverInterface
             /** @var ProductInterceptor $attributeSetId */
             $attributeSetId = $product->getAttributeSetId();
             switch ($attributeSetId) {
-                case 9:
-                    $this->_tmp_promotions[$order->getId()][$item->getParentItemId()] = $this->setPromotions(
-                        $item,
-                        $product
-                    );
-                    break;
                 case 10:
-                    /**
-                     * If a subscription is a trial issue, a special product must be passed
-                     */
-                    if ($product->getCustomAttribute('abovarianten')->getValue() == 27) {
-                        $this->_orders4cover[$order->getId()]['orderpositions'][] = $this->getOrderPosArticle(
-                            $item,
-                            $product,
-                            $attributeSetId
-                        );
-                    } else {
-                        $this->_orders4cover[$order->getId()]['orderpositions'][] = $this->getOrderPosAbo(
-                            $item,
-                            $product,
-                            $order
-                        );
-                    }
-                    if (substr_count($product->getAttributeText('abovarianten'), 'Leser werben Leser')) {
-                        $item_options = $item->getProductOptions();
-                        $add_gift_address = false;
-                        $gift_address = [];
-                        if (array_key_exists('options', $item_options)) {
-                            $gift_address['salutation_code'] = '';
-                            foreach ($item_options['options'] as $item_option) {
-                                switch ($item_option['label']) {
-                                    case 'Anrede':
-                                        $gift_address['salutation_code'] = $this->getAnrede($item_option['value']);
-                                        $add_gift_address = true;
-                                        break;
-                                    case 'Vorname':
-                                        $gift_address['firstname'] = $item_option['value'];
-                                        $add_gift_address = true;
-                                        break;
-                                    case 'Nachname':
-                                        $gift_address['lastname'] = $item_option['value'];
-                                        $add_gift_address = true;
-                                        break;
-                                    case 'E-Mail-Adresse':
-                                        $gift_address['email'] = $item_option['value'];
-                                        $add_gift_address = true;
-                                        break;
-                                    case 'Straße':
-                                        $gift_address['street'] = $item_option['value'];
-                                        $add_gift_address = true;
-                                        break;
-                                    case 'Hausnr.':
-                                        $gift_address['street'] .= ' ' . $item_option['value'];
-                                        $add_gift_address = true;
-                                        break;
-                                    case 'Postleitzahl':
-                                        $gift_address['postcode'] = $item_option['value'];
-                                        $add_gift_address = true;
-                                        break;
-                                    case 'Ort':
-                                        $gift_address['city'] = $item_option['value'];
-                                        $add_gift_address = true;
-                                        break;
-                                    case 'Land':
-                                        $gift_address['country_code'] = $item_option['value'];
-                                        $add_gift_address = true;
-                                        break;
-                                }
-                            }
-                            if ($add_gift_address) {
-                                $this->_orders4cover[$order->getId()]['addresses']['gift'] = $gift_address;
-                                if (isset($this->_orders4cover[$order->getId()]['addresses']['shipping'])) {
-                                    $shippAddr = $this->_orders4cover[$order->getId()]['addresses']['shipping'];
-                                    $billAddr = $this->_orders4cover[$order->getId()]['addresses']['billing'];
-                                    if ($billAddr['firstname'] == $shippAddr['firstname'] &&
-                                        $billAddr['street'] == $shippAddr['street'] &&
-                                        $billAddr['street2'] == $shippAddr['street2'] &&
-                                        $billAddr['postcode'] == $shippAddr['postcode']
-                                    ) {
-                                        unset($this->_orders4cover[$order->getId()]['addresses']['shipping']);
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    $this->_orders4cover[$order->getId()]['orderpositions'][] = $this->getOrderPosAbo(
+                        $item,
+                        $product,
+                        $order
+                    );
                     break;
                 // Special products / Book products
                 case 11:
@@ -625,73 +552,6 @@ class Order2Cover implements ObserverInterface
                     break;
             }
         }
-        // Adding Promotions to OrderPositions
-        $this->addPromotions2Positions($order);
-    }
-
-    /**
-     * @param  OrderInterceptor  $order
-     */
-    protected function addPromotions2Positions($order)
-    {
-
-        if (!array_key_exists('orderpositions', $this->_orders4cover[$order->getId()])) {
-            return;
-        }
-        foreach ($this->_orders4cover[$order->getId()]['orderpositions'] as &$order_position) {
-            if (array_key_exists('item_id', $order_position)) {
-                if (isset($this->_tmp_promotions[$order->getId()]) && is_array($this->_tmp_promotions[$order->getId()])) {
-                    if (array_key_exists($order_position['item_id'], $this->_tmp_promotions[$order->getId()])) {
-                        $order_position['promotions'][] = $this->_tmp_promotions[$order->getId()][$order_position['item_id']];
-                        unset($order_position['item_id']);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * @param  ItemInterceptor  $item
-     * @param  ProductInterceptor  $product
-     * @return array
-     */
-    protected function setPromotions(
-        ItemInterceptor $item,
-        ProductInterceptor $product
-    ) {
-
-        $options = $item->getProductOptions();
-        //var_dump($options);
-        //$bonus_erp_sku = false;
-        $price = 0;
-        //if (array_key_exists('simple_sku',$options)){
-        //    $bonus_erp_sku = $options['simple_sku'];
-        //}
-
-        $bundle_selection_attributes = false;
-        if (array_key_exists('bundle_selection_attributes', $options)) {
-            $bundle_selection_attributes = $options['bundle_selection_attributes'];
-            $bundle_selection_attributes = json_decode($bundle_selection_attributes, true);
-            if (array_key_exists('price', $bundle_selection_attributes)) {
-                $price = (float)$bundle_selection_attributes['price'];
-            }
-        }
-
-        $return = [];
-        $return['sku'] = str_replace('-Prämie', '', $product->getSku());
-        //if ( $bonus_erp_sku){
-        //$return['bonus_erp_sku'] = $options['simple_sku'];
-        //}
-        $return['bonus_erp_sku'] = str_replace('-Prämie', '', $product->getSku());
-        $itemSku = str_replace('off-', '', $item->getSku());
-        if (strpos($itemSku, '-') !== false) {
-            $return['bonus_erp_subsku'] = str_replace($return['bonus_erp_sku'] . '-', '', $itemSku);
-        } else {
-            // bonus_erp_subsku default value changed from 0 to empty string per Mrs. Nirsch's instructions
-            $return['bonus_erp_subsku'] = '';
-        }
-        $return['add_payment'] = $price;
-        return $return;
     }
 
     /**
