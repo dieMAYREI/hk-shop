@@ -585,8 +585,7 @@ class Order2Cover implements ObserverInterface
                                 if (isset($this->_orders4cover[$order->getId()]['addresses']['shipping'])) {
                                     $shippAddr = $this->_orders4cover[$order->getId()]['addresses']['shipping'];
                                     $billAddr = $this->_orders4cover[$order->getId()]['addresses']['billing'];
-                                    if (
-                                        $billAddr['firstname'] == $shippAddr['firstname'] &&
+                                    if ($billAddr['firstname'] == $shippAddr['firstname'] &&
                                         $billAddr['street'] == $shippAddr['street'] &&
                                         $billAddr['street2'] == $shippAddr['street2'] &&
                                         $billAddr['postcode'] == $shippAddr['postcode']
