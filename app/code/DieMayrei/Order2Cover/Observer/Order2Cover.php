@@ -201,7 +201,7 @@ class Order2Cover implements ObserverInterface
                     $this->getOrderpositions($order);
                     $paymentMethod = $this->getPayment($order);
 
-                    if (!in_array($paymentMethod, ['checkmo', 'debitpayment', 'free'])) {
+                    if (!in_array($paymentMethod, ['checkmo', 'diemayrei_sepa', 'free'])) {
                         if (in_array($order->getState(), [Order::STATE_PROCESSING, Order::STATE_COMPLETE])) {
                             continue;
                         }
@@ -390,15 +390,14 @@ class Order2Cover implements ObserverInterface
                 $payment['payment_provider'] = 'ERP';
                 $payment['payment_type_ext'] = 'F';
                 break;
-            case 'debitpayment':
-                $additional_information = $order->getPayment()->getAdditionalInformation();
+            case 'diemayrei_sepa':
+                $additionalInfo = $order->getPayment()->getAdditionalInformation();
                 $payment['payment_provider'] = 'ERP';
                 $payment['payment_type_ext'] = 'C';
-                $payment['iban'] = $additional_information['additional_data']['iban'];
-                $payment['bic'] = $additional_information['additional_data']['bic'];
-                $payment['account_owner'] = $additional_information['additional_data']['bank_account_owner'];
-                $payment['bank_name'] = $additional_information['additional_data']['bank_company'];
-                // $payment['sepa_mandate_granted'] = true;
+                $payment['iban'] = $additionalInfo['iban'] ?? '';
+                $payment['bic'] = $additionalInfo['bic'] ?? '';
+                $payment['account_owner'] = $additionalInfo['account_holder'] ?? '';
+                $payment['bank_name'] = $additionalInfo['bank_name'] ?? '';
                 break;
             case 'payone_paypal':
                 $payment['payment_provider'] = 'PAYONE';
