@@ -17,6 +17,11 @@ use DieMayrei\Order2Cover\Helper\Order2CoverConfig;
 class InTimeSubmit
 {
     /**
+     * Path to the log file
+     */
+    private const LOG_FILE = BP . '/var/log/order2cover.log';
+
+    /**
      * @var ExportOrdersFactory
      */
     protected $_exportOrdersFactory;
@@ -105,14 +110,13 @@ class InTimeSubmit
      */
     protected function logError(ExportOrders $order, \Throwable $error): void
     {
-        $errorLogPath = BP . '/var/log/order2cover.log';
         $message = sprintf(
             "[%s] Order %s: %s\n",
             date('Y-m-d H:i:s'),
             $order->getData('order_id'),
             $error->getMessage()
         );
-        error_log($message, 3, $errorLogPath);
+        error_log($message, 3, self::LOG_FILE);
     }
 
     /**
