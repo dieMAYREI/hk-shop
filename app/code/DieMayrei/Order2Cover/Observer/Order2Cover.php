@@ -5,11 +5,8 @@ namespace DieMayrei\Order2Cover\Observer;
 
 use Carbon\Carbon;
 use DieMayrei\DigitalAccess\Observer\DigitalAccess;
-use DieMayrei\EmailNotice\Helper\EmailNotice;
-use DieMayrei\EmailNotice\Traits\FormatEmailVars;
 use DieMayrei\Order2Cover\Controller\Dev\InTimeSubmit;
 use DieMayrei\Order2Cover\Model\ExportOrdersFactory;
-use DieMayrei\PayPalBilling\Api\BillingAgreementRepositoryInterface as PayPalOrderRepositoryInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Interceptor as ProductInterceptor;
@@ -38,9 +35,6 @@ use libphonenumber\PhoneNumberUtil;
 
 class Order2Cover implements ObserverInterface
 {
-
-    use FormatEmailVars;
-
     /** @var TransportBuilder */
     protected $_transportBuilder;
 
@@ -55,9 +49,6 @@ class Order2Cover implements ObserverInterface
 
     /** @var Http */
     protected $_request;
-
-    /** @var EmailNotice */
-    protected $_emailNotice;
 
     /** @var AddressFactory */
     protected $_addressfactory;
@@ -96,9 +87,6 @@ class Order2Cover implements ObserverInterface
      */
     protected $_ruleRepository;
 
-    /** @var PayPalOrderRepositoryInterface */
-    private $payPalOrderRepository;
-
     protected $configs = [
         'timestamp' => '',
         'transaction_id' => 'The same Unique transaction-ID of registration by calling system',
@@ -112,12 +100,8 @@ class Order2Cover implements ObserverInterface
     ];
 
     protected $attribute_sets = [
-        '4' => 'Default',
-        '9' => 'Prämien',
-        '11' => 'Sonderprodukt',
-        '12' => 'Dropshipping',
-        '10' => 'Zeitschrift',
-        '13' => 'dlv-Pur-Zugang',
+        '4' => 'Zeitschrift',
+        '9' => 'Sonderprodukt',
     ];
 
     /**
@@ -127,7 +111,6 @@ class Order2Cover implements ObserverInterface
      * @param  CustomerRepositoryInterface  $customerRepositoryInterface
      * @param  LoggerInterface  $logger
      * @param  Http  $request
-     * @param  EmailNotice  $emailNotice
      * @param  AddressFactory  $addressFactory
      * @param  CollectionFactory  $orderCollectionFactory
      * @param  ExportOrdersFactory  $exportOrders
@@ -142,7 +125,6 @@ class Order2Cover implements ObserverInterface
         CustomerRepositoryInterface $customerRepositoryInterface,
         LoggerInterface $logger,
         Http $request,
-        EmailNotice $emailNotice,
         AddressFactory $addressFactory,
         CollectionFactory $orderCollectionFactory,
         ExportOrdersFactory $exportOrders,
@@ -153,15 +135,13 @@ class Order2Cover implements ObserverInterface
         OrderAddressInterface $orderAddressInterface,
         State $appState,
         InTimeSubmit $orderTransmit,
-        RuleRepositoryInterface $ruleRepository,
-        PayPalOrderRepositoryInterface $payPalOrderRepository
+        RuleRepositoryInterface $ruleRepository
     ) {
         $this->_transportBuilder = $transportBuilder;
         $this->_storeManager = $storeManager;
         $this->_customerRepositoryInterface = $customerRepositoryInterface;
         $this->_logger = $logger;
         $this->_request = $request;
-        $this->_emailNotice = $emailNotice;
         $this->_addressfactory = $addressFactory;
         $this->_orderCollectionFactory = $orderCollectionFactory;
         $this->_exportOrders = $exportOrders;
@@ -173,7 +153,6 @@ class Order2Cover implements ObserverInterface
         $this->_appState = $appState;
         $this->_orderTransmit = $orderTransmit;
         $this->_ruleRepository = $ruleRepository;
-        $this->payPalOrderRepository = $payPalOrderRepository;
     }
 
     /**
@@ -340,8 +319,6 @@ class Order2Cover implements ObserverInterface
         /** @var \Magento\Sales\Model\ResourceModel\Order\Collection $collection */
         $collection = $this->_orderCollectionFactory->create();
         $collection->addFieldToSelect('order_id');
-        $collection->addFieldToFilter('entity_id', ['gt' => 17515]);
-        $collection->addFieldToFilter('entity_id', ['nin' => [66456, 67726, 68216]]);
         $collection->addFieldToFilter('created_at', ['gt' => date('Y-m-d H:i:s', strtotime('-3 day'))]);
         $collection->addFieldToFilter('status', ['neq' => 'canceled']);
         $collection->setOrder('created_at', 'desc');
@@ -508,15 +485,6 @@ class Order2Cover implements ObserverInterface
                 $payment['payment_provider'] = 'PAYONE';
                 $payment['payment_type_ext'] = 'PAYONE_S';
                 $payment['transaction_code'] = $order->getPayment()->getLastTransId();
-                break;
-            case 'diemayrei_paypal_billing':
-                $payment['payment_provider'] = 'PAYPAL';
-                $payment['payment_type_ext'] = 'OP';
-                $payPalOrder = $this->payPalOrderRepository->getByOrderId((int)$order->getEntityId());
-                $payment['transaction_code'] = $payPalOrder->getPaypalCaptureId() ?: $payPalOrder->getPaypalOrderId();
-                $payment['billing_agreement_token'] = $payPalOrder->getAgreementId() ?: null;
-                $payment['is_billing_agreement'] = $payPalOrder->getAgreementId() ? true : false;
-
                 break;
         }
         $this->_orders4cover[$order->getId()]['payment'] = $payment;
@@ -690,7 +658,8 @@ class Order2Cover implements ObserverInterface
                                 if (isset($this->_orders4cover[$order->getId()]['addresses']['shipping'])) {
                                     $shippAddr = $this->_orders4cover[$order->getId()]['addresses']['shipping'];
                                     $billAddr = $this->_orders4cover[$order->getId()]['addresses']['billing'];
-                                    if ($billAddr['firstname'] == $shippAddr['firstname'] &&
+                                    if (
+                                        $billAddr['firstname'] == $shippAddr['firstname'] &&
                                         $billAddr['street'] == $shippAddr['street'] &&
                                         $billAddr['street2'] == $shippAddr['street2'] &&
                                         $billAddr['postcode'] == $shippAddr['postcode']
@@ -841,11 +810,13 @@ class Order2Cover implements ObserverInterface
             $sku = str_replace('off-', '', $sku);
             return [$sku, 0];
         }
-        /** erp_subsku is only changed for book products. **/
+
+        /* erp_subsku is only changed for book products. */
         if ($attributeSetId == 11 || $attributeSetId == 12) {
             /**
              * The rule is: For determining the edition number,
-             * the SKU may contain exactly one '-' **/
+             * the SKU may contain exactly one '-'
+             */
             if (substr_count($sku, '-') == 1) {
                 return explode('-', $sku);
             }
@@ -1037,7 +1008,7 @@ class Order2Cover implements ObserverInterface
         if (!$suffix) {
             return null;
         }
-        
+
         // Remove trailing spaces and periods
         return trim($suffix, ' .');
     }
@@ -1103,7 +1074,7 @@ class Order2Cover implements ObserverInterface
             } else {
                 $groupId = DigitalAccess::getAhGroupId($item);
             }
-            
+
             if ($medium === 'Digital' || $medium === 'E-Paper') {
                 return (int) str_replace('4f79e6de-7f0c-4756-84ac-a00', '', $groupId);
             } else {
