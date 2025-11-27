@@ -248,7 +248,7 @@ class Update extends Command
                 ]);
             }
 
-            if($meldecode === self::MELDECODE_LIEFERUNG_14_TAGE) {
+            if ($meldecode === self::MELDECODE_LIEFERUNG_14_TAGE) {
                 $attributeUpdates['lieferzeit'] = 'ca. 14 Tage';
             }
 
