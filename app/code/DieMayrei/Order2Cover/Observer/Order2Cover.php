@@ -5,6 +5,7 @@ namespace DieMayrei\Order2Cover\Observer;
 
 use Carbon\Carbon;
 use DieMayrei\DigitalAccess\Observer\DigitalAccess;
+use Diemayrei\EmailNotice\Traits\FormatEmailVars;
 use DieMayrei\Order2Cover\Controller\Dev\InTimeSubmit;
 use DieMayrei\Order2Cover\Model\ExportOrdersFactory;
 use Magento\Catalog\Api\ProductRepositoryInterface;
@@ -35,6 +36,8 @@ use libphonenumber\PhoneNumberUtil;
 
 class Order2Cover implements ObserverInterface
 {
+    use FormatEmailVars;
+
     /** @var TransportBuilder */
     protected $_transportBuilder;
 
@@ -216,7 +219,7 @@ class Order2Cover implements ObserverInterface
 
                     if ($paymentMethod != "payone_creditcard") {
                         $order->setState(Order::STATE_COMPLETE)->setStatus(Order::STATE_COMPLETE);
-                        $order->save();
+                        #$order->save(); //TODO remove after refactoring
                     }
                 } catch (\Throwable $error) {
                     file_put_contents($errorLogPath, $order->getId() . ': ' . $error->getMessage() . ' : ' . $error->getTraceAsString(), FILE_APPEND);
@@ -311,7 +314,7 @@ class Order2Cover implements ObserverInterface
             $this->addErpCustomer($return, $order);
         }
 
-        $return['salutation_code'] = $this->getAnrede($this->getSalutationCode($address->getPrefix()));
+        $return['salutation_code'] = $this->getAnrede($address->getPrefix());
         $return['title_code'] = $this->getTitleCode($this->getTitle($address->getSuffix()));
         $return['firstname'] = $address->getFirstname();
         $return['lastname'] = $address->getLastname();
@@ -471,7 +474,6 @@ class Order2Cover implements ObserverInterface
         $this->_orders4cover[$order->getId()]['currency'] = $order->getOrderCurrency()->toString();
         $this->_orders4cover[$order->getId()]['shipping_code_ext'] = 'VERS_KOST';
         $this->_orders4cover[$order->getId()]['shipping_amount'] = (float)$order->getShippingInclTax();
-        $this->_orders4cover[$order->getId()]['optin_general'] = $order->getCoverOptinGeneral() ? 'T' : '';
     }
 
     /**
@@ -512,18 +514,27 @@ class Order2Cover implements ObserverInterface
         foreach ($order->getAllItems() as $item) {
             /** @var  $product */
             $product = $this->_productRepository->getById($item->getProductId());
-
             /** @var ProductInterceptor $attributeSetId */
             $attributeSetId = $product->getAttributeSetId();
 
-            // For configurable/bundle products, get the actual simple product
-            $actualProduct = $this->getSimpleProductFromItem($item, $product);
-            $this->_orders4cover[$order->getId()]['orderpositions'][] = $this->getOrderPosArticle(
-                $item,
-                $actualProduct,
-                $attributeSetId
-            );
-            break;
+            switch ($attributeSetId) {
+                case self::ATTRIBUTE_SET_ZEITSCHRIFT:
+                    $this->_orders4cover[$order->getId()]['orderpositions'][] = $this->getOrderPosAbo(
+                        $item,
+                        $product,
+                        $order
+                    );
+                    break;
+                default:
+                    // For configurable/bundle products, get the actual simple product
+                    $actualProduct = $this->getSimpleProductFromItem($item, $product);
+                    $this->_orders4cover[$order->getId()]['orderpositions'][] = $this->getOrderPosArticle(
+                        $item,
+                        $actualProduct,
+                        $attributeSetId
+                    );
+                    break;
+            }
         }
     }
 
@@ -548,6 +559,42 @@ class Order2Cover implements ObserverInterface
         ];
 
         return $orderpostion;
+    }
+
+    /**
+     * @param  ItemInterceptor  $item
+     * @param  ProductInterceptor  $product
+     * @param  OrderInterceptor  $order
+     * @return array
+     */
+    protected function getOrderPosAbo(
+        ItemInterceptor $item,
+        ProductInterceptor $product,
+        $order
+    ) {
+
+        $orderposition = [];
+        $orderposition['type'] = 'A';
+
+        $quantity = $item->getQtyOrdered();
+
+        if ($quantity) {
+            $orderposition['quantity'] = (int)$quantity;
+        }
+
+        if ($product->getCustomAttribute('laufende_nummer')) {
+            $orderposition['campaign_offer_number'] = $product->getCustomAttribute('laufende_nummer')->getValue();
+        }
+
+        $orderposition['object_id'] = $this->getObjectCodeFromSku($product->getSku());
+
+        $orderposition['edition_id']  = '-';
+
+        $orderposition['price'] = (float)$item->getPriceInclTax();
+        $orderposition['start_date'] = date('d.m.Y', strtotime($order->getCreatedAt()));
+        $orderposition['item_id'] = $item->getId();
+
+        return $orderposition;
     }
 
     /**
@@ -624,53 +671,16 @@ class Order2Cover implements ObserverInterface
     }
 
     /**
-     * @param  ItemInterceptor  $item
-     * @param  ProductInterceptor  $product
-     * @param  OrderInterceptor  $order
-     * @return array
+     * Extracts the object code (leading uppercase letters) from SKU.
+     * Example: "BLWAbo123" -> "BLW", "AFZ-Test" -> "AFZ"
+     *
+     * @param string $sku
+     * @return string
      */
-    protected function getOrderPosAbo(
-        ItemInterceptor $item,
-        ProductInterceptor $product,
-        $order
-    ) {
-
-        $orderposition = [];
-        $orderposition['type'] = 'A';
-
-        $quantity = $item->getQtyOrdered();
-        if ($quantity) {
-            $orderposition['quantity'] = (int)$quantity;
-        }
-        if ($product->getCustomAttribute('aktionskennzeichen')) {
-            $orderposition['campaign_code'] = $product->getCustomAttribute('aktionskennzeichen')->getValue();
-        }
-        if ($product->getCustomAttribute('unteraktion')) {
-            $orderposition['campaign_subcode'] = $product->getCustomAttribute('unteraktion')->getValue();
-        }
-        if ($product->getCustomAttribute('laufende_nummer')) {
-            $orderposition['campaign_offer_number'] = $product->getCustomAttribute('laufende_nummer')->getValue();
-        }
-        if ($this->getAboType($product->getCustomAttribute('abovarianten')->getValue())) {
-            $orderposition['abo_typ'] = $this->getAboType($product->getCustomAttribute('abovarianten')->getValue());
-        }
-        $orderposition['object_id'] = $this->getObjectId(
-            $product->getAttributeText('objekt'),
-            $product->getAttributeText('medium'),
-            $product,
-        );
-        $orderposition['edition_id']  = $this->getEdition(
-            $order,
-            $product,
-            $item,
-            $product->getAttributeText('medium')
-        );
-
-        $orderposition['price'] = (float)$item->getPriceInclTax();
-        $orderposition['start_date'] = date('d.m.Y', strtotime($order->getCreatedAt()));
-        $orderposition['item_id'] = $item->getId();
-
-        return $orderposition;
+    protected function getObjectCodeFromSku(string $sku): string
+    {
+        preg_match('/^[A-Z]+/', $sku, $matches);
+        return $matches[0] ?? '';
     }
 
     /**
@@ -689,265 +699,6 @@ class Order2Cover implements ObserverInterface
     protected function setConfig($key, $value)
     {
         $this->configs[$key] = $value;
-    }
-
-    protected function getAboType($abovariante)
-    {
-        $return = '';
-
-        switch ($abovariante) {
-            //Persönliches Abo Print
-            case 37:
-                // Probeheft
-            case 27:
-                //Probelesen
-            case 21:
-                //Schnupper Abo
-            case 45:
-                //Sonder Abo
-            case 11:
-                //Studenten Abo
-            case 20:
-                //EPaper + Print Abo
-            case 15:
-                //EPaper Upgrade
-            case 31:
-                //EPaper Abo
-            case 16:
-                //EPaper Probelesen
-            case 18:
-                //Einzelprodukt kostenpflichtig
-            case 17:
-                //Extern
-            case 235:
-                //Baumpflege Abo
-            case 236:
-                //aClub 3 Monate testen
-            case 237:
-                //aClub Studenten Abo
-            case 238:
-                //Schulungspaket
-            case 239:
-                //Ausbildungspaket
-            case 240:
-                // EPaper Trial Reading for Magazine Readers
-            case 241:
-                //Geschenk Probeheft
-            case 242:
-                //Persönliches Abo Plus
-            case 245:
-                //Schnupper Abo Plus
-            case 246:
-                //Studenten Abo Plus
-            case 248:
-                //Digitalmagazin
-            case 253:
-                //Digitalmagazin Upgrade
-            case 254:
-                //Digitalmagazin Probelesen
-            case 255:
-                //E-Paper Schnupperabo
-            case 256:
-                $return = 'EA';
-                break;
-            //Geschenk Abo
-            case 13:
-                //Geschenk Abo Plus
-            case 249:
-                //Geschenk Schnupperabo
-            case 250:
-                $return = 'GA';
-                break;
-            //2 Jahre Leser werben Leser
-            case 227:
-                //Leser werben Leser
-            case 14:
-                //Leser werben Leser Plus
-            case 247:
-                $return = 'LWL';
-                break;
-            case 5679:
-                $return = 'DA';
-                break;
-        }
-
-        return $return;
-    }
-
-    /**
-     * Converts salutation to Cover API code
-     *
-     * @param string|null $salutation
-     * @return string
-     */
-    protected function getAnrede($salutation): string
-    {
-        $mapping = [
-            'Herr' => '1',
-            'Frau' => '2',
-            'Firma' => '3',
-            'Familie' => '4',
-        ];
-
-        if ($salutation && array_key_exists($salutation, $mapping)) {
-            return $mapping[$salutation];
-        }
-
-        return '0'; // Default: no salutation
-    }
-
-    /**
-     * Extracts title from suffix (e.g. "Dr.", "Prof.")
-     *
-     * @param string|null $suffix
-     * @return string|null
-     */
-    protected function getTitle($suffix): ?string
-    {
-        if (!$suffix) {
-            return null;
-        }
-
-        // Remove trailing spaces and periods
-        return trim($suffix, ' .');
-    }
-
-    /**
-     * Converts title to Cover API code
-     *
-     * @param string|null $title
-     * @return string
-     */
-    protected function getTitleCode($title): string
-    {
-        $mapping = [
-            'Dr' => '10',
-            'Prof' => '20',
-            'Prof. Dr' => '30',
-        ];
-
-        if ($title && array_key_exists($title, $mapping)) {
-            return $mapping[$title];
-        }
-
-        return '47'; // Default: no title
-    }
-
-    /**
-     * @param $salutation
-     * @return string
-     */
-    protected function getSalutationCode($salutation)
-    {
-        $arr = [
-            'Herr' => 'Herr',
-            'Herrn' => 'Herr'
-        ];
-
-        if (array_key_exists($salutation, $arr)) {
-            return $arr[$salutation];
-        }
-
-        return $salutation;
-    }
-
-    /**
-     * @param $order
-     * @param $product
-     * @param $item
-     * @return string
-     */
-    protected function getEdition(Order $order, Product $product, $item, $medium)
-    {
-
-        // 16 is the store ID for Austria
-        if ($order->getStoreId() == '16') {
-            if ($product->getSku() == 'BLW-DigitalmagazinProbelesen-AH23KPUMFPH-141') {
-                return '1';
-            }
-        }
-
-        if ($product->getAttributeText('objekt') === 'AH') {
-            if ($product->getMydlvGuid()) {
-                $groupId = $product->getMydlvGuid();
-            } else {
-                $groupId = DigitalAccess::getAhGroupId($item);
-            }
-
-            if ($medium === 'Digital' || $medium === 'E-Paper') {
-                return (int) str_replace('4f79e6de-7f0c-4756-84ac-a00', '', $groupId);
-            } else {
-                return (int) str_replace('4f79e6de-7f0c-4756-84ac-a0000000001', '', $groupId);
-            }
-        }
-
-        $object = $product->getAttributeText('objekt');
-
-        if (in_array($object, ['LWO'])) {
-            if ($medium == 'E-Paper' || $medium == 'Digital') {
-                return '1';
-            }
-            return 'ÖSTERREICH';
-        }
-
-        if ($medium == 'E-Paper' || $medium == 'Digital') {
-            return '-';
-        }
-
-        /**
-         * Special case for AFZ Tree Care is implemented here,
-         * for AboType 236 the edition 'Baumpflege' is passed
-         */
-        $aboType = $product->getCustomAttribute('abovarianten')->getValue();
-        if ($aboType == 236) {
-            return 'Baumpflege';
-        }
-
-        /** Special case for Biene&Natur */
-        if (in_array($object, ['BIE'])) {
-            return '-';
-        }
-
-        /** Continue only for BLW and LuF */
-        if (in_array($object, ['BLW', 'LUF'])) {
-            return 'XXX';
-        }
-
-        return '-';
-    }
-
-    protected function ifProbeheftSplitRequired($order)
-    {
-        $probeheft = false;
-        $orderdItems = 0;
-
-        $errorLogPath = self::LOG_FILE;
-
-        /** @var ItemInterceptor $item */
-        foreach ($order->getAllItems() as $item) {
-            try {
-                $product = $this->_productRepository->getById($item->getProductId());
-
-                /** @var ProductInterceptor $attributeSetId */
-                $attributeSetId = $product->getAttributeSetId();
-                if ($attributeSetId == 10) {
-                    if ($product->getCustomAttribute('abovarianten')->getValue() == 27) {
-                        $probeheft = true;
-                    }
-                }
-                // We only count order positions for special products and subscriptions
-                if (in_array($attributeSetId, [10, 11, 12])) {
-                    $orderdItems++;
-                }
-            } catch (\Throwable $error) {
-                file_put_contents($errorLogPath, $order->getId() . ': ' . $error->getMessage() . ' : ' . $error->getTraceAsString(), FILE_APPEND);
-            }
-        }
-        if ($orderdItems >= 1 && $probeheft) {
-            return true;
-        }
-
-        return false;
     }
 
     /**
@@ -975,131 +726,6 @@ class Order2Cover implements ObserverInterface
             ->setBaseTaxAmount($orderBaseTax)
             ->setGrandTotal($grandTotal)
             ->setBaseGrandTotal($grandTotal);
-    }
-
-    /**
-     * @param $object
-     * @param $medium
-     * @return string
-     *
-     * Values for medium Print|E-Paper|Print &amp; E-Paper|Digital|Print + Digital
-     * Values for $object
-     * BP 60
-     * FV 68
-     * GEM 63
-     * HI 64
-     * JGH 56
-     * LUF 57
-     * NJ 55
-     * NLR 65
-     * OL 66
-     * TRA TRA
-     * UJ 51
-     *
-     */
-    protected function getObjectId($object, $medium, Product $product)
-    {
-
-        /// EPH PI-Digitalmagazin-PI25DMHPEPH-13
-        if (preg_match('/^PI-Digitalmagazin-PI\d+DMHPEPH-13$/', $product->getSku())) {
-            return 'EPH';
-        }
-
-        if ($object == 'AFZ') {
-            if ($medium == 'E-Paper' || $medium == 'Digital') {
-                return 'EAF';
-            }
-        }
-        if ($object == 'AT') {
-            if ($medium == 'E-Paper' || $medium == 'Digital') {
-                return 'EAT';
-            }
-        }
-        if ($object == 'AH') {
-            if ($medium == 'E-Paper' || $medium == 'Digital') {
-                return 'EAG';
-            }
-            return 'AH';
-        }
-        if ($object == 'BIE') {
-            if ($medium == 'E-Paper' || $medium == 'Digital') {
-                return 'EBI';
-            }
-            return 'BIE';
-        }
-        if ($object == 'BLW') {
-            if ($medium == 'E-Paper' || $medium == 'Digital') {
-                return 'EB';
-            }
-        }
-        if ($object == 'LWO') {
-            if ($medium == 'E-Paper' || $medium == 'Digital') {
-                return 'EB';
-            }
-            return 'BLW';
-        }
-        if ($object == 'FUT') {
-            if ($medium == 'E-Paper' || $medium == 'Digital') {
-                return 'EF';
-            }
-        }
-        if ($object == 'FF') {
-            if ($medium == 'E-Paper' || $medium == 'Digital') {
-                return 'EFF';
-            }
-        }
-        if ($object == 'PI') {
-            if ($medium == 'E-Paper' || $medium == 'Digital') {
-                return 'EP';
-            }
-        }
-        if ($object == 'TRA') {
-            if ($medium == 'E-Paper' || $medium == 'Digital') {
-                return 'ET';
-            }
-        }
-        if ($object == 'UJ') {
-            if ($medium == 'E-Paper' || $medium == 'Digital') {
-                return 'EU';
-            }
-        }
-        if ($object == 'LUF') {
-            if ($medium == 'E-Paper' || $medium == 'Digital') {
-                return 'EL';
-            }
-        }
-        if ($object == 'DW') {
-            if ($medium == 'E-Paper' || $medium == 'Digital') {
-                return 'EDW';
-            }
-        }
-        if ($object == 'NJ') {
-            if ($medium == 'E-Paper' || $medium == 'Digital') {
-                return 'ENJ';
-            }
-        }
-        if ($object == 'KUR') {
-            if ($medium == 'E-Paper' || $medium == 'Digital') {
-                return 'EK';
-            }
-        }
-        if ($object == "BZ") {
-            if ($medium == 'E-Paper' || $medium == 'Digital') {
-                return 'EBZ';
-            }
-        }
-        if ($object == "DBJ") {
-            if ($medium == 'E-Paper' || $medium == 'Digital') {
-                return 'EDB';
-            }
-        }
-        if ($object == "GEM") {
-            if ($medium == 'E-Paper' || $medium == 'Digital') {
-                return 'EGE';
-            }
-        }
-
-        return $object;
     }
 
     /**
