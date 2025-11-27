@@ -4,12 +4,10 @@
 namespace DieMayrei\Order2Cover\Observer;
 
 use Carbon\Carbon;
-use DieMayrei\DigitalAccess\Observer\DigitalAccess;
-use Diemayrei\EmailNotice\Traits\FormatEmailVars;
+use DieMayrei\EmailNotice\Traits\FormatEmailVars;
 use DieMayrei\Order2Cover\Controller\Dev\InTimeSubmit;
 use DieMayrei\Order2Cover\Model\ExportOrdersFactory;
 use Magento\Catalog\Api\ProductRepositoryInterface;
-use Magento\Catalog\Model\Product;
 use Magento\Catalog\Model\Product\Interceptor as ProductInterceptor;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Customer\Model\AddressFactory;
