@@ -3,8 +3,9 @@ define([
     'jquery',
     'mage/storage',
     'Magento_Checkout/js/view/payment/default',
+    'Magento_Checkout/js/model/payment/additional-validators',
     'mage/translate'
-], function (ko, $, storage, Component) {
+], function (ko, $, storage, Component, additionalValidators) {
     'use strict';
 
     return Component.extend({
@@ -60,6 +61,35 @@ define([
 
         getInstructions: function () {
             return window.checkoutConfig.payment.instructions[this.item.method] || '';
+        },
+
+        /**
+         * Override placeOrder to include additional validators (e.g., checkout agreements)
+         */
+        placeOrder: function (data, event) {
+            var self = this;
+
+            if (event) {
+                event.preventDefault();
+            }
+
+            if (this.validate() && additionalValidators.validate()) {
+                this.isPlaceOrderActionAllowed(false);
+                return this.getPlaceOrderDeferredObject()
+                    .done(function () {
+                        self.afterPlaceOrder();
+                        if (self.redirectAfterPlaceOrder) {
+                            window.location.replace(
+                                window.checkoutConfig.defaultSuccessPageUrl
+                            );
+                        }
+                    })
+                    .fail(function () {
+                        self.isPlaceOrderActionAllowed(true);
+                    });
+            }
+
+            return false;
         },
 
         getData: function () {
