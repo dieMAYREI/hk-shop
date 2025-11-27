@@ -87,6 +87,8 @@ class Order2Cover implements ObserverInterface
      */
     protected $_ruleRepository;
 
+    private const LOG_FILE = BP . '/var/log/order2cover.log';
+
     protected $configs = [
         'timestamp' => '',
         'transaction_id' => 'The same Unique transaction-ID of registration by calling system',
@@ -99,9 +101,11 @@ class Order2Cover implements ObserverInterface
         'erp_system_id' => 'M2-DLVSHOP',
     ];
 
-    protected $attribute_sets = [
-        '4' => 'Zeitschrift',
-        '9' => 'Sonderprodukt',
+    public const ATTRIBUTE_SET_ZEITSCHRIFT = 4;
+    public const ATTRIBUTE_SET_SONDERPRODUKT = 9;
+    public const ATTRIBUTE_SETS = [
+        self::ATTRIBUTE_SET_ZEITSCHRIFT => 'Zeitschrift',
+        self::ATTRIBUTE_SET_SONDERPRODUKT => 'Sonderprodukt',
     ];
 
     /**
@@ -168,62 +172,27 @@ class Order2Cover implements ObserverInterface
 
             $orderids_to_export = $this->getOrdersToExport();
 
-            $order_to_export = [];
-            $ga_orders_to_export = [];
-
             if (!$orderids_to_export) {
                 return $this;
             }
-            /** @var  $order_to_export */
+
+
             $loaded_orders = $this->loadOrders($orderids_to_export);
 
-            /**
-             * Check if an order contains a gift subscription. If so,
-             * the order must be split.
-             */
-            /** @var OrderInterceptor $order */
-            foreach ($loaded_orders as $order) {
-                /**
-                 * IF only Probeheft -> api.dlv.de
-                 */
-                try {
-                    if ($this->isProbeheftOnlyOrder($order)) {
-                        continue;
-                    }
-                } catch (\Throwable $eProbe) {
-                    error_log("Probesplit Order2Cover " . $order->getId());
-                    error_log($eProbe);
-                    continue;
-                }
-
-                if ($this->ifProbeheftSplitRequired($order)) {
-                    $order = $this->splitProbeheftOrder($order);
-                }
-
-                /** Check for GeschenkAbo */
-                if ($this->isOrderSplitRequired($order)) {
-                    $splitted_order = $this->splitOrder($order);
-                    $ga_orders_to_export[] = $splitted_order['order_with_ga'];
-                    if ($splitted_order['order']) {
-                        $order_to_export[] = $splitted_order['order'];
-                    }
-                } else {
-                    $order_to_export[] = $order;
-                }
-            }
-
-            $errorLogPath = __DIR__ . '/../../../../../var/log/order2cover.log';
+            $errorLogPath = self::LOG_FILE;
 
             /** @var Order $order */
-            foreach ($order_to_export as $order) {
+            foreach ($loaded_orders as $order) {
                 try {
 
                     $this->setConfig('timestamp', date('YmdHis', strtotime($order->getCreatedAt())));
+
                     if ($this->_appState->getMode() == \Magento\Framework\App\State::MODE_DEVELOPER) {
                         $this->setConfig('transaction_id', '8000' . (string)((int)(microtime(true) * 1000)));
                     } else {
                         $this->setConfig('transaction_id', (string)((int)(microtime(true) * 1000)));
                     }
+
                     $this->getTransaction($order);
                     $this->getCommon($order);
                     $this->getAddress($order, 'billing');
@@ -247,53 +216,11 @@ class Order2Cover implements ObserverInterface
                     $exportedOrder->save();
 
                     if ($paymentMethod != "payone_creditcard") {
-                        // Set order status to completed
-                        $orderState = Order::STATE_COMPLETE;
-                        $order->setState($orderState)->setStatus(Order::STATE_COMPLETE);
+                        $order->setState(Order::STATE_COMPLETE)->setStatus(Order::STATE_COMPLETE);
                         $order->save();
                     }
                 } catch (\Throwable $error) {
                     file_put_contents($errorLogPath, $order->getId() . ': ' . $error->getMessage() . ' : ' . $error->getTraceAsString(), FILE_APPEND);
-                }
-            }
-
-            $this->_orders4cover = [];
-
-            /** @var OrderInterceptor $ga_order */
-            foreach ($ga_orders_to_export as $ga_order) {
-                try {
-
-                    $this->setConfig('timestamp', date('YmdHis', strtotime($ga_order->getCreatedAt())));
-                    if ($this->_appState->getMode() == \Magento\Framework\App\State::MODE_DEVELOPER) {
-                        $this->setConfig('transaction_id', '8000' . (string)((int)(microtime(true) * 1000)));
-                    } else {
-                        $this->setConfig('transaction_id', (string)((int)(microtime(true) * 1000)));
-                    }
-                    $this->getTransaction($ga_order);
-                    $this->getCommon($ga_order, true);
-                    $this->getAddress($ga_order, 'billing');
-                    $this->getAddress($ga_order, 'shipping');
-                    $this->getOrderpositions($ga_order);
-                    $paymentMethod = $this->getPayment($ga_order);
-
-                    if (!in_array($paymentMethod, ['checkmo', 'debitpayment', 'free'])) {
-                        #if ($paymentMethod == "payone_obt_sofortueberweisung"){
-                        if ($ga_order->getStatus() != Order::STATE_PROCESSING && $ga_order->getStatus() != Order::STATE_COMPLETE) {
-                            continue;
-                        }
-                        #}
-                    }
-
-                    $exportedOrder = $this->_exportOrders->create();
-
-                    $exportedOrder->setData([
-                        'order_id' => '9000' . $ga_order->getId(),
-                        'payload' => json_encode(['order' => $this->_orders4cover[$ga_order->getId()]]),
-                        'created_at' => Carbon::now(),
-                    ]);
-                    $exportedOrder->save();
-                } catch (\Throwable $error) {
-                    file_put_contents($errorLogPath, $ga_order->getId() . ' GA : ' . $error->getMessage() . ' : ' . $error->getTraceAsString(), FILE_APPEND);
                 }
             }
         });
@@ -407,7 +334,7 @@ class Order2Cover implements ObserverInterface
                 $return['phone'] = $phoneNumberFormatted;
             } catch (\Exception $error) {
                 file_put_contents(
-                    __DIR__ . '/../../../../../var/log/order2cover.log',
+                    self::LOG_FILE,
                     $order->getId() . ' phoneparseerror: ' . $error->getMessage() . '  ' . $address->getTelephone(),
                     FILE_APPEND
                 );
@@ -1122,7 +1049,7 @@ class Order2Cover implements ObserverInterface
         $probeheft = false;
         $orderdItems = 0;
 
-        $errorLogPath = __DIR__ . '/../../../../../var/log/order2cover.log';
+        $errorLogPath = self::LOG_FILE;
 
         /** @var ItemInterceptor $item */
         foreach ($order->getAllItems() as $item) {
@@ -1149,230 +1076,6 @@ class Order2Cover implements ObserverInterface
         }
 
         return false;
-    }
-
-    protected function isProbeheftOnlyOrder($order)
-    {
-        /** @var ItemInterceptor $item */
-        foreach ($order->getAllItems() as $item) {
-            /** @var  $product */
-            $product = $this->_productRepository->getById($item->getProductId());
-
-            /** @var ProductInterceptor $attributeSetId */
-            $attributeSetId = $product->getAttributeSetId();
-            if ($attributeSetId == 11) { // Sonderprodukt
-                return false;
-            }
-            if ($attributeSetId == 12) { // Dropshipping
-                return false;
-            }
-            if ($attributeSetId == 10) { // Zeitschrift
-                if ($product->getCustomAttribute('abovarianten')->getValue() != 27) {
-                    return false;
-                }
-            }
-            if ($attributeSetId == 13) { // dlv-Pur-Zugang
-                return false;
-            }
-        }
-        return true;
-    }
-
-    protected function splitProbeheftOrder($order)
-    {
-        // Now the order with the remaining items
-        $errorLogPath = __DIR__ . '/../../../../../var/log/order2cover.log';
-        /** @var ItemInterceptor $item */
-        foreach ($order->getAllItems() as $item) {
-            try {
-                $product = $this->_productRepository->getById($item->getProductId());
-
-                /** @var ProductInterceptor $attributeSetId */
-                $attributeSetId = $product->getAttributeSetId();
-                // Subscription products
-                if ($attributeSetId != 10 || $product->getCustomAttribute('abovarianten')->getValue() != 27) {
-                    $other_items[] = $item;
-                }
-            } catch (\Throwable $error) {
-                file_put_contents($errorLogPath, $order->getId() . ': ' . $error->getMessage() . ' : ' . $error->getTraceAsString(), FILE_APPEND);
-            }
-        }
-
-        $order->setItems($other_items);
-
-        $this->recalculateTotals($order);
-
-        return $order;
-    }
-
-    /**
-     * @param  OrderInterceptor  $order
-     * @return bool
-     * @throws NoSuchEntityException
-     */
-    protected function isOrderSplitRequired($order)
-    {
-        $geschenkAbo = false;
-        $orderdItems = 0;
-        $errorLogPath = __DIR__ . '/../../../../../var/log/order2cover.log';
-        /** @var ItemInterceptor $item */
-        foreach ($order->getAllItems() as $item) {
-            try {
-                $product = $this->_productRepository->getById($item->getProductId());
-
-                /** @var ProductInterceptor $attributeSetId */
-                $attributeSetId = $product->getAttributeSetId();
-                if ($attributeSetId == 10) {
-                    if ($this->getAboType($product->getCustomAttribute('abovarianten')->getValue()) == 'GA') {
-                        $geschenkAbo = true;
-                    }
-                }
-                if (in_array($attributeSetId, [10, 11, 12])) {
-                    $orderdItems++;
-                }
-            } catch (\Throwable $error) {
-                file_put_contents($errorLogPath, $order->getId() . ': ' . $error->getMessage() . ' : ' . $error->getTraceAsString(), FILE_APPEND);
-            }
-        }
-        if ($geschenkAbo) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @param  OrderInterceptor  $order
-     * @return OrderInterceptor
-     * @throws NoSuchEntityException
-     */
-    protected function splitOrder($order)
-    {
-        // Get Addresses for Gift Subscription
-        $ga_billing_address = $order->getBillingAddress();
-
-        // The order with the gift subscription
-        $order_with_ga = clone $order;
-        $order_with_ga->setBillingAddress($ga_billing_address);
-        $fake_shipp_addr = $this->_addressfactory->create();
-        $fake_shipp_addr->setAddressType('shipping');
-        $order_with_ga->setAddresses([$order_with_ga->getBillingAddress(), $fake_shipp_addr]);
-        $order_with_ga->setShippingAmount(0);
-        $order_with_ga->setShippingInclTax(0);
-        $order_with_ga->getShippingAddress()->setPrefix('');
-        $order_with_ga->getShippingAddress()->setTelephone('');
-        $order_with_ga->getShippingAddress()->setCompany('');
-        $order_with_ga->getShippingAddress()->setIsDefaultBilling('');
-        $order_with_ga->getShippingAddress()->setIsDefaultShipping('');
-        $order_with_ga->getShippingAddress()->setSaveInAddressBook('');
-
-        // The order without Geschenk Abo
-        $order_without_ga = $order;
-
-        // Items of the order with Geschenk Abo
-        $ga_items = [];
-        $ga_item_id = '';
-        // Items of the order without Geschenk Abo
-        $other_items = [];
-
-        // First, the order with the gift subscription
-        /** @var ItemInterceptor $item */
-        foreach ($order->getAllItems() as $item) {
-            /** @var  $product */
-            $product = $this->_productRepository->getById($item->getProductId());
-
-            /** @var ProductInterceptor $attributeSetId */
-            $attributeSetId = $product->getAttributeSetId();
-
-            if ($attributeSetId == 10) {
-                if ($this->getAboType($product->getCustomAttribute('abovarianten')->getValue()) == 'GA') {
-                    $ga_items[] = $item;
-                    $ga_item_id = $item->getId();
-                    $item_options = $item->getProductOptions();
-                    if (array_key_exists('options', $item_options)) {
-                        $street = '';
-                        $housenumber = '';
-                        foreach ($item_options['options'] as $item_option) {
-                            switch ($item_option['label']) {
-                                case 'Anrede':
-                                    $order_with_ga->getShippingAddress()->setPrefix($this->getAnrede($item_option['value']));
-                                    break;
-                                case 'Vorname':
-                                    $order_with_ga->getShippingAddress()->setFirstname($item_option['value']);
-                                    break;
-                                case 'Nachname':
-                                    $order_with_ga->getShippingAddress()->setLastname($item_option['value']);
-                                    break;
-                                case 'Straße':
-                                    $street = $item_option['value'];
-                                    break;
-                                case 'Hausnr.':
-                                    $housenumber = $item_option['value'];
-                                    break;
-                                case 'Postleitzahl':
-                                    $order_with_ga->getShippingAddress()->setPostcode($item_option['value']);
-                                    break;
-                                case 'Ort':
-                                    $order_with_ga->getShippingAddress()->setCity($item_option['value']);
-                                    break;
-                                case 'Land':
-                                    $order_with_ga->getShippingAddress()->setCountryId($item_option['value']);
-                                    break;
-                            }
-                        }
-                        if ($street && $housenumber) {
-                            $order_with_ga->getShippingAddress()->setStreet([$street, $housenumber]);
-                        }
-                    }
-                }
-            }
-        }
-
-
-        // Now the order with the remaining items
-        /** @var ItemInterceptor $item */
-        foreach ($order->getAllItems() as $item) {
-            /** @var  $product */
-            $product = $this->_productRepository->getById($item->getProductId());
-
-            /** @var ProductInterceptor $attributeSetId */
-            $attributeSetId = $product->getAttributeSetId();
-            // Subscription products
-            if ($attributeSetId == 10) {
-                if ($this->getAboType($product->getCustomAttribute('abovarianten')->getValue()) != 'GA') {
-                    $other_items[] = $item;
-                }
-                // Premiums
-            } elseif ($attributeSetId == 9) {
-                // If the item has the ParentId of the gift subscription, it must go to the gift subscription
-                if ($item->getParentItemId() == $ga_item_id) {
-                    $ga_items[] = $item;
-                } else {
-                    $other_items[] = $item;
-                }
-                // Book products
-            } else {
-                $other_items[] = $item;
-            }
-        }
-
-        $order_with_ga->setItems($ga_items);
-        $order_without_ga->setItems($other_items);
-
-        $this->recalculateTotals($order_with_ga);
-        $this->recalculateTotals($order_without_ga);
-
-        if (!empty($other_items)) {
-            return [
-                'order_with_ga' => $order_with_ga,
-                'order' => $order_without_ga
-            ];
-        } else {
-            return [
-                'order_with_ga' => $order_with_ga,
-                'order' => null
-            ];
-        }
     }
 
     /**
