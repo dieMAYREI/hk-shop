@@ -217,13 +217,9 @@ class Update extends Command
      */
     protected function updateProduct(Product $product, int $quantity, $verlag, $meldecode = ''): bool
     {
-        // Nur konvertieren wenn nicht bereits UTF-8
-        if (!mb_check_encoding($verlag, 'UTF-8')) {
-            $verlag = mb_convert_encoding($verlag, 'UTF-8', 'ISO-8859-1');
-        }
-        if (!mb_check_encoding($meldecode, 'UTF-8')) {
-            $meldecode = mb_convert_encoding((string)$meldecode, 'UTF-8', 'ISO-8859-1');
-        }
+        // CSV ist ISO-8859-1 kodiert, konvertiere nach UTF-8 für Magento
+        $verlag = mb_convert_encoding($verlag, 'UTF-8', 'ISO-8859-1');
+        $meldecode = mb_convert_encoding((string)$meldecode, 'UTF-8', 'ISO-8859-1');
 
         try {
             $attributeUpdates = [
