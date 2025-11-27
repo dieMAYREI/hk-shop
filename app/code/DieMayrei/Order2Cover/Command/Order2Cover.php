@@ -14,7 +14,8 @@ class Order2Cover extends Command
 
     protected function configure()
     {
-        $this->setName('diemayrei:order2cover_observer');
+        $this->setName('diemayrei:order2cover_observer')
+            ->setDescription('Processes pending orders and prepares them for Cover export');
 
         parent::configure();
     }

@@ -13,7 +13,8 @@ class QueueWorker extends Command
 
     protected function configure()
     {
-        $this->setName('diemayrei:order2cover');
+        $this->setName('diemayrei:order2cover')
+            ->setDescription('Transmits queued orders to the Cover ERP system');
 
         parent::configure();
     }
