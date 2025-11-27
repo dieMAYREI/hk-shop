@@ -515,42 +515,15 @@ class Order2Cover implements ObserverInterface
 
             /** @var ProductInterceptor $attributeSetId */
             $attributeSetId = $product->getAttributeSetId();
-            switch ($attributeSetId) {
-                case 10:
-                    $this->_orders4cover[$order->getId()]['orderpositions'][] = $this->getOrderPosAbo(
-                        $item,
-                        $product,
-                        $order
-                    );
-                    break;
-                // Special products / Book products
-                case 11:
-                case 12:
-                case 13:
-                    if ($item->getProductOptions() && ($item->getBuyRequest()->getSelectedConfigurableOption() || $item->getBuyRequest()->getSelectionConfigurableOption())) {
-                        if (array_key_exists('attributes_info', $item->getProductOptions())) {
-                            if (array_key_exists('simple_sku', $item->getProductOptions())) {
-                                if ($item->getBuyRequest()->getSelectedConfigurableOption()) {
-                                    $product = $this->_productRepository->getById($item->getBuyRequest()->getSelectedConfigurableOption());
-                                } else {
-                                    $product = $this->_productRepository->getById($item->getBuyRequest()->getSelectionConfigurableOption()[array_key_first($item->getBuyRequest()->getSelectionConfigurableOption())]);
-                                }
-                                $this->_orders4cover[$order->getId()]['orderpositions'][] = $this->getOrderPosArticle(
-                                    $item,
-                                    $product,
-                                    $attributeSetId
-                                );
-                            }
-                        }
-                    } else {
-                        $this->_orders4cover[$order->getId()]['orderpositions'][] = $this->getOrderPosArticle(
-                            $item,
-                            $product,
-                            $attributeSetId
-                        );
-                    }
-                    break;
-            }
+
+            // For configurable/bundle products, get the actual simple product
+            $actualProduct = $this->getSimpleProductFromItem($item, $product);
+            $this->_orders4cover[$order->getId()]['orderpositions'][] = $this->getOrderPosArticle(
+                $item,
+                $actualProduct,
+                $attributeSetId
+            );
+            break;
         }
     }
 
@@ -575,6 +548,47 @@ class Order2Cover implements ObserverInterface
         ];
 
         return $orderpostion;
+    }
+
+    /**
+     * Extracts the simple product from a configurable or bundle item.
+     * Returns the original product if it's already a simple product.
+     *
+     * @param ItemInterceptor $item
+     * @param ProductInterceptor $product
+     * @return ProductInterceptor
+     * @throws NoSuchEntityException
+     */
+    protected function getSimpleProductFromItem($item, $product)
+    {
+        $options = $item->getProductOptions();
+        $buyRequest = $item->getBuyRequest();
+
+        // Check if this is a configurable or bundle product with selected options
+        if (!$options) {
+            return $product;
+        }
+
+        $hasConfigurableOption = $buyRequest->getSelectedConfigurableOption();
+        $hasBundleSelection = $buyRequest->getSelectionConfigurableOption();
+
+        if (!$hasConfigurableOption && !$hasBundleSelection) {
+            return $product;
+        }
+
+        // Verify required product option keys exist
+        if (!array_key_exists('attributes_info', $options) || !array_key_exists('simple_sku', $options)) {
+            return $product;
+        }
+
+        // Load the actual simple product
+        if ($hasConfigurableOption) {
+            return $this->_productRepository->getById($hasConfigurableOption);
+        }
+
+        // Bundle product - get first selection
+        $selections = $hasBundleSelection;
+        return $this->_productRepository->getById($selections[array_key_first($selections)]);
     }
 
     /**
