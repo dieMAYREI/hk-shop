@@ -64,26 +64,55 @@ class InTimeSubmit
      * Führt die Übertragung der Bestellungen an Cover aus.
      *
      * @return $this|null
-     * @throws \Exception
      */
     public function execute()
     {
         $orders = $this->getOrders();
-        if (!$orders) {
+        if (empty($orders)) {
             return null;
         }
-        $errorLogPath = __DIR__ . '/../../../../../../var/log/order2cover.log';
+
         foreach ($orders as $order) {
-            try {
-                $result = $this->makeRequest($order);
-                $order['response'] = Message::toString($result);
-                $order->save();
-            } catch (\Throwable $error) {
-                // TODO: Jemanden informieren
-                error_log($error->getMessage(), 3, $errorLogPath);
-            }
+            $this->transmitOrder($order);
         }
+
         return $this;
+    }
+
+    /**
+     * Überträgt eine einzelne Bestellung an Cover.
+     *
+     * @param ExportOrders $order
+     * @return void
+     */
+    protected function transmitOrder(ExportOrders $order): void
+    {
+        try {
+            $result = $this->makeRequest($order);
+            $order->setData('response', Message::toString($result));
+            $order->save();
+        } catch (\Throwable $error) {
+            $this->logError($order, $error);
+        }
+    }
+
+    /**
+     * Loggt Fehler bei der Übertragung.
+     *
+     * @param ExportOrders $order
+     * @param \Throwable $error
+     * @return void
+     */
+    protected function logError(ExportOrders $order, \Throwable $error): void
+    {
+        $errorLogPath = BP . '/var/log/order2cover.log';
+        $message = sprintf(
+            "[%s] Order %s: %s\n",
+            date('Y-m-d H:i:s'),
+            $order->getData('order_id'),
+            $error->getMessage()
+        );
+        error_log($message, 3, $errorLogPath);
     }
 
     /**
