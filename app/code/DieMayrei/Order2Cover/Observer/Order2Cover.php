@@ -1006,7 +1006,7 @@ class Order2Cover implements ObserverInterface
 
     /**
      * Konvertiert Anrede in Cover API Code
-     * 
+     *
      * @param string|null $salutation
      * @return string
      */
@@ -1028,7 +1028,7 @@ class Order2Cover implements ObserverInterface
 
     /**
      * Extrahiert Titel aus Suffix (z.B. "Dr.", "Prof.")
-     * 
+     *
      * @param string|null $suffix
      * @return string|null
      */
@@ -1044,7 +1044,7 @@ class Order2Cover implements ObserverInterface
 
     /**
      * Konvertiert Titel in Cover API Code
-     * 
+     *
      * @param string|null $title
      * @return string
      */
