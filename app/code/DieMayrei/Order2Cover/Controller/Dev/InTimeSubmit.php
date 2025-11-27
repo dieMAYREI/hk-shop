@@ -1,8 +1,8 @@
 <?php
 
 /**
- * Das hier ist ein Duplikat von Cron/QueueWorker.php
- * Auf dem Staging System darf der Cron nicht laufen wegen Cover.
+ * This is a duplicate of Cron/QueueWorker.php
+ * The cron job must not run on the staging system due to Cover restrictions.
  */
 
 namespace DieMayrei\Order2Cover\Controller\Dev;
@@ -61,7 +61,7 @@ class InTimeSubmit
     }
 
     /**
-     * Führt die Übertragung der Bestellungen an Cover aus.
+     * Executes the transmission of orders to Cover.
      *
      * @return $this|null
      */
@@ -80,7 +80,7 @@ class InTimeSubmit
     }
 
     /**
-     * Überträgt eine einzelne Bestellung an Cover.
+     * Transmits a single order to Cover.
      *
      * @param ExportOrders $order
      * @return void
@@ -97,7 +97,7 @@ class InTimeSubmit
     }
 
     /**
-     * Loggt Fehler bei der Übertragung.
+     * Logs errors during transmission.
      *
      * @param ExportOrders $order
      * @param \Throwable $error
@@ -116,7 +116,7 @@ class InTimeSubmit
     }
 
     /**
-     * Holt Bestellungen ohne Response für die Übertragung.
+     * Retrieves orders without response for transmission.
      *
      * @return array|ExportOrders[]
      */
@@ -134,7 +134,7 @@ class InTimeSubmit
     }
 
     /**
-     * Sendet eine Bestellung an die Cover-API.
+     * Sends an order to the Cover API.
      *
      * @param ExportOrders $order
      * @return Response

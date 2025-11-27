@@ -199,8 +199,8 @@ class Order2Cover implements ObserverInterface
             $loaded_orders = $this->loadOrders($orderids_to_export);
 
             /**
-             * Es muss geprüft werden ob eine Order ein Geschenkabo besitzt. Wenn ja,
-             * dann muss die Order gesplittet werden.
+             * Check if an order contains a gift subscription. If so,
+             * the order must be split.
              */
             /** @var OrderInterceptor $order */
             foreach ($loaded_orders as $order) {
@@ -624,7 +624,7 @@ class Order2Cover implements ObserverInterface
                     break;
                 case 10:
                     /**
-                     * Wenn ein Abo ein Probeheft ist muss ein Sonderprodukt übergeben werden
+                     * If a subscription is a trial issue, a special product must be passed
                      */
                     if ($product->getCustomAttribute('abovarianten')->getValue() == 27) {
                         $this->_orders4cover[$order->getId()]['orderpositions'][] = $this->getOrderPosArticle(
@@ -702,7 +702,7 @@ class Order2Cover implements ObserverInterface
                         }
                     }
                     break;
-                // Sonderprodukte / Buchprodukte
+                // Special products / Book products
                 case 11:
                 case 12:
                 case 13:
@@ -793,7 +793,7 @@ class Order2Cover implements ObserverInterface
         if (strpos($itemSku, '-') !== false) {
             $return['bonus_erp_subsku'] = str_replace($return['bonus_erp_sku'] . '-', '', $itemSku);
         } else {
-            // bonus_erp_subsku Default Wert von 0 auf 'gar nichts' gesetzt .. auf Anweisung von frau Nirsch
+            // bonus_erp_subsku default value changed from 0 to empty string per Mrs. Nirsch's instructions
             $return['bonus_erp_subsku'] = '';
         }
         $return['add_payment'] = $price;
@@ -824,8 +824,8 @@ class Order2Cover implements ObserverInterface
     }
 
     /**
-     * Ermittelt wird der Wert für die erp_subsku/Auflagennummer
-     * nach den definierten Regeln
+     * Determines the value for erp_subsku/edition number
+     * according to defined rules
      *
      * @param $sku
      * @param $attributeSetId
@@ -834,18 +834,18 @@ class Order2Cover implements ObserverInterface
     protected function getErpSubsku($sku, $attributeSetId)
     {
         /**
-         * Manchmal wird ein Produkt mit 'off-' in der SKU vom Stockupdate ausgeschlossen
-         * dann führen wird in diesem Fall die Suche nach der Subsku nicht aus
+         * Sometimes a product with 'off-' in the SKU is excluded from stock update,
+         * in this case we do not perform the subsku search
          */
         if (substr_count($sku, 'off-') > 0) {
             $sku = str_replace('off-', '', $sku);
             return [$sku, 0];
         }
-        /** erp_subsku wird nur für Buchprodukte geändert. **/
+        /** erp_subsku is only changed for book products. **/
         if ($attributeSetId == 11 || $attributeSetId == 12) {
             /**
-             * Als Regel gilt -> Für die Ermittlung der Auflagennummeryout
-             * darf die SKU nur genau  einen '-' enthalten **/
+             * The rule is: For determining the edition number,
+             * the SKU may contain exactly one '-' **/
             if (substr_count($sku, '-') == 1) {
                 return explode('-', $sku);
             }
@@ -960,7 +960,7 @@ class Order2Cover implements ObserverInterface
             case 239:
                 //Ausbildungspaket
             case 240:
-                //EPaper Probelesen für Heftleser
+                // EPaper Trial Reading for Magazine Readers
             case 241:
                 //Geschenk Probeheft
             case 242:
@@ -1005,7 +1005,7 @@ class Order2Cover implements ObserverInterface
     }
 
     /**
-     * Konvertiert Anrede in Cover API Code
+     * Converts salutation to Cover API code
      *
      * @param string|null $salutation
      * @return string
@@ -1023,11 +1023,11 @@ class Order2Cover implements ObserverInterface
             return $mapping[$salutation];
         }
 
-        return '0'; // Default: keine Anrede
+        return '0'; // Default: no salutation
     }
 
     /**
-     * Extrahiert Titel aus Suffix (z.B. "Dr.", "Prof.")
+     * Extracts title from suffix (e.g. "Dr.", "Prof.")
      *
      * @param string|null $suffix
      * @return string|null
@@ -1038,12 +1038,12 @@ class Order2Cover implements ObserverInterface
             return null;
         }
         
-        // Entferne Leerzeichen und Punkte am Ende
+        // Remove trailing spaces and periods
         return trim($suffix, ' .');
     }
 
     /**
-     * Konvertiert Titel in Cover API Code
+     * Converts title to Cover API code
      *
      * @param string|null $title
      * @return string
@@ -1060,7 +1060,7 @@ class Order2Cover implements ObserverInterface
             return $mapping[$title];
         }
 
-        return '47'; // Default: kein Titel
+        return '47'; // Default: no title
     }
 
     /**
@@ -1090,7 +1090,7 @@ class Order2Cover implements ObserverInterface
     protected function getEdition(Order $order, Product $product, $item, $medium)
     {
 
-        // 16 ist storeid fuer oesterreiche
+        // 16 is the store ID for Austria
         if ($order->getStoreId() == '16') {
             if ($product->getSku() == 'BLW-DigitalmagazinProbelesen-AH23KPUMFPH-141') {
                 return '1';
@@ -1125,20 +1125,20 @@ class Order2Cover implements ObserverInterface
         }
 
         /**
-         * Hier wird ein Sondefall für AFZ Baumpflege umgesetzt,
-         * für AboType 236 wird als Edition 'BAumpflege' übergeben
+         * Special case for AFZ Tree Care is implemented here,
+         * for AboType 236 the edition 'Baumpflege' is passed
          */
         $aboType = $product->getCustomAttribute('abovarianten')->getValue();
         if ($aboType == 236) {
             return 'Baumpflege';
         }
 
-        /** Sonderfall für Biene&Natur  */
+        /** Special case for Biene&Natur */
         if (in_array($object, ['BIE'])) {
             return '-';
         }
 
-        /** Weiter gehts nurm für BLW und LuF */
+        /** Continue only for BLW and LuF */
         if (in_array($object, ['BLW', 'LUF'])) {
             return 'XXX';
         }
@@ -1165,7 +1165,7 @@ class Order2Cover implements ObserverInterface
                         $probeheft = true;
                     }
                 }
-                // Die Anzahl der Bestellposition zählen wir nur für Sonderprodukte und Abos hoch
+                // We only count order positions for special products and subscriptions
                 if (in_array($attributeSetId, [10, 11, 12])) {
                     $orderdItems++;
                 }
@@ -1209,7 +1209,7 @@ class Order2Cover implements ObserverInterface
 
     protected function splitProbeheftOrder($order)
     {
-        // Jetzt die Order mit den restlichen Items
+        // Now the order with the remaining items
         $errorLogPath = __DIR__ . '/../../../../../var/log/order2cover.log';
         /** @var ItemInterceptor $item */
         foreach ($order->getAllItems() as $item) {
@@ -1218,7 +1218,7 @@ class Order2Cover implements ObserverInterface
 
                 /** @var ProductInterceptor $attributeSetId */
                 $attributeSetId = $product->getAttributeSetId();
-                // Aboprodukte
+                // Subscription products
                 if ($attributeSetId != 10 || $product->getCustomAttribute('abovarianten')->getValue() != 27) {
                     $other_items[] = $item;
                 }
@@ -1277,10 +1277,10 @@ class Order2Cover implements ObserverInterface
      */
     protected function splitOrder($order)
     {
-        // Get Addresses for Geschenk Abo
+        // Get Addresses for Gift Subscription
         $ga_billing_address = $order->getBillingAddress();
 
-        // Die Order mit dem Geschenkabo
+        // The order with the gift subscription
         $order_with_ga = clone $order;
         $order_with_ga->setBillingAddress($ga_billing_address);
         $fake_shipp_addr = $this->_addressfactory->create();
@@ -1295,16 +1295,16 @@ class Order2Cover implements ObserverInterface
         $order_with_ga->getShippingAddress()->setIsDefaultShipping('');
         $order_with_ga->getShippingAddress()->setSaveInAddressBook('');
 
-        // Die Order ohne Geschenkabo
+        // The order without Geschenk Abo
         $order_without_ga = $order;
 
-        // Items der oder mit Geschenkabo
+        // Items of the order with Geschenk Abo
         $ga_items = [];
         $ga_item_id = '';
-        // Items der Order ohne Geschenkabo
+        // Items of the order without Geschenk Abo
         $other_items = [];
 
-        // Zuerst die Order mit dem Geschenkabo
+        // First, the order with the gift subscription
         /** @var ItemInterceptor $item */
         foreach ($order->getAllItems() as $item) {
             /** @var  $product */
@@ -1358,7 +1358,7 @@ class Order2Cover implements ObserverInterface
         }
 
 
-        // Jetzt die Order mit den restlichen Items
+        // Now the order with the remaining items
         /** @var ItemInterceptor $item */
         foreach ($order->getAllItems() as $item) {
             /** @var  $product */
@@ -1366,20 +1366,20 @@ class Order2Cover implements ObserverInterface
 
             /** @var ProductInterceptor $attributeSetId */
             $attributeSetId = $product->getAttributeSetId();
-            // Aboprodukte
+            // Subscription products
             if ($attributeSetId == 10) {
                 if ($this->getAboType($product->getCustomAttribute('abovarianten')->getValue()) != 'GA') {
                     $other_items[] = $item;
                 }
-                // Prämien
+                // Premiums
             } elseif ($attributeSetId == 9) {
-                // Falls das Item die ParentId des Geschenkabos hat muss es zum Geschenkabo
+                // If the item has the ParentId of the gift subscription, it must go to the gift subscription
                 if ($item->getParentItemId() == $ga_item_id) {
                     $ga_items[] = $item;
                 } else {
                     $other_items[] = $item;
                 }
-                // Buchprodukte
+                // Book products
             } else {
                 $other_items[] = $item;
             }

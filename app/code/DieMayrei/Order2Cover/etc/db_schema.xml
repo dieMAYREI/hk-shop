@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
-    <table name="cover_exported_orders" resource="default" engine="innodb" comment="Exportierte Bestellungen für Cover">
+    <table name="cover_exported_orders" resource="default" engine="innodb" comment="Exported orders for Cover">
         <column xsi:type="int" name="id" unsigned="true" nullable="false" identity="true" comment="ID"/>
         <column xsi:type="varchar" name="order_id" length="255" nullable="false" comment="Order ID"/>
         <column xsi:type="text" name="payload" nullable="false" comment="JSON Payload"/>
