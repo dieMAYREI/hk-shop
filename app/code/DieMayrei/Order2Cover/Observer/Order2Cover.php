@@ -201,13 +201,12 @@ class Order2Cover implements ObserverInterface
                     $paymentMethod = $this->getPayment($order);
 
                     if (!in_array($paymentMethod, ['checkmo', 'debitpayment', 'free'])) {
-                        if ($order->getStatus() != Order::STATE_PROCESSING && $order->getStatus() != Order::STATE_COMPLETE) {
+                        if (in_array($order->getState(), [Order::STATE_PROCESSING, Order::STATE_COMPLETE])) {
                             continue;
                         }
                     }
 
                     $exportedOrder = $this->_exportOrders->create();
-
                     $exportedOrder->setData([
                         'order_id' => $order->getId(),
                         'payload' => json_encode(['order' => $this->_orders4cover[$order->getId()]]),
