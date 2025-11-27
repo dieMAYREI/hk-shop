@@ -1,0 +1,10 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="Magento\Framework\Console\CommandListInterface">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="diemayrei:order2cover" xsi:type="object">DieMayrei\Order2Cover\Command\QueueWorker</item>
+                <item name="diemayrei:order2cover_observer" xsi:type="object">DieMayrei\Order2Cover\Command\Order2Cover</item>
+            </argument>
+        </arguments>
+    </type>
+</config>

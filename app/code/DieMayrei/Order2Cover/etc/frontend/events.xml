@@ -1,0 +1,8 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+    <event name="checkout_onepage_controller_success_action">
+        <observer name="checkout_onepage_controller_success_action_dm_observer" instance="DieMayrei\Order2Cover\Observer\Order2Cover" />
+    </event>
+    <event name="order2cover_customer_registration">
+        <observer name="order2cover_customer_registration_dm_oberserver" instance="DieMayrei\Order2Cover\Observer\Order2Cover" />
+    </event>
+</config>

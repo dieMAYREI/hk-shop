@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="diemayrei" translate="label" sortOrder="1001">
+            <label>DieMayrei</label>
+        </tab>
+        <section id="diemayrei_order_2_cover" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Cover Api</label>
+            <tab>diemayrei</tab>
+            <resource>DieMayrei_Order2Cover::order_2_cover_config</resource>
+            <group id="ah" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Cover Api</label>
+                <field id="cover_base_url" type="text" translate="label" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover agrarheute</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/order_2_cover/cover_base_url</config_path>
+                </field>
+                <field id="cover_benutzer_id" type="text" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Benutzer ID</label>
+                    <config_path>diemayrei/order_2_cover/cover_benutzer_id</config_path>
+                </field>
+                <field id="cover_password" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Password</label>
+                    <config_path>diemayrei/order_2_cover/cover_password</config_path>
+                </field>
+                <field id="cover_transfer_id" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Transfer ID</label>
+                    <config_path>diemayrei/order_2_cover/cover_transfer_id</config_path>
+                </field>
+                <field id="cover_mandant" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Mandant</label>
+                    <config_path>diemayrei/order_2_cover/cover_mandant</config_path>
+                </field>
+                <field id="cover_anwendung" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Anwendung</label>
+                    <config_path>diemayrei/order_2_cover/cover_anwendung</config_path>
+                </field>
+                <field id="cover_kunde" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Kunde</label>
+                    <config_path>diemayrei/order_2_cover/cover_kunde</config_path>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
