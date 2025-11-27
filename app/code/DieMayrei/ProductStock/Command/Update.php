@@ -217,8 +217,13 @@ class Update extends Command
      */
     protected function updateProduct(Product $product, int $quantity, $verlag, $meldecode = ''): bool
     {
-        $verlag = mb_convert_encoding($verlag, 'UTF-8', 'ISO-8859-1');
-        $meldecode = mb_convert_encoding((string)$meldecode, 'UTF-8', 'ISO-8859-1');
+        // Nur konvertieren wenn nicht bereits UTF-8
+        if (!mb_check_encoding($verlag, 'UTF-8')) {
+            $verlag = mb_convert_encoding($verlag, 'UTF-8', 'ISO-8859-1');
+        }
+        if (!mb_check_encoding($meldecode, 'UTF-8')) {
+            $meldecode = mb_convert_encoding((string)$meldecode, 'UTF-8', 'ISO-8859-1');
+        }
 
         try {
             $attributeUpdates = [
@@ -265,7 +270,7 @@ class Update extends Command
                 unset($attributeUpdates['meldecode_since']);
             }
 
-            if ($product->getVerlag() === $verlag) {
+            if ((string)$product->getData('verlag') === $verlag) {
                 unset($attributeUpdates['verlag']);
             }
 
@@ -441,7 +446,6 @@ class Update extends Command
             'status',
             'meldecode',
             'erscheinungsdatum',
-            'weight',
         ]);
 
         if (!empty($conditions)) {
@@ -537,9 +541,8 @@ class Update extends Command
      * Prüft, ob es sich um ein digitales Produkt handelt.
      * Digitale Produkte haben keinen physischen Bestand.
      *
-     * - virtual: Virtuelle Produkte
+     * - virtual: Virtuelle Produkte (inkl. "kein Gewicht" im Admin)
      * - downloadable: Download-Produkte
-     * - simple ohne Gewicht: Einfache Produkte ohne physischen Versand
      *
      * @param Product $product
      * @return bool
@@ -551,18 +554,6 @@ class Update extends Command
             \Magento\Downloadable\Model\Product\Type::TYPE_DOWNLOADABLE,
         ];
 
-        if (in_array($product->getTypeId(), $digitalTypes, true)) {
-            return true;
-        }
-
-        // Einfache Produkte ohne Gewicht gelten als digital
-        if ($product->getTypeId() === \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE) {
-            $weight = (float)$product->getWeight();
-            if ($weight <= 0) {
-                return true;
-            }
-        }
-
-        return false;
+        return in_array($product->getTypeId(), $digitalTypes, true);
     }
 }
