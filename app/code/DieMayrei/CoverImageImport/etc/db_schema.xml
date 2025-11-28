@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="cover_image_import" resource="default" engine="innodb" comment="CoverImageImport Table">
+        <column xsi:type="int" name="id" unsigned="true" nullable="false" identity="true" comment="Id"/>
+        <column xsi:type="varchar" name="key" length="255" nullable="false" comment="Key"/>
+        <column xsi:type="varchar" name="origin" length="255" nullable="false" comment="Origin"/>
+        <column xsi:type="varchar" name="imported" length="255" nullable="true" comment="Imported"/>
+        <column xsi:type="timestamp" name="last_updated" nullable="true" comment="Last Updated"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+    </table>
+</schema>

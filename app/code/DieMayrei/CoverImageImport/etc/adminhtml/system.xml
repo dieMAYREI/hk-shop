@@ -1,0 +1,339 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="diemayrei" translate="label" sortOrder="1001">
+            <label>Diemayrei</label>
+        </tab>
+        <section id="diemayrei_cover_import" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>CoverImport</label>
+            <tab>diemayrei</tab>
+            <resource>Diemayrei_CoverImageImport::cover_import_config</resource>
+            <group id="ah" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>agrarheute</label>
+                <field id="cover_ah" type="text" translate="label" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover agrarheute</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/agrarheute_cover</config_path>
+                </field>
+                <field id="cover_ah_digital" type="text" translate="label" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover agrarheute Digital</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/agrarheute_digital_cover</config_path>
+                </field>
+                <field id="cover_ah_rind" type="text" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover agrarheute RIND</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/agrarheute_rind_cover</config_path>
+                </field>
+                <field id="cover_ah_schwein" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover agrarheute SCHWEIN</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/agrarheute_schwein_cover</config_path>
+                </field>
+                <field id="cover_ah_energie" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover agrarheute Energie</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/agrarheute_energie_cover</config_path>
+                </field>
+            </group>
+            <group id="bienen_und_natur" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Bienen und Natur</label>
+                <field id="cover_bienen_und_natur" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover bienen &amp; natur</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/bienen_und_natur_cover</config_path>
+                </field>
+                <field id="bienen_und_natur_digital" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Bienen und Natur Digital</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/bienen_und_natur_digital_cover</config_path>
+                </field>
+            </group>
+            <group id="blw" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Wochenblatt</label>
+                <field id="cover_blw" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Wochenblatt</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/blw_cover</config_path>
+                </field>
+                <field id="cover_blw_digital" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Wochenblatt Digital</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/blw_digital_cover</config_path>
+                </field>
+            </group>
+            <group id="lw_oesterreich" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>LW Österreich</label>
+                <field id="cover_lw_oesterreich" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover LW Österreich</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/lw_oesterreich_cover</config_path>
+                </field>
+                <field id="cover_lw_oesterreich_digital" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover LW Österreich Digital</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/lw_oesterreich_digital_cover</config_path>
+                </field>
+            </group>
+            <group id="luf" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Land &amp; Forst</label>
+                <field id="cover_luf" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Land &amp; Forst</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/luf_cover</config_path>
+                </field>
+                <field id="cover_luf_digital" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Land &amp; Forst Digital</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/luf_digital_cover</config_path>
+                </field>
+            </group>
+            <group id="gemuese" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Gemüse</label>
+                <field id="genuese_cover" type="text" translate="label" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Gemüse</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/gemuese_cover</config_path>
+                </field>
+                <field id="cover_genuese_digital" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Gemüse Digital</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/gemuese_digital_cover</config_path>
+                </field>
+            </group>
+            <group id="jagdgebrauchshund" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Jagdgebrauchshund</label>
+                <field id="jgh_cover" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Jagdgebrauchshund</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/jgh_cover</config_path>
+                </field>
+                <field id="cover_jgh_digital" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Jagdgebrauchshund Digital</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/jgh_digital_cover</config_path>
+                </field>
+            </group>
+            <group id="pirsch" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Pirsch</label>
+                <field id="pirsch_cover" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Pirsch</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/pirsch_cover</config_path>
+                </field>
+                <field id="cover_pirsch_digital" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Pirsch Digital</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/pirsch_digital_cover</config_path>
+                </field>
+            </group>
+            <group id="unserejagd" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Unsere Jagd</label>
+                <field id="unsere_lagd_cover" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Unsere Jagd</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/unsere_jagd_cover</config_path>
+                </field>
+                <field id="cover_unsere_lagd_digital" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Unsere Jagd Digital</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/unsere_lagd_digital_cover</config_path>
+                </field>
+            </group>
+            <group id="agrartechnik" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Agrartechnik</label>
+                <field id="cover_agrartechnik" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Agrartechnik</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/agrartechnik_cover</config_path>
+                </field>
+                <field id="cover_agrartechnik_digital" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Agrartechnik</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/agrartechnik_digital_cover</config_path>
+                </field>
+            </group>
+            <group id="braunvieh" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Braunvieh</label>
+                <field id="braunvieh_cover" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Braunvieh</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/braunvieh_cover</config_path>
+                </field>
+            </group>
+            <group id="fleckvieh" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Fleckvieh</label>
+                <field id="cover_fleckvieh" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Fleckvieh</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/fleckvieh_cover</config_path>
+                </field>
+            </group>
+            <group id="food_and_farm" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Food and Farm</label>
+                <field id="cover_faf" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Food and Farm</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/food_and_farm_cover</config_path>
+                </field>
+            </group>
+            <group id="nj" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Niedersächsischer Jäger</label>
+                <field id="nj_cover" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Niedersächsicher Jäger</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/nj_cover</config_path>
+                </field>
+                <field id="cover_nj_digital" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Niedersächsischer Jäger Digital</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/nj_digital_cover</config_path>
+                </field>
+            </group>
+            <group id="traction" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Traction</label>
+                <field id="traction_cover" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Traction</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/traction_cover</config_path>
+                </field>
+                <field id="traction_digital" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Traction Digital</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/traction_digital_cover</config_path>
+                </field>
+            </group>
+            <group id="afz" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>AFZ</label>
+                <field id="afz_cover" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover AFZ</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/afz_cover</config_path>
+                </field>
+                <field id="cover_afz_digital" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover AFZ Digital</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/afz_digital_cover</config_path>
+                </field>
+            </group>
+            <group id="bayernspferde" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Bayernspferde</label>
+                <field id="bayernspferde_cover" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Bayerns Pferde</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/bayernspferde_cover</config_path>
+                </field>
+            </group>
+            <group id="deutscher_waldbesitzer" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Deutscher Waldbesitzer</label>
+                <field id="deutscher_waldbesitzer_cover" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Deutscher Waldbesitzer</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/deutscher_waldbesitzer_cover</config_path>
+                </field>
+                <field id="cover_deutscher_waldbesitzer_digital" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Deutscher Waldbesitzer Digital</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/deutscher_waldbesitzer_digital_cover</config_path>
+                </field>
+            </group>
+            <group id="oldenburgerinternational" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>OLDENBURGERInternational</label>
+                <field id="oldenburgerinternational_cover" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover OLDENBURGERInternational</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/oldenburgerinternational_cover</config_path>
+                </field>
+            </group>
+            <group id="kur" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Kraut und Rüben</label>
+                <field id="kur_cover" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Kraut und Rüben</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/kur_cover</config_path>
+                </field>
+                <field id="kur_cover_digital" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Kraut und Rüben Digital</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/kur_digital_cover</config_path>
+                </field>
+            </group>
+            <group id="fut" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Forst und Technik</label>
+                <field id="fut_cover" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Forst und Technik</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/fut_cover</config_path>
+                </field>
+                <field id="cover_fut_digital" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Forst und Technik Digital</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/fut_digital_cover</config_path>
+                </field>
+            </group>
+            <group id="holsteininternational" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Holstein INTERNATIONAL</label>
+                <field id="holsteininternational_cover" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Holstein INTERNATIONAL</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/holsteininternational_cover</config_path>
+                </field>
+            </group>
+            <group id="almbauer" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Almbauer International</label>
+                <field id="almbauer_international_cover" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Almbauer</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/almbauer_cover</config_path>
+                </field>
+            </group>
+            <group id="hcx" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>HCX</label>
+                <field id="hcx_cover" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover HCX</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/hcx_cover</config_path>
+                </field>
+            </group>
+            <group id="bergjagd" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Bergjagd</label>
+                <field id="bergjagd_cover" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Bergjagd</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/bergjagd_cover</config_path>
+                </field>
+                <field id="cover_bergjagd_digital" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Bergjagd Digital</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/bergjagd_digital_cover</config_path>
+                </field>
+            </group>
+            <group id="bauernzeitung" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Bauernzeitung</label>
+                <field id="bauernzeitung_cover" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Bauernzeitung</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/bauernzeitung_cover</config_path>
+                </field>
+                <field id="bauernzeitung_digital_cover" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Bauernzeitung Digital</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/bauernzeitung_digital_cover</config_path>
+                </field>
+            </group>
+            <group id="bienenjournal" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Bienen-Journal</label>
+                <field id="bienenjournal_cover" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Bienen-Journal</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/bienenjournal_cover</config_path>
+                </field>
+                <field id="bienenjournal_digital_cover" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Bienen-Journal Digital</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/bienenjournal_digital_cover</config_path>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
