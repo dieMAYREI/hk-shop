@@ -33,7 +33,7 @@ $heroicons = $viewModels->require(HeroiconsOutline::class);
     >
         <h2
             id="filters-heading"
-            class="block-title"
+            class="block-title md:hidden"
         >
             <button
                 type="button"
@@ -66,7 +66,7 @@ $heroicons = $viewModels->require(HeroiconsOutline::class);
         </h2>
         <div
             id="filters-content"
-            class="block-content filter-content hidden md:block pt-4"
+            class="block-content filter-content hidden md:block pt-4 md:pt-2 space-y-4"
             :class="{ 'hidden': !blockOpen }"
         >
             <?= $block->getChildHtml('state') ?>
@@ -84,7 +84,7 @@ $heroicons = $viewModels->require(HeroiconsOutline::class);
                             id: $id('filter-option')
                         }"
                         x-defer="intersect"
-                        class="filter-option card my-4"
+                        class="filter-option card"
                     >
                         <h3 :id="`${id}-title`">
                             <button
