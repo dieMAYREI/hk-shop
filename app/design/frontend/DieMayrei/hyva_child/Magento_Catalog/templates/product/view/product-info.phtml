@@ -13,6 +13,7 @@ use Hyva\Theme\ViewModel\ProductCompare;
 use Hyva\Theme\ViewModel\ProductPage;
 use Hyva\Theme\ViewModel\Wishlist;
 use Magento\Catalog\Model\Product;
+use Magento\Catalog\Block\Product\View\Attributes as AttributesBlock;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 
@@ -27,6 +28,16 @@ $attributesViewModel = $viewModels->require(ProductAttributes::class);
 /** @var Product $product */
 $product = $productViewModel->getProduct();
 $productType = $product->getTypeId();
+
+// Get attributes with "Visible on Catalog Pages on Storefront = Yes"
+/** @var AttributesBlock $attributesBlock */
+$attributesBlock = $block->getLayout()->createBlock(AttributesBlock::class);
+$visibleAttributes = $attributesBlock ? $attributesBlock->getAdditionalData(['description', 'short_description']) : [];
+
+// Sort attributes alphabetically by translated label
+uasort($visibleAttributes, function ($a, $b) {
+    return strcasecmp((string) __($a['label']), (string) __($b['label']));
+});
 
 ?>
 <div class="card mb-6">
@@ -48,21 +59,20 @@ $productType = $product->getTypeId();
         <?= $block->getChildHtml("alert.urls") ?>
     </div>
 
+    <?php if (!empty($visibleAttributes)): ?>
     <dl id="product-details">
-        <?php foreach ($block->getAttributes() as $attributeConfig):
-            $attribute = $attributesViewModel->getAttributeFromLayoutConfig($attributeConfig); ?>
-            <?php if ($value = $attribute['value'] ?? null): ?>
-                <div class="flex border-t border-gray-300 py-2 last:mb-6 last:border-b attribute-<?=/* @noEscape */ $attribute['code'] ?: "" ?>">
-                    <dt class="w-1/2 text-left text-gray-700 product-detail-label">
-                        <?= $escaper->escapeHtml($attribute['label']) ?>
-                    </dt>
-                    <dd class="w-1/2 ml-2 text-left text-gray-900 product-detail-value">
-                        <?= $escaper->escapeHtml($value) ?>
-                    </dd>
-                </div>
-            <?php endif ?>
+        <?php foreach ($visibleAttributes as $attribute): ?>
+            <div class="flex border-t border-gray-300 py-2 last:mb-6 last:border-b attribute-<?= $escaper->escapeHtmlAttr($attribute['code']) ?>">
+                <dt class="w-1/2 text-left text-gray-700 product-detail-label">
+                    <?= $escaper->escapeHtml(__($attribute['label'])) ?>
+                </dt>
+                <dd class="w-1/2 ml-2 text-left text-gray-900 product-detail-value">
+                    <?= $escaper->escapeHtml($attribute['value']) ?>
+                </dd>
+            </div>
         <?php endforeach; ?>
     </dl>
+    <?php endif; ?>
 
     <?= $block->getChildHtml('product.info.form') ?>
 
