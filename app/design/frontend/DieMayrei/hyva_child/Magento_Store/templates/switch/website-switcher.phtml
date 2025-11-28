@@ -30,7 +30,7 @@ $switcherUrlProvider = $viewModels->require(SwitcherUrlProvider::class);
 $storeSwitcherViewModel = $viewModels->require(StoreSwitcher::class);
 
 /** @var StoreManagerInterface $storeManager */
-$storeManager = $block->getData('store_manager') 
+$storeManager = $block->getData('store_manager')
     ?? \Magento\Framework\App\ObjectManager::getInstance()->get(StoreManagerInterface::class);
 
 $currentStore = $storeManager->getStore();
@@ -74,7 +74,7 @@ foreach ($websites as $website) {
              x-transition
              class="absolute right-0 top-full z-50 mt-0.5 min-w-max py-2 px-1 rounded-md shadow-lg bg-white/95">
             <?php foreach ($availableWebsites as $website): ?>
-                <?php 
+                <?php
                 $defaultStore = $website->getDefaultStore();
                 if ($website->getId() == $currentWebsite->getId() || !$defaultStore) {
                     continue;
