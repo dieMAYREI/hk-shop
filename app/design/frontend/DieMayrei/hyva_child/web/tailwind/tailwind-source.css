@@ -20,7 +20,6 @@
 @source "../../**/*.xml";
 
 /* Custom styles */
-@import "bootstrap-icons/font/bootstrap-icons.css";
 @import "./base";
 @import "./components";
 @import "./theme";

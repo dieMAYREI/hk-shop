@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Hyvä Themes - https://hyva.io
+ * Custom override for Product Full Width layout
+ */
+-->
+<layout xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_layout.xsd">
+    <referenceContainer name="main.content">
+        <referenceBlock name="description">
+            <arguments>
+                <!-- Pass in an empty string to avoid the default "p r o s e" class to be used, so PageBuilder styles are applied -->
+                <argument name="css_classes" xsi:type="string"></argument>
+            </arguments>
+        </referenceBlock>
+    </referenceContainer>
+
+    <!-- Move the description block from the tabs into its own full-width section -->
+    <move element="description" destination="product.info.description.wrapper"/>
+</layout>

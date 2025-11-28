@@ -1,0 +1,9 @@
+/* Product Description Full-Width Section (PageBuilder) */
+.page-main-description {
+    @apply container mx-auto px-4 pb-8;
+}
+
+.page-main-description .product-full-width-section,
+.page-main-description > div {
+    @apply prose max-w-none;
+}
