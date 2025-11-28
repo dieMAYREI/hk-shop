@@ -67,7 +67,7 @@ class ProductImageUpdater
         foreach ($collection as $product) {
             try {
                 $this->logger->info('CoverImageImport: Updating product: ' . $product->getId());
-                $this->updateProductImage($product->getId(), $imagePath);
+                $this->updateProductImage((int) $product->getId(), $imagePath);
             } catch (\Exception $e) {
                 $this->logger->error('CoverImageImport: Failed to update product ' . $product->getId() . ': ' . $e->getMessage());
             }

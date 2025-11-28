@@ -24,12 +24,14 @@
                     <label>Cover Kaninchenzeitung (Print)</label>
                     <comment>URL zum aktuellen Cover-Bild der Print-Ausgabe</comment>
                     <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/kaninchenzeitung_cover</config_path>
                     <backend_model>DieMayrei\CoverImageImport\Model\Config\Backend\CoverUrl</backend_model>
                 </field>
                 <field id="kaninchenzeitung_digital_cover" type="text" translate="label comment" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Cover Kaninchenzeitung (Digital)</label>
                     <comment>URL zum aktuellen Cover-Bild der Digital-Ausgabe</comment>
                     <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/kaninchenzeitung_digital_cover</config_path>
                     <backend_model>DieMayrei\CoverImageImport\Model\Config\Backend\CoverUrl</backend_model>
                 </field>
             </group>
@@ -42,12 +44,14 @@
                     <label>Cover Geflügelzeitung (Print)</label>
                     <comment>URL zum aktuellen Cover-Bild der Print-Ausgabe</comment>
                     <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/gefluegelzeitung_cover</config_path>
                     <backend_model>DieMayrei\CoverImageImport\Model\Config\Backend\CoverUrl</backend_model>
                 </field>
                 <field id="gefluegelzeitung_digital_cover" type="text" translate="label comment" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Cover Geflügelzeitung (Digital)</label>
                     <comment>URL zum aktuellen Cover-Bild der Digital-Ausgabe</comment>
                     <validate>validate-url</validate>
+                    <config_path>diemayrei/cover_import/gefluegelzeitung_digital_cover</config_path>
                     <backend_model>DieMayrei\CoverImageImport\Model\Config\Backend\CoverUrl</backend_model>
                 </field>
             </group>
