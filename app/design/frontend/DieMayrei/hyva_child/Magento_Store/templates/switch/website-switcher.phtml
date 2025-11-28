@@ -1,0 +1,91 @@
+<?php
+/**
+ * Website/Store Switcher for Header
+ * Allows switching between different websites (e.g., Deutschland / International)
+ */
+
+declare(strict_types=1);
+
+use Hyva\Theme\Model\ViewModelRegistry;
+use Hyva\Theme\ViewModel\HyvaCsp;
+use Hyva\Theme\ViewModel\LucideIcons;
+use Hyva\Theme\ViewModel\StoreSwitcher;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Store\ViewModel\SwitcherUrlProvider;
+
+/** @var Template $block */
+/** @var Escaper $escaper */
+/** @var HyvaCsp $hyvaCsp */
+/** @var ViewModelRegistry $viewModels */
+
+/** @var LucideIcons $lucideIcons */
+$lucideIcons = $viewModels->require(LucideIcons::class);
+
+/** @var SwitcherUrlProvider $switcherUrlProvider */
+$switcherUrlProvider = $viewModels->require(SwitcherUrlProvider::class);
+
+/** @var StoreSwitcher $storeSwitcherViewModel */
+$storeSwitcherViewModel = $viewModels->require(StoreSwitcher::class);
+
+/** @var StoreManagerInterface $storeManager */
+$storeManager = $block->getData('store_manager') 
+    ?? \Magento\Framework\App\ObjectManager::getInstance()->get(StoreManagerInterface::class);
+
+$currentStore = $storeManager->getStore();
+$currentWebsite = $storeManager->getWebsite();
+$websites = $storeManager->getWebsites();
+
+// Filter nur Websites mit aktiven Stores
+$availableWebsites = [];
+foreach ($websites as $website) {
+    $defaultStore = $website->getDefaultStore();
+    if ($defaultStore && $defaultStore->getIsActive()) {
+        $availableWebsites[] = $website;
+    }
+}
+?>
+<?php if (count($availableWebsites) > 1): ?>
+    <div x-data="{ open: false }" class="relative">
+        <button @click.prevent="open = !open"
+                @click.outside="open = false"
+                @keydown.window.escape="open = false"
+                type="button"
+                class="btn bg-transparent border-transparent p-1 inline-flex items-center gap-1"
+                aria-haspopup="true"
+                :aria-expanded="open"
+                aria-label="<?= $escaper->escapeHtmlAttr(__('Switch Website')) ?>"
+        >
+            <?= $lucideIcons->globeHtml('', 24, 24, ["aria-hidden" => "true"]) ?>
+            <span class="hidden sm:inline text-sm"><?= $escaper->escapeHtml($currentWebsite->getName()) ?></span>
+            <svg xmlns="http://www.w3.org/2000/svg" 
+                 width="16" height="16" viewBox="0 0 24 24" 
+                 fill="none" stroke="currentColor" stroke-width="2" 
+                 stroke-linecap="round" stroke-linejoin="round"
+                 class="w-4 h-4 transition-transform duration-200"
+                 :class="open ? 'rotate-180' : ''"
+                 aria-hidden="true">
+                <path d="m6 9 6 6 6-6"/>
+            </svg>
+        </button>
+        <nav x-cloak
+             x-show="open"
+             x-transition
+             class="absolute right-0 top-full z-50 mt-0.5 min-w-max py-2 px-1 rounded-md shadow-lg bg-white/95">
+            <?php foreach ($availableWebsites as $website): ?>
+                <?php 
+                $defaultStore = $website->getDefaultStore();
+                if ($website->getId() == $currentWebsite->getId() || !$defaultStore) {
+                    continue;
+                }
+                ?>
+                <a href="<?= $escaper->escapeUrl($switcherUrlProvider->getTargetStoreRedirectUrl($defaultStore)) ?>"
+                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                    <?= $escaper->escapeHtml($website->getName()) ?>
+                </a>
+            <?php endforeach; ?>
+        </nav>
+    </div>
+<?php endif; ?>

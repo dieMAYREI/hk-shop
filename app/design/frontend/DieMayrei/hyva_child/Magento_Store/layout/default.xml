@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!--
+    Add store/website switcher to header (after cart icon).
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <!-- Remove the store switchers from footer -->
+        <referenceBlock name="footer-column-store" remove="true"/>
+
+        <!-- Add website switcher to header content block -->
+        <referenceBlock name="header-content">
+            <block name="header-website-switcher"
+                   template="Magento_Store::switch/website-switcher.phtml"
+                   after="cart-drawer"
+            />
+        </referenceBlock>
+    </body>
+</page>
