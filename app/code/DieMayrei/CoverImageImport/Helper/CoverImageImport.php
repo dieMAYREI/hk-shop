@@ -22,7 +22,7 @@ class CoverImageImport extends AbstractHelper
 
     /**
      * Get all configured cover URLs with their keys
-     * 
+     *
      * @return array ['key' => 'url', ...]
      */
     public function getAllCoverUrls(): array
