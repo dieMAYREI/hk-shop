@@ -21,39 +21,35 @@ class CoverImageImport extends AbstractHelper
     }
 
     /**
-     * Get configuration value by path
-     *
-     * @param string $configPath
-     * @param int|null $storeId
-     * @return mixed
+     * Get all configured cover URLs with their keys
+     * 
+     * @return array ['key' => 'url', ...]
      */
-    public function getConfig(string $configPath, ?int $storeId = null)
+    public function getAllCoverUrls(): array
     {
-        return $this->scopeConfig->getValue(
-            $configPath,
-            ScopeInterface::SCOPE_STORE,
-            $storeId
-        );
+        return $this->magazineConfig->getAllCoverUrls();
     }
 
     /**
-     * Get cover array (config path => label mapping)
+     * Get cover URL for a specific key
      *
-     * @return array
+     * @param string $coverKey
+     * @return string|null
      */
-    public function getCoverArray(): array
+    public function getCoverUrl(string $coverKey): ?string
     {
-        return $this->magazineConfig->getConfigPathMapping();
+        return $this->magazineConfig->getCoverUrl($coverKey);
     }
 
     /**
-     * Get label to config mapping
+     * Get label for a cover key
      *
-     * @return array
+     * @param string $coverKey
+     * @return string
      */
-    public function getLabelToConfigMapping(): array
+    public function getLabel(string $coverKey): string
     {
-        return $this->magazineConfig->getLabelToConfigMapping();
+        return $this->magazineConfig->getLabel($coverKey);
     }
 
     /**
@@ -64,5 +60,16 @@ class CoverImageImport extends AbstractHelper
     public function getAllOptions(): array
     {
         return $this->magazineConfig->getAllOptions();
+    }
+
+    /**
+     * Check if cover key is valid
+     *
+     * @param string $coverKey
+     * @return bool
+     */
+    public function isValidCoverKey(string $coverKey): bool
+    {
+        return $this->magazineConfig->isValidCoverKey($coverKey);
     }
 }

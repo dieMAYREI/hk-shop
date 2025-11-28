@@ -13,7 +13,7 @@ use Psr\Log\LoggerInterface;
 
 class FetchCover
 {
-    private CoverImageImport $config;
+    private CoverImageImport $helper;
     private ImageImportFactory $imageImportFactory;
     private CollectionFactory $collectionFactory;
     private ImageDownloader $imageDownloader;
@@ -22,7 +22,7 @@ class FetchCover
     private LoggerInterface $logger;
 
     public function __construct(
-        CoverImageImport $config,
+        CoverImageImport $helper,
         ImageImportFactory $imageImportFactory,
         CollectionFactory $collectionFactory,
         ImageDownloader $imageDownloader,
@@ -30,7 +30,7 @@ class FetchCover
         ProductImageUpdater $productImageUpdater,
         LoggerInterface $logger
     ) {
-        $this->config = $config;
+        $this->helper = $helper;
         $this->imageImportFactory = $imageImportFactory;
         $this->collectionFactory = $collectionFactory;
         $this->imageDownloader = $imageDownloader;
@@ -43,24 +43,28 @@ class FetchCover
     {
         $this->logger->info('CoverImageImport: Starting import...');
 
-        foreach ($this->config->getCoverArray() as $configPath => $label) {
-            if (empty($configPath)) {
-                continue; // Skip 'kein'
+        $coverUrls = $this->helper->getAllCoverUrls();
+
+        if (empty($coverUrls)) {
+            $this->logger->warning('CoverImageImport: No magazines configured. Please configure magazines in Admin > Stores > Configuration > DieMayrei > Cover Import.');
+            return;
+        }
+
+        foreach ($coverUrls as $coverKey => $url) {
+            if (empty($url)) {
+                continue;
             }
 
-            $this->processConfigPath($configPath);
+            $this->processCover($coverKey, $url);
         }
 
         $this->logger->info('CoverImageImport: Import finished.');
     }
 
-    private function processConfigPath(string $configPath): void
+    private function processCover(string $coverKey, string $url): void
     {
-        $url = $this->config->getConfig($configPath);
-
-        if (empty($url)) {
-            return;
-        }
+        $label = $this->helper->getLabel($coverKey);
+        $this->logger->info("CoverImageImport: Processing {$label} ({$coverKey})...");
 
         try {
             $existingRecord = $this->getExistingRecord($url);
@@ -69,21 +73,23 @@ class FetchCover
             if ($downloadResult === null) {
                 // No update needed, but check for items without images
                 if ($existingRecord) {
-                    $this->categoryImageUpdater->updateCategories($configPath, $existingRecord['imported'], true);
-                    $this->productImageUpdater->updateProducts($configPath, $existingRecord['imported'], true);
+                    $this->categoryImageUpdater->updateCategories($coverKey, $existingRecord['imported'], true);
+                    $this->productImageUpdater->updateProducts($coverKey, $existingRecord['imported'], true);
                 }
                 return;
             }
 
             // Save/update database record
-            $this->saveImageRecord($configPath, $url, $downloadResult['path'], $existingRecord);
+            $this->saveImageRecord($coverKey, $url, $downloadResult['path'], $existingRecord);
 
             // Update categories and products
-            $this->categoryImageUpdater->updateCategories($configPath, $downloadResult['category_url']);
-            $this->productImageUpdater->updateProducts($configPath, $downloadResult['path']);
+            $this->categoryImageUpdater->updateCategories($coverKey, $downloadResult['category_url']);
+            $this->productImageUpdater->updateProducts($coverKey, $downloadResult['path']);
+
+            $this->logger->info("CoverImageImport: Successfully updated {$label}");
 
         } catch (\Exception $e) {
-            $this->logger->error('CoverImageImport: Error processing ' . $configPath . ': ' . $e->getMessage());
+            $this->logger->error("CoverImageImport: Error processing {$label}: " . $e->getMessage());
         }
     }
 
@@ -100,7 +106,7 @@ class FetchCover
         return null;
     }
 
-    private function saveImageRecord(string $configPath, string $url, string $importedPath, ?array $existingRecord): void
+    private function saveImageRecord(string $coverKey, string $url, string $importedPath, ?array $existingRecord): void
     {
         $imageImport = $this->imageImportFactory->create();
 
@@ -109,7 +115,7 @@ class FetchCover
         }
 
         $imageImport->setData([
-            'key' => $configPath,
+            'key' => $coverKey,
             'origin' => $url,
             'imported' => $importedPath,
             'last_updated' => date('Y-m-d H:i:s')

@@ -3,31 +3,114 @@ declare(strict_types=1);
 
 namespace DieMayrei\CoverImageImport\Model;
 
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\Serialize\Serializer\Json;
+use Magento\Store\Model\ScopeInterface;
+use Psr\Log\LoggerInterface;
+
 /**
- * Central configuration for all available magazines.
- * Add or remove magazines here to automatically update:
- * - Admin dropdown options
- * - System configuration fields
- * - Cover import functionality
+ * Dynamic configuration for magazines.
+ * All magazines are configured via Admin > Stores > Configuration > DieMayrei > Cover Import
  */
 class MagazineConfig
 {
-    /**
-     * Magazine definitions with their configuration
-     * Format: 'key' => ['label' => 'Display Name', 'has_digital' => true/false]
-     */
-    private const MAGAZINES = [
-        'kaninchenzeitung' => [
-            'label' => 'Kaninchenzeitung',
-            'has_digital' => true
-        ],
-        'gefluegelzeitung' => [
-            'label' => 'Geflügelzeitung',
-            'has_digital' => true
-        ],
-    ];
+    private const CONFIG_PATH_MAGAZINES = 'diemayrei/cover_import/magazines';
 
-    private const CONFIG_PATH_PREFIX = 'diemayrei/cover_import/';
+    private ScopeConfigInterface $scopeConfig;
+    private Json $json;
+    private LoggerInterface $logger;
+    private ?array $magazinesCache = null;
+
+    public function __construct(
+        ScopeConfigInterface $scopeConfig,
+        Json $json,
+        LoggerInterface $logger
+    ) {
+        $this->scopeConfig = $scopeConfig;
+        $this->json = $json;
+        $this->logger = $logger;
+    }
+
+    /**
+     * Get all configured magazines from admin
+     *
+     * @return array
+     */
+    public function getMagazines(): array
+    {
+        if ($this->magazinesCache !== null) {
+            return $this->magazinesCache;
+        }
+
+        $value = $this->scopeConfig->getValue(
+            self::CONFIG_PATH_MAGAZINES,
+            ScopeInterface::SCOPE_STORE
+        );
+
+        if (empty($value)) {
+            $this->magazinesCache = [];
+            return [];
+        }
+
+        try {
+            if (is_string($value)) {
+                $magazines = $this->json->unserialize($value);
+            } else {
+                $magazines = $value;
+            }
+
+            // Process and normalize magazines
+            $processed = [];
+            foreach ($magazines as $rowId => $row) {
+                if (empty($row['name']) || empty($row['cover_url'])) {
+                    continue;
+                }
+
+                // Auto-generate key from name
+                $key = $this->generateKey($row['name']);
+                
+                $processed[$rowId] = [
+                    'name' => $row['name'],
+                    'key' => $key,
+                    'cover_url' => $row['cover_url']
+                ];
+            }
+
+            $this->magazinesCache = $processed;
+            return $processed;
+
+        } catch (\Exception $e) {
+            $this->logger->error('CoverImageImport: Failed to parse magazines config', [
+                'exception' => $e->getMessage()
+            ]);
+            $this->magazinesCache = [];
+            return [];
+        }
+    }
+
+    /**
+     * Generate a URL-safe key from name
+     *
+     * @param string $name
+     * @return string
+     */
+    private function generateKey(string $name): string
+    {
+        $key = mb_strtolower($name);
+        
+        // German umlauts
+        $key = str_replace(
+            ['ä', 'ö', 'ü', 'ß', 'Ä', 'Ö', 'Ü'],
+            ['ae', 'oe', 'ue', 'ss', 'ae', 'oe', 'ue'],
+            $key
+        );
+        
+        // Replace spaces and special chars with underscore
+        $key = preg_replace('/[^a-z0-9]+/', '_', $key);
+        
+        // Remove leading/trailing underscores
+        return trim($key, '_');
+    }
 
     /**
      * Get all magazine options for dropdowns (including 'kein')
@@ -40,89 +123,86 @@ class MagazineConfig
             ['value' => '', 'label' => __('-- Kein Cover --')]
         ];
 
-        foreach (self::MAGAZINES as $key => $config) {
-            $configPath = self::CONFIG_PATH_PREFIX . $key . '_cover';
+        foreach ($this->getMagazines() as $magazine) {
             $options[] = [
-                'value' => $configPath,
-                'label' => __($config['label'])
+                'value' => $magazine['key'],
+                'label' => __($magazine['name'])
             ];
-
-            if ($config['has_digital']) {
-                $digitalConfigPath = self::CONFIG_PATH_PREFIX . $key . '_digital_cover';
-                $options[] = [
-                    'value' => $digitalConfigPath,
-                    'label' => __($config['label'] . ' Digital')
-                ];
-            }
         }
 
         return $options;
     }
 
     /**
-     * Get config path to label mapping for the helper
+     * Get cover URL for a specific magazine key
      *
-     * @return array
+     * @param string $coverKey
+     * @return string|null
      */
-    public function getConfigPathMapping(): array
+    public function getCoverUrl(string $coverKey): ?string
     {
-        $mapping = ['' => 'kein'];
+        if (empty($coverKey)) {
+            return null;
+        }
 
-        foreach (self::MAGAZINES as $key => $config) {
-            $configPath = self::CONFIG_PATH_PREFIX . $key . '_cover';
-            $mapping[$configPath] = $config['label'];
-
-            if ($config['has_digital']) {
-                $digitalConfigPath = self::CONFIG_PATH_PREFIX . $key . '_digital_cover';
-                $mapping[$digitalConfigPath] = $config['label'] . ' Digital';
+        foreach ($this->getMagazines() as $magazine) {
+            if ($magazine['key'] === $coverKey) {
+                return $magazine['cover_url'];
             }
         }
 
-        return $mapping;
+        return null;
     }
 
     /**
-     * Get label to config path mapping (inverse)
+     * Get all configured cover URLs with their keys
      *
-     * @return array
+     * @return array ['key' => 'url', ...]
      */
-    public function getLabelToConfigMapping(): array
+    public function getAllCoverUrls(): array
     {
-        return array_flip($this->getConfigPathMapping());
-    }
+        $urls = [];
 
-    /**
-     * Get all magazine definitions for system.xml generation
-     *
-     * @return array
-     */
-    public function getMagazineDefinitions(): array
-    {
-        return self::MAGAZINES;
-    }
-
-    /**
-     * Get config path prefix
-     *
-     * @return string
-     */
-    public function getConfigPathPrefix(): string
-    {
-        return self::CONFIG_PATH_PREFIX;
-    }
-
-    /**
-     * Check if a config path is valid
-     *
-     * @param string $configPath
-     * @return bool
-     */
-    public function isValidConfigPath(string $configPath): bool
-    {
-        if (empty($configPath)) {
-            return true; // 'kein' is valid
+        foreach ($this->getMagazines() as $magazine) {
+            $urls[$magazine['key']] = $magazine['cover_url'];
         }
 
-        return array_key_exists($configPath, $this->getConfigPathMapping());
+        return $urls;
+    }
+
+    /**
+     * Get label for a cover key
+     *
+     * @param string $coverKey
+     * @return string
+     */
+    public function getLabel(string $coverKey): string
+    {
+        if (empty($coverKey)) {
+            return 'kein';
+        }
+
+        foreach ($this->getMagazines() as $magazine) {
+            if ($magazine['key'] === $coverKey) {
+                return $magazine['name'];
+            }
+        }
+
+        return $coverKey;
+    }
+
+    /**
+     * Check if a cover key is valid
+     *
+     * @param string $coverKey
+     * @return bool
+     */
+    public function isValidCoverKey(string $coverKey): bool
+    {
+        if (empty($coverKey)) {
+            return true;
+        }
+
+        return $this->getCoverUrl($coverKey) !== null;
     }
 }
