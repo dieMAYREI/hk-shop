@@ -1,24 +1,28 @@
 <?php
-namespace Diemayrei\CoverImageImport\Controller\Adminhtml\Category\Thumbnail;
+declare(strict_types=1);
 
+namespace DieMayrei\CoverImageImport\Controller\Adminhtml\Category\Thumbnail;
+
+use Magento\Backend\App\Action;
+use Magento\Backend\App\Action\Context;
+use Magento\Catalog\Model\ImageUploader;
 use Magento\Framework\App\Action\HttpPostActionInterface;
 use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Controller\ResultInterface;
 
-class Upload extends \Magento\Backend\App\Action implements HttpPostActionInterface
+class Upload extends Action implements HttpPostActionInterface
 {
-
-    protected $imageUploader;
-
+    private ImageUploader $imageUploader;
 
     public function __construct(
-        \Magento\Backend\App\Action\Context $context,
-        \Magento\Catalog\Model\ImageUploader $imageUploader
+        Context $context,
+        ImageUploader $imageUploader
     ) {
         parent::__construct($context);
         $this->imageUploader = $imageUploader;
     }
 
-    public function execute()
+    public function execute(): ResultInterface
     {
         $imageId = $this->_request->getParam('param_name', 'cat_image_thumbnail');
 
@@ -27,6 +31,7 @@ class Upload extends \Magento\Backend\App\Action implements HttpPostActionInterf
         } catch (\Exception $e) {
             $result = ['error' => $e->getMessage(), 'errorcode' => $e->getCode()];
         }
+
         return $this->resultFactory->create(ResultFactory::TYPE_JSON)->setData($result);
     }
 }

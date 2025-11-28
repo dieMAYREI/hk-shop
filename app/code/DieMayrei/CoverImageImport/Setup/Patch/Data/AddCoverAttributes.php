@@ -1,9 +1,11 @@
 <?php
-namespace Diemayrei\CoverImageImport\Setup\Patch\Data;
+declare(strict_types=1);
+
+namespace DieMayrei\CoverImageImport\Setup\Patch\Data;
 
 use Magento\Catalog\Model\Category;
 use Magento\Catalog\Model\Product;
-use Magento\Customer\Setup\CustomerSetupFactory;
+use Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface;
 use Magento\Eav\Setup\EavSetup;
 use Magento\Eav\Setup\EavSetupFactory;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
@@ -11,11 +13,8 @@ use Magento\Framework\Setup\Patch\DataPatchInterface;
 
 class AddCoverAttributes implements DataPatchInterface
 {
-    /** @var ModuleDataSetupInterface */
-    private $moduleDataSetup;
-
-    /** @var EavSetupFactory */
-    private $eavSetupFactory;
+    private ModuleDataSetupInterface $moduleDataSetup;
+    private EavSetupFactory $eavSetupFactory;
 
     public function __construct(
         ModuleDataSetupInterface $moduleDataSetup,
@@ -25,12 +24,21 @@ class AddCoverAttributes implements DataPatchInterface
         $this->eavSetupFactory = $eavSetupFactory;
     }
 
-    public function apply()
+    public function apply(): self
     {
         /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
 
-        // Product attribute: cover
+        $this->addProductCoverAttribute($eavSetup);
+        $this->addCategoryCoverAttribute($eavSetup);
+        $this->addCategorySupportAttributes($eavSetup);
+        $this->addCategoryShortDescriptionAttribute($eavSetup);
+
+        return $this;
+    }
+
+    private function addProductCoverAttribute(EavSetup $eavSetup): void
+    {
         $eavSetup->addAttribute(
             Product::ENTITY,
             'cover',
@@ -38,8 +46,8 @@ class AddCoverAttributes implements DataPatchInterface
                 'type' => 'text',
                 'label' => 'Cover',
                 'input' => 'select',
-                'source' => \Diemayrei\CoverImageImport\Model\Category\Attribute\Source\Cover::class,
-                'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_GLOBAL,
+                'source' => \DieMayrei\CoverImageImport\Model\Category\Attribute\Source\Cover::class,
+                'global' => ScopedAttributeInterface::SCOPE_GLOBAL,
                 'visible' => true,
                 'required' => false,
                 'user_defined' => false,
@@ -52,8 +60,10 @@ class AddCoverAttributes implements DataPatchInterface
                 'unique' => false,
             ]
         );
+    }
 
-        // Category attribute: cover_category
+    private function addCategoryCoverAttribute(EavSetup $eavSetup): void
+    {
         $eavSetup->addAttribute(
             Category::ENTITY,
             'cover_category',
@@ -63,13 +73,15 @@ class AddCoverAttributes implements DataPatchInterface
                 'input' => 'select',
                 'visible' => true,
                 'required' => false,
-                'source' => \Diemayrei\CoverImageImport\Model\Category\Attribute\Source\Cover::class,
-                'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_STORE,
+                'source' => \DieMayrei\CoverImageImport\Model\Category\Attribute\Source\Cover::class,
+                'global' => ScopedAttributeInterface::SCOPE_STORE,
                 'group' => 'general',
             ]
         );
+    }
 
-        // Category attributes: support tel/email and short description
+    private function addCategorySupportAttributes(EavSetup $eavSetup): void
+    {
         $eavSetup->addAttribute(
             Category::ENTITY,
             'cat_support_tel',
@@ -82,7 +94,7 @@ class AddCoverAttributes implements DataPatchInterface
                 'used_in_product_listing' => true,
                 'visible_on_front' => true,
                 'source' => '',
-                'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_STORE,
+                'global' => ScopedAttributeInterface::SCOPE_STORE,
             ]
         );
 
@@ -98,10 +110,13 @@ class AddCoverAttributes implements DataPatchInterface
                 'used_in_product_listing' => true,
                 'visible_on_front' => true,
                 'source' => '',
-                'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_STORE,
+                'global' => ScopedAttributeInterface::SCOPE_STORE,
             ]
         );
+    }
 
+    private function addCategoryShortDescriptionAttribute(EavSetup $eavSetup): void
+    {
         $eavSetup->addAttribute(
             Category::ENTITY,
             'cat_short_description',
@@ -111,7 +126,7 @@ class AddCoverAttributes implements DataPatchInterface
                 'input' => 'textarea',
                 'required' => false,
                 'sort_order' => 40,
-                'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_STORE,
+                'global' => ScopedAttributeInterface::SCOPE_STORE,
                 'wysiwyg_enabled' => true,
                 'is_html_allowed_on_front' => true,
                 'used_in_product_listing' => true,

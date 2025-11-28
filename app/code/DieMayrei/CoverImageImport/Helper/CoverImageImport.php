@@ -1,35 +1,68 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: christianblomann
- * Date: 2019-02-20
- * Time: 09:02
- */
+declare(strict_types=1);
 
-namespace Diemayrei\CoverImageImport\Helper;
+namespace DieMayrei\CoverImageImport\Helper;
 
+use DieMayrei\CoverImageImport\Model\MagazineConfig;
 use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Framework\App\Helper\Context;
+use Magento\Store\Model\ScopeInterface;
 
 class CoverImageImport extends AbstractHelper
 {
-    protected $short_to_config = [
-        'kein' => '',
-        'Kaninchenzeitung' => 'diemayrei/cover_import/kaninchenzeitung_cover',
-        'Kaninchenzeitung Digital' => 'diemayrei/cover_import/kaninchenzeitung_digital_cover',
-        'Gefluegelzeitung' => 'diemayrei/cover_import/gefluegelzeitung_cover',
-        'Gefluegelzeitung Digital' => 'diemayrei/cover_import/gefluegelzeitung_digital_cover',
-    ];
+    private MagazineConfig $magazineConfig;
 
-    public function getConfig($config_path)
+    public function __construct(
+        Context $context,
+        MagazineConfig $magazineConfig
+    ) {
+        parent::__construct($context);
+        $this->magazineConfig = $magazineConfig;
+    }
+
+    /**
+     * Get configuration value by path
+     *
+     * @param string $configPath
+     * @param int|null $storeId
+     * @return mixed
+     */
+    public function getConfig(string $configPath, ?int $storeId = null)
     {
         return $this->scopeConfig->getValue(
-            $config_path,
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+            $configPath,
+            ScopeInterface::SCOPE_STORE,
+            $storeId
         );
     }
 
-    public function getCoverArray()
+    /**
+     * Get cover array (config path => label mapping)
+     *
+     * @return array
+     */
+    public function getCoverArray(): array
     {
-        return array_flip($this->short_to_config);
+        return $this->magazineConfig->getConfigPathMapping();
+    }
+
+    /**
+     * Get label to config mapping
+     *
+     * @return array
+     */
+    public function getLabelToConfigMapping(): array
+    {
+        return $this->magazineConfig->getLabelToConfigMapping();
+    }
+
+    /**
+     * Get all magazine options for dropdowns
+     *
+     * @return array
+     */
+    public function getAllOptions(): array
+    {
+        return $this->magazineConfig->getAllOptions();
     }
 }

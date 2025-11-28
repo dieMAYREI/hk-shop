@@ -1,7 +1,11 @@
 <?php
-namespace Diemayrei\CoverImageImport\Setup\Patch\Data;
+declare(strict_types=1);
+
+namespace DieMayrei\CoverImageImport\Setup\Patch\Data;
 
 use Magento\Catalog\Model\Category;
+use Magento\Catalog\Model\Category\Attribute\Backend\Image;
+use Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface;
 use Magento\Eav\Setup\EavSetup;
 use Magento\Eav\Setup\EavSetupFactory;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
@@ -9,11 +13,8 @@ use Magento\Framework\Setup\Patch\DataPatchInterface;
 
 class AddCategoryThumbnailAttribute implements DataPatchInterface
 {
-    /** @var ModuleDataSetupInterface */
-    private $moduleDataSetup;
-
-    /** @var EavSetupFactory */
-    private $eavSetupFactory;
+    private ModuleDataSetupInterface $moduleDataSetup;
+    private EavSetupFactory $eavSetupFactory;
 
     public function __construct(
         ModuleDataSetupInterface $moduleDataSetup,
@@ -23,7 +24,7 @@ class AddCategoryThumbnailAttribute implements DataPatchInterface
         $this->eavSetupFactory = $eavSetupFactory;
     }
 
-    public function apply()
+    public function apply(): self
     {
         /** @var EavSetup $eavSetup */
         $eavSetup = $this->eavSetupFactory->create(['setup' => $this->moduleDataSetup]);
@@ -35,13 +36,15 @@ class AddCategoryThumbnailAttribute implements DataPatchInterface
                 'type' => 'varchar',
                 'label' => 'Thumbnail Image',
                 'input' => 'image',
-                'backend' => \Magento\Catalog\Model\Category\Attribute\Backend\Image::class,
+                'backend' => Image::class,
                 'required' => false,
                 'sort_order' => 90,
-                'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_STORE,
+                'global' => ScopedAttributeInterface::SCOPE_STORE,
                 'group' => 'Content',
             ]
         );
+
+        return $this;
     }
 
     public static function getDependencies(): array

@@ -1,30 +1,25 @@
 <?php
+declare(strict_types=1);
 
+namespace DieMayrei\CoverImageImport\Model;
 
-namespace Diemayrei\CoverImageImport\Model;
+use Magento\Framework\DataObject\IdentityInterface;
+use Magento\Framework\Model\AbstractModel;
 
-class ImageImport extends \Magento\Framework\Model\AbstractModel implements \Magento\Framework\DataObject\IdentityInterface
+class ImageImport extends AbstractModel implements IdentityInterface
 {
-    const CACHE_TAG = 'diemayrei_coverimageimport_imageimport';
+    public const CACHE_TAG = 'diemayrei_coverimageimport';
 
-    protected $_cacheTag = 'diemayrei_coverimageimport_imageimport';
+    protected $_cacheTag = self::CACHE_TAG;
+    protected $_eventPrefix = 'diemayrei_coverimageimport';
 
-    protected $_eventPrefix = 'diemayrei_coverimageimport_imageimport';
-
-    protected function _construct()
+    protected function _construct(): void
     {
-        $this->_init(\Diemayrei\CoverImageImport\Model\ResourceModel\ImageImport::class);
+        $this->_init(ResourceModel\ImageImport::class);
     }
 
-    public function getIdentities()
+    public function getIdentities(): array
     {
         return [self::CACHE_TAG . '_' . $this->getId()];
-    }
-
-    public function getDefaultValues()
-    {
-        $values = [];
-
-        return $values;
     }
 }

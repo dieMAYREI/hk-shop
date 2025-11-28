@@ -3,7 +3,7 @@
     <fieldset name="general">
         <field name="cover_category">
             <argument name="data" xsi:type="array">
-                <item name="options" xsi:type="object">Diemayrei\CoverImageImport\Model\Category\Attribute\Source\Cover</item>
+                <item name="options" xsi:type="object">DieMayrei\CoverImageImport\Model\Category\Attribute\Source\Cover</item>
                 <item name="config" xsi:type="array">
                     <item name="dataType" xsi:type="string">text</item>
                     <item name="formElement" xsi:type="string">select</item>

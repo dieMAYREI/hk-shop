@@ -1,18 +1,13 @@
 <?php
+declare(strict_types=1);
 
+namespace DieMayrei\CoverImageImport\Model\ResourceModel;
 
-namespace Diemayrei\CoverImageImport\Model\ResourceModel;
+use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 
-class ImageImport extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
+class ImageImport extends AbstractDb
 {
-
-    public function __construct(
-        \Magento\Framework\Model\ResourceModel\Db\Context $context
-    ) {
-        parent::__construct($context);
-    }
-
-    protected function _construct()
+    protected function _construct(): void
     {
         $this->_init('cover_image_import', 'id');
     }

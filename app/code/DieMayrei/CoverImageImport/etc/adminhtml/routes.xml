@@ -1,7 +1,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
     <router id="admin">
         <route id="coverimageimport" frontName="coverimageimport">
-            <module name="Diemayrei_CoverImageImport" before="Magento_Backend" />
+            <module name="DieMayrei_CoverImageImport" before="Magento_Backend" />
         </route>
     </router>
 </config>

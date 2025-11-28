@@ -1,39 +1,57 @@
 <?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+<!--
+    Magazine configuration for CoverImageImport.
+    To add a new magazine:
+    1. Add the magazine definition in Model/MagazineConfig.php
+    2. Add a new group here following the same pattern
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <tab id="diemayrei" translate="label" sortOrder="1001">
-            <label>Diemayrei</label>
+            <label>DieMayrei</label>
         </tab>
-        <section id="diemayrei_cover_import" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-            <label>CoverImport</label>
+        <section id="diemayrei" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Cover Import</label>
             <tab>diemayrei</tab>
-            <resource>Diemayrei_CoverImageImport::cover_import_config</resource>
-            <group id="kaninchenzeitung" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <resource>DieMayrei_CoverImageImport::cover_import_config</resource>
+
+            <!-- Kaninchenzeitung -->
+            <group id="cover_import_kaninchenzeitung" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Kaninchenzeitung</label>
-                <field id="cover_kaninchenzeitung" type="text" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Cover Kaninchenzeitung</label>
+                <comment>Cover-Bild URLs für Kaninchenzeitung (Print und Digital)</comment>
+                <field id="kaninchenzeitung_cover" type="text" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Kaninchenzeitung (Print)</label>
+                    <comment>URL zum aktuellen Cover-Bild der Print-Ausgabe</comment>
                     <validate>validate-url</validate>
-                    <config_path>diemayrei/cover_import/kaninchenzeitung_cover</config_path>
+                    <backend_model>DieMayrei\CoverImageImport\Model\Config\Backend\CoverUrl</backend_model>
                 </field>
-                <field id="cover_kaninchenzeitung_digital" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Cover Kaninchenzeitung Digital</label>
+                <field id="kaninchenzeitung_digital_cover" type="text" translate="label comment" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Kaninchenzeitung (Digital)</label>
+                    <comment>URL zum aktuellen Cover-Bild der Digital-Ausgabe</comment>
                     <validate>validate-url</validate>
-                    <config_path>diemayrei/cover_import/kaninchenzeitung_digital_cover</config_path>
+                    <backend_model>DieMayrei\CoverImageImport\Model\Config\Backend\CoverUrl</backend_model>
                 </field>
             </group>
-            <group id="gefluegelzeitung" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+
+            <!-- Geflügelzeitung -->
+            <group id="cover_import_gefluegelzeitung" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Geflügelzeitung</label>
-                <field id="cover_gefluegelzeitung" type="text" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Cover Geflügelzeitung</label>
+                <comment>Cover-Bild URLs für Geflügelzeitung (Print und Digital)</comment>
+                <field id="gefluegelzeitung_cover" type="text" translate="label comment" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Geflügelzeitung (Print)</label>
+                    <comment>URL zum aktuellen Cover-Bild der Print-Ausgabe</comment>
                     <validate>validate-url</validate>
-                    <config_path>diemayrei/cover_import/gefluegelzeitung_cover</config_path>
+                    <backend_model>DieMayrei\CoverImageImport\Model\Config\Backend\CoverUrl</backend_model>
                 </field>
-                <field id="cover_gefluegelzeitung_digital" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Cover Geflügelzeitung Digital</label>
+                <field id="gefluegelzeitung_digital_cover" type="text" translate="label comment" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Geflügelzeitung (Digital)</label>
+                    <comment>URL zum aktuellen Cover-Bild der Digital-Ausgabe</comment>
                     <validate>validate-url</validate>
-                    <config_path>diemayrei/cover_import/gefluegelzeitung_digital_cover</config_path>
+                    <backend_model>DieMayrei\CoverImageImport\Model\Config\Backend\CoverUrl</backend_model>
                 </field>
             </group>
+
         </section>
     </system>
 </config>

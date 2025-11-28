@@ -1,14 +1,21 @@
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <!-- Console Command Registration -->
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
             <argument name="commands" xsi:type="array">
-                <item name="Diemayrei_CoverImageImport" xsi:type="object">Diemayrei\CoverImageImport\Console\Command\ImportCover</item>
+                <item name="diemayrei_cover_import" xsi:type="object">DieMayrei\CoverImageImport\Console\Command\ImportCover</item>
             </argument>
         </arguments>
     </type>
-    <type name="Diemayrei\CoverImageImport\Controller\Adminhtml\Category\Thumbnail\Upload">
+
+    <!-- Category Thumbnail Upload Controller -->
+    <type name="DieMayrei\CoverImageImport\Controller\Adminhtml\Category\Thumbnail\Upload">
         <arguments>
             <argument name="imageUploader" xsi:type="object">Magento\Catalog\CategoryImageUpload</argument>
         </arguments>
     </type>
+
 </config>

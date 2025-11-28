@@ -1,65 +1,28 @@
 <?php
-namespace Diemayrei\CoverImageImport\Model\Category\Attribute\Source;
+declare(strict_types=1);
 
-use Diemayrei\CoverImageImport\Helper\CoverImageImport;
+namespace DieMayrei\CoverImageImport\Model\Category\Attribute\Source;
 
-class Cover extends \Magento\Eav\Model\Entity\Attribute\Source\AbstractSource
+use DieMayrei\CoverImageImport\Model\MagazineConfig;
+use Magento\Eav\Model\Entity\Attribute\Source\AbstractSource;
+
+class Cover extends AbstractSource
 {
-    /**
-     * Catalog config
-     *
-     * @var \Magento\Catalog\Model\Config
-     */
-    protected $_catalogConfig;
+    private MagazineConfig $magazineConfig;
 
-    /**
-     * @var CoverImageImport
-     */
-    protected $_coverImageImport;
-
-    /**
-     * Construct
-     *
-     * @param \Magento\Catalog\Model\Config $catalogConfig
-     */
-    public function __construct(
-        \Magento\Catalog\Model\Config $catalogConfig,
-        CoverImageImport $coverImageImport
-    ) {
-        $this->_catalogConfig = $catalogConfig;
-        $this->_coverImageImport = $coverImageImport;
+    public function __construct(MagazineConfig $magazineConfig)
+    {
+        $this->magazineConfig = $magazineConfig;
     }
 
     /**
-     * Retrieve Catalog Config Singleton
-     *
-     * @return \Magento\Catalog\Model\Config
+     * @inheritdoc
      */
-    protected function _getCatalogConfig()
+    public function getAllOptions(): array
     {
-        return $this->_catalogConfig;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getAllOptions()
-    {
-
-        $options = [];
-        foreach ($this->_coverImageImport->getCoverArray() as $key => $value) {
-            $options[] = ['label' => $value, 'value' => $key];
+        if ($this->_options === null) {
+            $this->_options = $this->magazineConfig->getAllOptions();
         }
-        return $options;
-    }
-
-    public function getOptionArray()
-    {
-        $options = [];
-        foreach ($this->_coverImageImport->getCoverArray() as $key => $value) {
-            $options[] = ['label' => $value, 'value' => $key];
-        }
-
-        return $options;
+        return $this->_options;
     }
 }
