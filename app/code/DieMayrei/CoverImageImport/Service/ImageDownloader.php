@@ -38,7 +38,7 @@ class ImageDownloader
      */
     public function downloadAndResize(string $url, ?array $existingRecord): ?array
     {
-        $imageContent = @file_get_contents($url . '?' . self::API_QUALITY);
+        $imageContent = file_get_contents($url . '?' . self::API_QUALITY);
 
         if ($imageContent === false) {
             throw new \RuntimeException('Failed to download image from: ' . $url);
@@ -50,7 +50,9 @@ class ImageDownloader
                 return null; // No update needed
             }
             // Delete old file
-            @unlink($existingRecord['imported']);
+            if (!unlink($existingRecord['imported'])) {
+                $this->logger->warning('Failed to delete old image: ' . $existingRecord['imported']);
+            }
         }
 
         $mediaPath = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA)->getAbsolutePath();
