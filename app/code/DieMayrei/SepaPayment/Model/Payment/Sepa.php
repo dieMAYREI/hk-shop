@@ -57,8 +57,8 @@ class Sepa extends AbstractMethod
         ScopeConfigInterface $scopeConfig,
         Logger $logger,
         IbanValidator $ibanValidator,
-        AbstractResource $resource = null,
-        AbstractDb $resourceCollection = null,
+        ?AbstractResource $resource = null,
+        ?AbstractDb $resourceCollection = null,
         array $data = [],
         ?DirectoryHelper $directory = null
     ) {
