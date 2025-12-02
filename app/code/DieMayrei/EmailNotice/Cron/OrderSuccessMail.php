@@ -185,9 +185,27 @@ class OrderSuccessMail
 
         /** @var  $items */
         $items = $order->getItems();
-        $mails = [];
+        $mail = [
+            'template' => 'email_notice_kundenservice_order_success',
+            'subject' => [],
+            'items' => [],
+            'order_id' => $order->getId(),
+            'kndr' => $order->getCustomerId(),
+            'billingAddress' => $billingAddress,
+            'billingStreet' => $billingStreet,
+            'shippingAddress' => $shippingAddress,
+            'shippingStreet' => $shippingStreet,
+            'billingCountry' => $billingCountry,
+            'shippingCountry' => $shippingCountry,
+            'order' => $order,
+            'payment' => $this->_paymentHelper->getInfoBlockHtml($order->getPayment(), $order->getStoreId()),
+            'lang' => strtoupper($order->getStore()->getCode()),
+            'customBillingAddress' => $this->getMyCustomBillingAddress($billingAddress),
+            'customShippingAddress' => $shippingAddress instanceof \Magento\Sales\Api\Data\OrderAddressInterface
+                ? $this->getMyCustomBillingAddress($shippingAddress, 'shipping')
+                : $this->getMyCustomBillingAddress($billingAddress, 'shipping'),
+        ];
         $counter = 0;
-        $subject = [];
 
         /** @var Interceptor $item */
         foreach ($items as $item) {
@@ -200,99 +218,34 @@ class OrderSuccessMail
             $product = $this->objectManager->create(\Magento\Catalog\Model\Product::class)->load($item->getProductId());
 
             /**
-             * Exit if Prämie
+             * Exit if product not found or Prämie
              */
-            if ($product->getAttributeSetId() == 9) {
+            if (!$product->getId() || $product->getAttributeSetId() == 9) {
                 continue;
-            }
-
-            $dropShipping = false;
-
-            /** @var AttributeValue $objekt */
-            $objekt = $product->getAttributeText('objekt');
-            if ($product->getAttributeSetId() == 11) {
-
-                $objekt = 'SoPro';
-
-                if ($item->getProductOptions() && $item->getBuyRequest()->getSelectedConfigurableOption()) {
-                    if (array_key_exists('attributes_info', $item->getProductOptions())) {
-                        if (array_key_exists('simple_sku', $item->getProductOptions())) {
-                            $product = $this->objectManager->create(\Magento\Catalog\Model\Product::class)->load($item->getBuyRequest()->getSelectedConfigurableOption());
-                            ;
-                        }
-                    } else {
-                        continue;
-                    }
-                }
-            }
-
-            $emailTemplate = "email_notice_kundenservice_order_success";
-
-            if ($product->getAttributeSetId() == 12) {
-                $objekt = $product->getDropshippingmail();
-                $emailTemplate = 'email_notice_kundenservice_order_success_dropshipping';
-                $dropShipping = true;
             }
 
             $variante = $product->getAttributeText('abovarianten');
 
-            if ($variante) {
-                if (substr_count($variante, 'Leser werben Leser') > 0) {
-                    $shippingAddress = $this->setShippingAddress($item);
-                    foreach ($shippingAddress as $key => $adressItem) {
-                        $mails[$objekt][$key] = $adressItem;
-                    }
-                    $emailTemplate = "email_notice_kundenservice_order_success_lwl";
-                }
-                if (substr_count($variante, 'Geschenk') > 0) {
-                    $emailTemplate = "email_notice_kundenservice_order_success_geschenk";
-                }
-            } else {
+            if (!$variante) {
                 $variante = $product->getName();
             }
 
-            $subject[$objekt][$counter] = $variante;
-            $mails[$objekt]['template'] = $emailTemplate;
-            $mails[$objekt]['objekt'] = $objekt;
-            $mails[$objekt]['subject'] = implode(', ', $subject[$objekt]);
-            $mails[$objekt]['subjectdropshipping'] = $variante;
-            $mails[$objekt]['items'][$counter] = $this->getItemInfo($item, $product, $items, $order->getOrderCurrencyCode(), $order->getStore()->getId());
-            $mails[$objekt]['order_id'] = $order->getId();
-            $mails[$objekt]['kndr'] = $order->getCustomerId();
-            $mails[$objekt]['billingAddress'] = $billingAddress;
-            $mails[$objekt]['billingStreet'] = $billingStreet;
-            $mails[$objekt]['shippingAddress'] = $shippingAddress;
-            $mails[$objekt]['shippingStreet'] = $shippingStreet;
-            $mails[$objekt]['billingCountry'] = $billingCountry;
-            $mails[$objekt]['shippingCountry'] = $shippingCountry;
-            $mails[$objekt]['dropShipping'] = $dropShipping;
-            $mails[$objekt]['order'] = $order;
-            $mails[$objekt]['payment'] = $this->_paymentHelper->getInfoBlockHtml($order->getPayment(), $order->getStoreId());
-            ;
-            $mails[$objekt]['lang'] = strtoupper($order->getStore()->getCode());
-            $mails[$objekt]['customBillingAddress'] = $this->getMyCustomBillingAddress($billingAddress);
-            if ($shippingAddress instanceof \Magento\Sales\Api\Data\OrderAddressInterface) {
-                $mails[$objekt]['customShippingAddress'] = $this->getMyCustomBillingAddress($shippingAddress, 'shipping');
-            } else {
-                $mails[$objekt]['customShippingAddress'] = $this->getMyCustomBillingAddress($billingAddress, 'shipping');
-            }
+            $mail['subject'][] = $variante;
+            $mail['items'][$counter] = $this->getItemInfo($item, $product, $items, $order->getOrderCurrencyCode(), $order->getStore()->getId());
 
             $counter++;
         }
 
-        foreach ($mails as $objekt => $mailContent) {
-            $replyto = 'aboshop_no_reply@dlv.de';
-            if ($mailContent['dropShipping'] == true) {
-                $replyto = 'produkt@dlv.de';
-            }
-            $this->sendMail($objekt, $mailContent, $replyto);
+        if ($counter > 0) {
+            $mail['subject'] = implode(', ', $mail['subject']);
+            $this->sendMail($mail);
 
             /** Set the customer_service_notice to 1 */
-            $order = $this->orderModel->get($mailContent['order_id']);
             $order->setData('customer_service_notice', 1);
             $this->orderModel->save($order);
         }
-        return $this;
+
+        return $this;;
     }
 
     /**
