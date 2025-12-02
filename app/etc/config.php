@@ -365,7 +365,6 @@ return [
         'DieMayrei_Order2Cover' => 1,
         'DieMayrei_ProductStock' => 1,
         'DieMayrei_SepaPayment' => 1,
-        'Diemayrei_Order2Cover' => 1,
         'EthanYehuda_CronjobManager' => 1,
         'Hyva_Theme' => 1,
         'Hyva_CompatModuleFallback' => 1,
