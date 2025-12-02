@@ -3,7 +3,6 @@
 
 namespace DieMayrei\EmailNotice\Cron;
 
-use DieMayrei\CustomCoupons\Model\CustomCouponsFactory;
 use DieMayrei\EmailNotice\Traits\FormatEmailVars;
 use DieMayrei\Order2Cover\Model\ExportOrders;
 use DieMayrei\Order2Cover\Model\ExportOrdersFactory;
@@ -35,11 +34,6 @@ class OrderSuccessMail
 
     /** @var ExportOrdersFactory  */
     protected $_exportOrdersFactory;
-
-    /**
-     * @var CustomCouponsFactory
-     */
-    protected $_customCouponsFactory;
 
     /**
      * @var OrderRepositoryInterface
@@ -108,7 +102,6 @@ class OrderSuccessMail
         \GuzzleHttp\Client $guzzleClient,
         State $appState,
         ExportOrdersFactory $exportOrdersFactory,
-        CustomCouponsFactory $customCouponsFactory,
         \Magento\Payment\Helper\Data $paymentHelper,
         Attribute $attribute,
         Repository $attributeRepository,
@@ -123,7 +116,6 @@ class OrderSuccessMail
         $this->guzzle = $guzzleClient;
         $this->appState = $appState;
         $this->_exportOrdersFactory = $exportOrdersFactory;
-        $this->_customCouponsFactory = $customCouponsFactory;
         $this->_paymentHelper = $paymentHelper;
         $this->attribute = $attribute;
         $this->attributeRepository = $attributeRepository;
@@ -196,11 +188,6 @@ class OrderSuccessMail
         $mails = [];
         $counter = 0;
         $subject = [];
-        $couponHtml = '';
-
-        foreach ($this->getCustomCouponsForOrder($orderId) as $coupon) {
-            $couponHtml .= '<li><b>' . $coupon['campain'] . '</b> ' . $coupon['code'] . '</li>';
-        }
 
         /** @var Interceptor $item */
         foreach ($items as $item) {
@@ -289,9 +276,6 @@ class OrderSuccessMail
             } else {
                 $mails[$objekt]['customShippingAddress'] = $this->getMyCustomBillingAddress($billingAddress, 'shipping');
             }
-
-            $mails[$objekt]['couponHtml'] = $couponHtml;
-            $mails[$objekt]['coupons'] = $this->getCustomCouponsForOrder($orderId);
 
             $counter++;
         }
@@ -576,22 +560,6 @@ class OrderSuccessMail
         $recipientMail = $recipients[$objekt] ?? 'jennifer.taylor@dlv.de';
 
         return $recipientMail;
-    }
-
-    public function getCustomCouponsForOrder(int $orderId): array
-    {
-        $collection = $this->_customCouponsFactory->create()->getCollection();
-        $collection->addFieldToFilter('used', $orderId);
-
-        $coupons = [];
-        foreach ($collection->getItems() as $item) {
-            $coupons[] = [
-                'campain' => $item->getCampain(),
-                'code' => $item->getCode()
-            ];
-        }
-
-        return $coupons;
     }
 
     /** @return array|ExportOrders[] */
