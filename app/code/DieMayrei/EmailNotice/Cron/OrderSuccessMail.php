@@ -240,7 +240,6 @@ class OrderSuccessMail
         }
 
         return $this;
-        ;
     }
 
     /**
