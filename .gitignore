@@ -67,6 +67,7 @@ app/design/frontend/DieMayrei/hyva_child/web/tailwind/generated/**
 
 /app/etc/env.php
 /.env.local
+/auth.json
 
 #--------------------------#
 # Tooling & build artifacts #
