@@ -508,28 +508,6 @@ return [
                     'enable' => '1'
                 ]
             ],
-            'trans_email' => [
-                'ident_general' => [
-                    'name' => 'HK-Shop',
-                    'email' => 'kundenservice@hk-verlag.de'
-                ],
-                'ident_sales' => [
-                    'name' => 'HK-Shop',
-                    'email' => 'kundenservice@hk-verlag.de'
-                ],
-                'ident_support' => [
-                    'name' => 'HK-Shop',
-                    'email' => 'kundenservice@hk-verlag.de'
-                ],
-                'ident_custom1' => [
-                    'name' => 'Custom 1',
-                    'email' => 'custom1@example.com'
-                ],
-                'ident_custom2' => [
-                    'name' => 'Custom 2',
-                    'email' => 'custom2@example.com'
-                ]
-            ]
         ]
     ]
 ];
