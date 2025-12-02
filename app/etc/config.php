@@ -509,15 +509,15 @@ return [
             ],
             'trans_email' => [
                 'ident_general' => [
-                    'name' => 'HK -Shop',
+                    'name' => 'HK-Shop',
                     'email' => 'kundenservice@hk-verlag.de'
                 ],
                 'ident_sales' => [
-                    'name' => 'HK -Shop',
+                    'name' => 'HK-Shop',
                     'email' => 'kundenservice@hk-verlag.de'
                 ],
                 'ident_support' => [
-                    'name' => 'HK -Shop',
+                    'name' => 'HK-Shop',
                     'email' => 'kundenservice@hk-verlag.de'
                 ],
                 'ident_custom1' => [
