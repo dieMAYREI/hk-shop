@@ -29,10 +29,3 @@
 <p>
     {{block class='Magento\\Framework\\View\\Element\\Template' template='DieMayrei_EmailNotice::email/product.phtml' area='frontend' items=$items objekt=$objekt}}
 </p>
-
-{{if couponHtml }}
-    <b>Coupon-Codes:</b>
-    <ul>
-        {{var couponHtml|raw}}
-    </ul>
-{{/if}}

@@ -507,7 +507,7 @@ return [
                 'general' => [
                     'enable' => '1'
                 ]
-            ],
+            ]
         ]
     ]
 ];
