@@ -99,16 +99,13 @@ class OrderSuccessMail
         $mutex = new \DieMayrei\Order2Cover\Helper\MyMutex(__FILE__);
 
         return $mutex->synchronized(function () {
+            $orderIds = $this->getOrders();
 
-            if ($this->appState->getMode() == \Magento\Framework\App\State::MODE_PRODUCTION) {
-                $orderIds = $this->getOrders();
-
-                foreach ($orderIds as $orderId) {
-                    try {
-                        $this->sendCustomerServiceMail($orderId['entity_id']);
-                    } catch (Exception $e) {
-                        $this->logger->critical($e->getMessage());
-                    }
+            foreach ($orderIds as $orderId) {
+                try {
+                    $this->sendCustomerServiceMail($orderId['entity_id']);
+                } catch (Exception $e) {
+                    $this->logger->critical($e->getMessage());
                 }
             }
         });
