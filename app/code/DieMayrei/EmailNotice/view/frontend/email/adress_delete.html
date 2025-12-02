@@ -1,0 +1,7 @@
+<!--@subject {{trans "Der User %user hat die %adresstyp gelöscht!" user=$coverid adresstyp=$addresstype}} @-->
+
+{{template config_path="design/email/header_template"}}
+
+<p class="greeting">{{trans "Der User <b>%user</b> hat eine Adresse gelöscht," user=$coverid|row}}</p>
+
+{{block class='Magento\\Framework\\View\\Element\\Template' template='DieMayrei_EmailNotice::email/userinfo.phtml' area='frontend' customer=$customer}}

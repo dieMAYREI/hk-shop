@@ -1,0 +1,9 @@
+<!--@subject {{trans "Der User %user hat die %adresstyp geändert!" user=$coverid adresstyp=$addresstype}} @-->
+
+{{template config_path="design/email/header_template"}}
+
+<p class="greeting">{{trans "Der User <b>%user</b> hat Adressänderungen vorgenommen," user=$coverid|row}}</p>
+
+<p>{{var customerIdent|nl2br}}<br></p>
+
+{{block class='Magento\\Framework\\View\\Element\\Template' template='DieMayrei_EmailNotice::email/userinfo.phtml' area='frontend' newAddress=$newAddress orgiginaladdress=$orgiginal_address}}

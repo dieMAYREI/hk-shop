@@ -1,0 +1,7 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
+
+    <event name="customer_address_save_before">
+        <observer name="customer_address_save_before_dm_observer" instance="DieMayrei\EmailNotice\Observer\ChangeAdress" />
+    </event>
+
+</config>

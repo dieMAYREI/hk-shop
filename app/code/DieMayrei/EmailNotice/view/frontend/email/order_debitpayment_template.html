@@ -1,0 +1,119 @@
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<!--@subject {{trans "Your %store_name order confirmation" store_name=$store.frontend_name}} @-->
+<!--@vars {
+"var formattedBillingAddress|raw":"Billing Address",
+"var order.getEmailCustomerNote()":"Email Order Note",
+"var order.increment_id":"Order Id",
+"layout handle=\"sales_email_order_items\" order_id=$order_id area=\"frontend\"":"Order Items Grid",
+"var payment_html|raw":"Payment Details",
+"var formattedShippingAddress|raw":"Shipping Address",
+"var order.getShippingDescription()":"Shipping Description",
+"var this.getUrl($store,'customer/account/',[_nosid:1])":"Customer Account URL",
+"var shipping_msg":"Shipping message"
+} @-->
+
+{{template config_path="design/email/header_template"}}
+
+<table>
+    <tr class="email-intro">
+        <td>
+            <p class="greeting">
+                {{var anrede}}
+            </p>
+            <p>
+                {{trans "vielen Dank für Ihre Bestellung im DLV-Shop."}}
+            </p>
+        </td>
+    </tr>
+    <tr class="email-summary">
+        <td>
+            <p style="margin-top:15px">{{trans 'Ihre Bestellung vom <span class="no-link">%created_at</span>' created_at=$order.getCreatedAtFormatted(2) |raw}}</p>
+            <p>{{trans 'Bestellnummer: <span class="no-link">#%increment_id</span>' increment_id=$order.increment_id |raw}}</p>
+        </td>
+    </tr>
+    <tr class="email-information">
+        <td>
+            {{depend order.getEmailCustomerNote()}}
+            <table class="message-info">
+                <tr>
+                    <td>
+                        {{var order.getEmailCustomerNote()|escape|nl2br}}
+                    </td>
+                </tr>
+            </table>
+            {{/depend}}
+            <table class="order-details">
+                <tr>
+                    <td class="address-details">
+                        <h3>{{trans "Rechnungsempfänger"}}</h3>
+                        <p>{{var formattedBillingAddress|raw}}</p>
+                    </td>
+                    {{depend order.getIsNotVirtual()}}
+                    {{if showdelivery}}
+                    <td class="address-details">
+                        <h3>{{trans "Lieferempfänger"}}</h3>
+                        <p>{{var formattedShippingAddress|raw}}</p>
+                    </td>
+                    {{/if}}
+                    {{/depend}}
+                </tr>
+                <tr>
+                    <td class="method-info">
+                        <h3>Zahlungsart</h3>
+                        {{block class='Magento\\Framework\\View\\Element\\Template' template='DieMayrei_EmailNotice::email/payment-hidden.phtml' area='frontend' payment=$payment_html}}
+                    </td>
+                    {{depend order.getIsNotVirtual()}}
+                    <td class="method-info">
+                        <h3>{{trans "Shipping Method"}}</h3>
+                        <p>
+                            {{if order.getShippingDescription()}}
+                            {{var order.getShippingDescription()}}
+                            {{else}}
+                            {{trans "Kostenloser Versand"}}
+                            {{/if}}
+                        </p>
+                        {{if shipping_msg}}
+                        <p>{{var shipping_msg}}</p>
+                        {{/if}}
+                    </td>
+                    {{/depend}}
+                </tr>
+            </table>
+            {{layout handle="sales_email_order_items" order_id=$order_id area="frontend"}}
+        </td>
+    </tr>
+    {{block class="DieMayrei\EmailNotice\Block\Digitalprodukte" order_id=$order_id name="order_sms" template="DieMayrei_EmailNotice::email/digitalprodukte.phtml" area="frontend"}}
+    <tr class="email-help">
+        <td>
+            <p>
+                {{trans 'Wenn Sie Fragen zu unseren Zeitschriften haben, können Sie uns diese an <a href="mailto:%store_email">%store_email</a>' store_email='kundenservice@dlv.de' |raw}} schicken {{trans 'oder rufen Sie uns an unter: <a href="tel:%store_phone">%store_phone</a>' store_phone='+49 (0)89/12705-487'|raw}}.
+            </p>
+            <p>
+                {{trans 'Wenn Sie Fragen zu unseren Büchern & Produkten haben, können Sie uns diese an <a href="mailto:%store_email">%store_email</a>' store_email='produkt@dlv.de' |raw}} schicken {{trans 'oder rufen Sie uns an unter: <a href="tel:%store_phone">%store_phone</a>' store_phone='+49 (0)89/12705-228'|raw}}.
+            </p>
+            <p>{{trans 'Sie erreichen unseren Kundenservice von montags bis freitags von 7:30 Uhr - 19:00 Uhr.'}}
+            </p>
+        </td>
+    </tr>
+</table>
+
+<!-- End Content -->
+</td>
+</tr>
+<tr>
+    <td class="footer">
+        <p class="closing text-center">{{trans "Vielen Dank für Ihre Bestellung"}}<br>Ihr dlv-Shop-Team</p>
+    </td>
+</tr>
+{{customVar code=dlvfooter}}
+</table>
+</td>
+</tr>
+</table>
+<!-- End wrapper table -->
+</body>

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Email:etc/email_templates.xsd">
+    <template id="chach_notice_email_customer_logged_in_email_template" label="Adress Edit" file="adress_edit.html" type="html" module="DieMayrei_EmailNotice" area="frontend"/>
+    <template id="chach_notice_email_customer_address_delete_template" label="Adress Delete" file="adress_delete.html" type="html" module="DieMayrei_EmailNotice" area="frontend"/>
+    <template id="chach_debitpayment_template" label="Debitpayment Template" file="order_debitpayment_template.html" type="html" module="DieMayrei_EmailNotice" area="frontend"/>
+    <template id="chach_debitpayment_guest_template" label="Debitpayment Guest Template" file="order_debitpayment_guest_template.html" type="html" module="DieMayrei_EmailNotice" area="frontend"/>
+    <template id="email_notice_kundenservice_order_success" label="Order Success" file="order_success.html" type="html" module="DieMayrei_EmailNotice" area="frontend"/>
+    <template id="email_notice_kundenservice_order_success_dropshipping" label="Order Success DropShipping" file="order_success_drop.html" type="html" module="DieMayrei_EmailNotice" area="frontend"/>
+    <template id="email_notice_kundenservice_order_success_geschenk" label="Order Success Geschenk" file="order_success_geschenk.html" type="html" module="DieMayrei_EmailNotice" area="frontend"/>
+    <template id="email_notice_kundenservice_order_success_lwl" label="Order Success LWL" file="order_success_lwl.html" type="html" module="DieMayrei_EmailNotice" area="frontend"/>
+</config>

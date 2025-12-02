@@ -1,0 +1,10 @@
+<?php
+if ($block->getOrderId()) {
+    $payment = $block->getOrderId();
+    $additional_information = $payment['additional_data'];
+    echo $escaper->escapeHtml($payment['method_title']) . '<br>';
+    echo 'Kontoinhaber: ' . $escaper->escapeHtml($additional_information['bank_account_owner']) . '<br>';
+    echo 'IBAN: ' . $escaper->escapeHtml(str_repeat('X', strlen($additional_information['iban']) - 4) . substr($additional_information['iban'], -4)) . '<br>';
+    echo 'BIC: ' . $escaper->escapeHtml(str_repeat('X', strlen($additional_information['bic']) - 4) . substr($additional_information['bic'], -4)) . '<br>';
+    echo 'Bank: ' . $escaper->escapeHtml($additional_information['bank_company']) . '<br>';
+}

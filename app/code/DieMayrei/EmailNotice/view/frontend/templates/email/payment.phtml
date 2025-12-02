@@ -1,0 +1,18 @@
+<?php
+if ($block->getOrderId()) {
+    $payment = $block->getOrderId();
+
+    switch ($payment->getMethod()) {
+        case 'checkmo':
+            echo "Rechnung";
+            break;
+        case 'debitpayment':
+            $additional_information = $payment->getAdditionalInformation();
+            echo $escaper->escapeHtml($additional_information["method_title"]) . '<br>';
+            echo 'Kontoinhaber: ' . $escaper->escapeHtml($additional_information["additional_data"]['bank_account_owner']) . '<br>';
+            echo 'IBAN: ' . $escaper->escapeHtml($additional_information["additional_data"]['iban']) . '<br>';
+            echo 'BIC: ' . $escaper->escapeHtml($additional_information["additional_data"]['bic']) . '<br>';
+            echo 'Bank: ' . $escaper->escapeHtml($additional_information["additional_data"]['bank_company']) . '<br>';
+            break;
+    }
+}

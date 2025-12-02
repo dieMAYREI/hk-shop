@@ -1,0 +1,109 @@
+<?php
+$items = (array)($block->getItems() ?: []);
+$objekt = $block->getObjekt();
+?>
+<table class="email-items">
+    <thead>
+    <tr>
+        <th class="item-info">
+            <?= $escaper->escapeHtml(__('Produkt')) ?>
+        </th>
+        <th class="item-info">
+            <?= $escaper->escapeHtml(__('Info')) ?>
+        </th>
+        <th class="item-qty">
+            <?= $escaper->escapeHtml(__('Qty')) ?>
+        </th>
+        <th class="item-price">
+            <?= $escaper->escapeHtml(__('Price')) ?>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($items as $item): ?>
+        <tr>
+            <td>
+                <?= isset($objekt) ? $escaper->escapeHtml($objekt) : '' ?>
+                <?= isset($item['name']) ? $escaper->escapeHtml($item['name']) : '' ?>
+            </td>
+            <td>
+                <?= $escaper->escapeHtml(__('SKU')) ?>:
+                <?= isset($item['sku']) ? $escaper->escapeHtml($item['sku']) : '' ?><br>
+                <?= $escaper->escapeHtml(__('Aktionskennzeichen')) ?>:
+                <?= isset($item['aktionskennzeichen']) ? $escaper->escapeHtml($item['aktionskennzeichen']) : '' ?><br>
+                <?= $escaper->escapeHtml(__('Unteraktionskennzeichen')) ?>:
+                <?= isset($item['unteraktion']) ? $escaper->escapeHtml($item['unteraktion']) : '' ?><br>
+                <?= $escaper->escapeHtml(__('Vorbelegung')) ?>:
+                <?= isset($item['laufende_nummer']) ? $escaper->escapeHtml($item['laufende_nummer']) : '' ?><br><br>
+
+                <?php if (isset($item['praemienoption']) && is_array($item['praemienoption'])): ?>
+                    <?php $po = $item['praemienoption']; ?>
+                    <?php if (!empty($po['name'])): ?>
+                        <b><?= $escaper->escapeHtml(__('Prämienoption:')) ?></b><br>
+                        <?= $escaper->escapeHtml($po['name']) ?><br>
+                        <?= $escaper->escapeHtml(__('SKU')) ?>:
+                        <?= isset($po['sku']) ? $escaper->escapeHtml($po['sku']) : '' ?><br>
+                        <?php if (!empty($po['attribute']) && is_array($po['attribute'])): ?>
+                            <?php foreach ($po['attribute'] as $name => $value): ?>
+                                <?= $escaper->escapeHtml($name) ?>: <?= $escaper->escapeHtml($value) ?><br>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    <?php endif; ?>
+                <?php endif; ?>
+
+                <?php if (isset($item['suplements']) && is_array($item['suplements'])): ?>
+                    <?php foreach ($item['suplements'] as $_item): ?>
+                        <?php
+                        $label = $_item['label'] ?? '';
+                        $value = $_item['print_value'] ?? '';
+                        ?>
+                        <?php if (array_key_exists('Anrede', $item['suplements'])): ?>
+                            <?php if ($label === 'Anrede'): ?>
+                                <br>
+                                <b><?= isset($item['variante']) ? $escaper->escapeHtml($item['variante']) : '' ?></b>
+                                <br>
+                                <?= $escaper->escapeHtml($label) ?>: <?= $escaper->escapeHtml($value) ?><br>
+                            <?php endif; ?>
+                            <?php if ($label === 'Vorname'): ?>
+                                <?= $escaper->escapeHtml($label) ?>: <?= $escaper->escapeHtml($value) ?><br>
+                            <?php endif; ?>
+                        <?php else: ?>
+                            <?php if ($label === 'Vorname'): ?>
+                                <br>
+                                <b><?= isset($item['variante']) ? $escaper->escapeHtml($item['variante']) : '' ?></b>
+                                <br>
+                                <?= $escaper->escapeHtml($label) ?>: <?= $escaper->escapeHtml($value) ?><br>
+                            <?php endif; ?>
+                        <?php endif; ?>
+
+                        <?php if ($label === 'Nachname'): ?>
+                            <?= $escaper->escapeHtml($label) ?>: <?= $escaper->escapeHtml($value) ?><br>
+                        <?php elseif ($label === 'Straße'): ?>
+                            <?= $escaper->escapeHtml($label) ?>: <?= $escaper->escapeHtml($value) ?><br>
+                        <?php elseif ($label === 'Hausnr.'): ?>
+                            <?= $escaper->escapeHtml($label) ?>: <?= $escaper->escapeHtml($value) ?><br>
+                        <?php elseif ($label === 'Postleitzahl'): ?>
+                            <?= $escaper->escapeHtml($label) ?>: <?= $escaper->escapeHtml($value) ?><br>
+                        <?php elseif ($label === 'Ort'): ?>
+                            <?= $escaper->escapeHtml($label) ?>: <?= $escaper->escapeHtml($value) ?><br>
+                        <?php elseif ($label === 'Land'): ?>
+                            <?= $escaper->escapeHtml($label) ?>: <?= $escaper->escapeHtml($value) ?><br>
+                        <?php else: ?>
+                            <?php if ($label !== 'Anrede' && $label !== 'Vorname'): ?>
+                                <b><?= $escaper->escapeHtml($label) ?></b><br>
+                                <?= $escaper->escapeHtml($value) ?><br>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </td>
+            <td style="text-align:center">
+                <?= isset($item['qty']) ? $escaper->escapeHtml($item['qty']) : '' ?>
+            </td>
+            <td>
+                <?= isset($item['price_total_inkl_tax']) ? $escaper->escapeHtml($item['price_total_inkl_tax']) : '' ?>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>

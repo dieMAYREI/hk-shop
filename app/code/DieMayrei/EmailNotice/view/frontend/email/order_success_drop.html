@@ -1,0 +1,57 @@
+<!--@subject {{trans "Versandauftrag dlv-Shop \"%subjectdropshipping\"" orderid=$order_id subjectdropshipping=$subjectdropshipping sprache=$lang}} @-->
+
+{{template config_path="design/email/header_template"}}
+
+<p>
+    <b>Kunde:</b><br>
+    {{trans "%customer_firstname," customer_firstname=$order.getCustomerFirstname()}} {{trans "%customer_lastname," customer_lastname=$order.getCustomerLastname()}}<br>
+    {{trans "%customer_email" customer_email=$order.getCustomerEmail()}}<br>
+</p>
+
+<p>
+    <b>Lieferadresse:</b><br>
+        {{var customShippingAddress|nl2br}}<br>
+</p>
+
+<p>
+    {{block class='Magento\\Framework\\View\\Element\\Template' template='DieMayrei_EmailNotice::email/product-drop.phtml' area='frontend' items=$items objekt=$objekt}}
+</p>
+
+<!-- End Content -->
+</td>
+</tr>
+<tr class="main-content">
+    <td class="footer">
+        <p class="closing text-center">Wir bitten um einen zeitnahen Versand der bestellten Ware an den Kunden und bedanken uns für die Zusammenarbeit. Bei Fragen zur Bestellung steht Ihnen unser Kundenservice gerne von Montag bis Freitag von 7:30 Uhr bis 19 Uhr telefonisch zur Verfügung unter: +49 (0)89/12705-228.</p>
+        <p class="closing text-center">Mit freundlichen Grüßen<br>Ihr dlv-Shop Team</p>
+    </td>
+</tr>
+<tr class="main-content">
+    <td class="footer">
+        <table class="dlvpolicy">
+            <tr>
+                <td><small>dlv-shop.de wird betrieben von der<br>
+                    Deutscher Landwirtschaftsverlag GmbH<br>
+                    Lothstraße 29<br>
+                    80797 München<br>
+                    Telefon: +49 (0)89-12705-1<br>
+                    Fax: +49 (0)89-12705-335<br>
+                    E-Mail: info@dlv.de</small></td>
+                <td><small>HRB 59744, Registergericht Hannover<br>
+                    Umsatzsteueridentifikationsnr. DE 813291728<br>
+                    Bankverbindung: Postbank München<br>
+                    IBAN: DE60 7001 0080 0646 5658 04<br>
+                    BIC: PBNKDEFF</small></td>
+            </tr>
+            <tr>
+                <td class="leader" colspan="2"><small>Geschäftsführung: Christian Schmidt-Hamkens (Sprecher), Günter Betz, Helmut Brachtendorf, Vors. d. Aufsichtsrats: Günther Felßner</small></td>
+            </tr>
+        </table>
+    </td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+<!-- End wrapper table -->
+</body>

@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="diemayrei" translate="label" sortOrder="1000">
+            <label>DieMayrei</label>
+        </tab>
+        <section id="diemayrei_emailnotice" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Email Notice</label>
+            <tab>diemayrei</tab>
+            <resource>DieMayrei_EmailNotice::emailnotice_config</resource>
+            <group id="diemayrei_emailnotice_adresschange" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Adress Änderung</label>
+                <field id="emailnotice_adresschange_first" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Recipient 1:</label>
+                    <validate>required-entry email</validate>
+                    <config_path>diemayrei/emailnotice/adresschange_first</config_path>
+                </field>
+                <field id="emailnotice_client_secret_local" type="text" translate="label" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Recipient 2:</label>
+                    <validate>email</validate>
+                    <config_path>diemayrei/emailnotice/adresschange_second</config_path>
+                </field>
+                <field id="emailnotice_redirect_url_local" type="text" translate="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Recipient 3:</label>
+                    <validate>email</validate>
+                    <config_path>diemayrei/emailnotice/adresschange_third</config_path>
+                </field>
+                <field id="emailnotice_access_token_local" type="text" translate="label" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Recipient 4:</label>
+                    <validate>email</validate>
+                    <config_path>diemayrei/emailnotice/adresschange_fourth</config_path>
+                </field>
+            </group>
+          <group id="diemayrei_emailnotice_ordersuccess" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <label>Order Success</label>
+            <field id="emailnotice_ordersuccess_first" type="text" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+              <label>Recipient 1:</label>
+              <validate>required-entry email</validate>
+              <config_path>diemayrei/emailnotice/ordersuccess_first</config_path>
+            </field>
+            <field id="emailnotice_client_secret_local" type="text" translate="label" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+              <label>Recipient 2:</label>
+              <validate>email</validate>
+              <config_path>diemayrei/emailnotice/ordersuccess_second</config_path>
+            </field>
+            <field id="emailnotice_redirect_url_local" type="text" translate="label" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+              <label>Recipient 3:</label>
+              <validate>email</validate>
+              <config_path>diemayrei/emailnotice/ordersuccess_third</config_path>
+            </field>
+            <field id="emailnotice_access_token_local" type="text" translate="label" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+              <label>Recipient 4:</label>
+              <validate>email</validate>
+              <config_path>diemayrei/emailnotice/ordersuccess_fourth</config_path>
+            </field>
+          </group>
+        </section>
+    </system>
+</config>

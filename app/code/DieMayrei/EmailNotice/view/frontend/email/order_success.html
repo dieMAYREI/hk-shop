@@ -1,0 +1,38 @@
+<!--@subject {{trans "[%sprache] DLV-Shop -> Neue Bestellung #%orderid (%betreff)" orderid=$order_id betreff=$subject sprache=$lang}} @-->
+
+{{template config_path="design/email/header_template"}}
+
+
+<p><b>Objekt:</b> {{var objekt}}</p>
+
+<p>
+    <b>Kunde:</b><br>
+    {{trans "%customer_firstname," customer_firstname=$order.getCustomerFirstname()}} {{trans "%customer_lastname," customer_lastname=$order.getCustomerLastname()}}<br>
+    {{trans "%customer_email" customer_email=$order.getCustomerEmail()}}<br>
+</p>
+
+<p>
+    <b>Rechnungsadresse:</b><br>
+        {{var customBillingAddress|nl2br}}<br>
+</p>
+
+<p>
+    <b>Lieferadresse:</b><br>
+        {{var customShippingAddress|nl2br}}<br>
+</p>
+
+<p>
+    <b>Zahlungsart:</b><br>
+    {{var payment|raw}}
+</p>
+
+<p>
+    {{block class='Magento\\Framework\\View\\Element\\Template' template='DieMayrei_EmailNotice::email/product.phtml' area='frontend' items=$items objekt=$objekt}}
+</p>
+
+{{if couponHtml }}
+    <b>Coupon-Codes:</b>
+    <ul>
+        {{var couponHtml|raw}}
+    </ul>
+{{/if}}

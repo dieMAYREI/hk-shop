@@ -1,0 +1,81 @@
+<?php
+$newAddress = (array)($block->getNewAddress() ?: []);
+$orgAddress = (array)($block->getOrgiginaladdress() ?: []);
+
+$oldStreet0 = (isset($orgAddress['street']) && is_array($orgAddress['street']) && isset($orgAddress['street'][0]))
+    ? $orgAddress['street'][0]
+    : '';
+$oldStreet1 = (isset($orgAddress['street']) && is_array($orgAddress['street']) && isset($orgAddress['street'][1]))
+    ? $orgAddress['street'][1]
+    : '';
+?>
+
+<?php if (!empty($newAddress['Adresstyp'])): ?>
+    <h2><?= $escaper->escapeHtml($newAddress['Adresstyp']) ?></h2>
+<?php endif; ?>
+
+<table class="email-items">
+    <tbody>
+    <tr>
+        <th></th>
+        <th><?= $escaper->escapeHtml(__('Alte Adresse')) ?></th>
+        <th><?= $escaper->escapeHtml(__('Neue Adresse')) ?></th>
+    </tr>
+    <tr>
+        <td><?= /* @noEscape */ __('Anrede') ?></td>
+        <td><?= isset($orgAddress['prefix']) ? $escaper->escapeHtml($orgAddress['prefix']) : '' ?></td>
+        <td><?= isset($newAddress['Anrede']) ? $escaper->escapeHtml($newAddress['Anrede']) : '' ?></td>
+    </tr>
+    <tr>
+        <td><?= /* @noEscape */ __('Titel') ?></td>
+        <td><?= isset($orgAddress['suffix']) ? $escaper->escapeHtml($orgAddress['suffix']) : '' ?></td>
+        <td><?= isset($newAddress['Titel']) ? $escaper->escapeHtml($newAddress['Titel']) : '' ?></td>
+    </tr>
+    <tr>
+        <td><?= /* @noEscape */ __('Vorname') ?></td>
+        <td><?= isset($orgAddress['firstname']) ? $escaper->escapeHtml($orgAddress['firstname']) : '' ?></td>
+        <td><?= isset($newAddress['Vorname']) ? $escaper->escapeHtml($newAddress['Vorname']) : '' ?></td>
+    </tr>
+    <tr>
+        <td><?= /* @noEscape */ __('Nachname') ?></td>
+        <td><?= isset($orgAddress['lastname']) ? $escaper->escapeHtml($orgAddress['lastname']) : '' ?></td>
+        <td><?= isset($newAddress['Nachname']) ? $escaper->escapeHtml($newAddress['Nachname']) : '' ?></td>
+    </tr>
+    <tr>
+        <td><?= /* @noEscape */ __('Firma') ?></td>
+        <td><?= isset($orgAddress['company']) ? $escaper->escapeHtml($orgAddress['company']) : '' ?></td>
+        <td><?= isset($newAddress['Firmenname']) ? $escaper->escapeHtml($newAddress['Firmenname']) : '' ?></td>
+    </tr>
+    <tr>
+        <td><?= /* @noEscape */ __('Strasse') ?></td>
+        <td><?= $escaper->escapeHtml($oldStreet0) ?></td>
+        <td><?= isset($newAddress['Strasse']) ? $escaper->escapeHtml($newAddress['Strasse']) : '' ?></td>
+    </tr>
+    <tr>
+        <td><?= /* @noEscape */ __('Hausnr.') ?></td>
+        <td><?= $escaper->escapeHtml($oldStreet1) ?></td>
+        <td><?= isset($newAddress['Hausnr']) ? $escaper->escapeHtml($newAddress['Hausnr']) : '' ?></td>
+    </tr>
+    <tr>
+        <td><?= /* @noEscape */ __('Postleitzahl') ?></td>
+        <td><?= isset($orgAddress['plz']) ? $escaper->escapeHtml($orgAddress['plz']) : '' ?></td>
+        <td><?= isset($newAddress['PLZ']) ? $escaper->escapeHtml($newAddress['PLZ']) : '' ?></td>
+    </tr>
+    <tr>
+        <td><?= /* @noEscape */ __('Stadt') ?></td>
+        <td><?= isset($orgAddress['city']) ? $escaper->escapeHtml($orgAddress['city']) : '' ?></td>
+        <td><?= isset($newAddress['Ort']) ? $escaper->escapeHtml($newAddress['Ort']) : '' ?></td>
+    </tr>
+    <tr>
+        <td><?= /* @noEscape */ __('Land') ?></td>
+        <td><?= isset($orgAddress['country']) ? $escaper->escapeHtml($orgAddress['country']) : '' ?></td>
+        <td><?= isset($newAddress['Land']) ? $escaper->escapeHtml($newAddress['Land']) : '' ?></td>
+    </tr>
+    <tr>
+        <td><?= /* @noEscape */ __('Telefon') ?></td>
+        <td><?= isset($orgAddress['telephone']) ? $escaper->escapeHtml($orgAddress['telephone']) : '' ?></td>
+        <td><?= isset($newAddress['Telefon']) ? $escaper->escapeHtml($newAddress['Telefon']) : '' ?></td>
+    </tr>
+    </tbody>
+    
+</table>

@@ -1,0 +1,39 @@
+<!--@subject {{trans "[%sprache] DLV-Shop -> Neue Bestellung #%orderid (%betreff)" orderid=$order_id betreff=$subject sprache=$lang}} @-->
+
+{{template config_path="design/email/header_template"}}
+
+
+<p><b>Objekt:</b> {{var objekt}}</p>
+
+<p>
+    <b>Kunde:</b><br>
+    {{trans "%customer_firstname," customer_firstname=$order.getCustomerFirstname()}} {{trans "%customer_lastname," customer_lastname=$order.getCustomerLastname()}}<br>
+    {{trans "%customer_email" customer_email=$order.getCustomerEmail()}}<br>
+</p>
+
+<p>
+    <b>Adresse neuer Abonnent:</b><br>
+    {{var customBillingAddress|nl2br}}<br><br>
+</p>
+
+<p>
+    <b>Adresse des Werbers:</b><br>
+    {{if shippingAddress}}
+        {{trans "%shipping_prefix " shipping_prefix=$prefix}}
+        {{trans "%shipping_firstname " shipping_firstname=$firstname}}
+        {{trans "%shipping_lastname " shipping_lastname=$lastname}}<br>
+        {{trans "%shipping_street" shipping_street=$street}}<br>
+        {{trans "%shipping_postcode," shipping_postcode=$postcode}} {{trans "%shipping_city" shipping_city=$city}}<br>
+        {{trans "%shipping_county, %shipping_countyid"  shipping_county=$shippingCountry shipping_countyid=$country_code}}<br><br>
+    {{/if}}
+</p>
+
+<p>
+    <b>Zahlungsart:</b><br>
+    {{var payment|raw}}
+</p>
+
+<p>
+    {{block class='Magento\\Framework\\View\\Element\\Template' template='DieMayrei_EmailNotice::email/product.phtml' area='frontend' items=$items objekt=$objekt}}
+</p>
+
