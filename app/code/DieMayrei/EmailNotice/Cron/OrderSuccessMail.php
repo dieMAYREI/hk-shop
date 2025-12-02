@@ -218,19 +218,13 @@ class OrderSuccessMail
             $product = $this->objectManager->create(\Magento\Catalog\Model\Product::class)->load($item->getProductId());
 
             /**
-             * Exit if product not found or Prämie
+             * Exit if product not found
              */
-            if (!$product->getId() || $product->getAttributeSetId() == 9) {
+            if (!$product->getId()) {
                 continue;
             }
 
-            $variante = $product->getAttributeText('abovarianten');
-
-            if (!$variante) {
-                $variante = $product->getName();
-            }
-
-            $mail['subject'][] = $variante;
+            $mail['subject'][] = $product->getName();
             $mail['items'][$counter] = $this->getItemInfo($item, $product, $items, $order->getOrderCurrencyCode(), $order->getStore()->getId());
 
             $counter++;
@@ -315,22 +309,12 @@ class OrderSuccessMail
      */
     protected function getItemInfo($item, $product, &$items, $currency_code, $storeid)
     {
-        $variante = '';
-        if (substr_count($product->getAttributeText('abovarianten'), 'Leser werben Leser')) {
-            $variante = 'Die Prämie erhält:';
-        } elseif (substr_count($product->getAttributeText('abovarianten'), 'Geschenk')) {
-            $variante = 'Das Geschenkabo erhält:';
-        }
         $mail_items['sku'] = $product->getSku();
-        $mail_items['variante'] = $variante;
         $mail_items['name'] = $product->getName();
         $mail_items['currency_code'] = $currency_code;
         $mail_items['price_total_inkl_tax'] = $this->pricing->currencyByStore(($item->getRowTotal() - $item->getDiscountAmount() + $item->getTaxAmount() + $item->getDiscountTaxCompensationAmount()), $storeid, true, false);
         $mail_items['qty'] = $item->getQtyToShip();
-        $mail_items['aktionskennzeichen'] = $product->getAktionskennzeichen();
-        $mail_items['unteraktion'] = $product->getUnteraktion();
         $mail_items['laufende_nummer'] = $product->getLaufendeNummer();
-        $mail_items['objekt'] = $product->getAttributeText('objekt');
 
         if (is_array($item->getProductOptionByCode('bundle_options')) && !empty($item->getProductOptionByCode('bundle_options'))) {
             $option = current($item->getProductOptionByCode('bundle_options'));
@@ -397,55 +381,22 @@ class OrderSuccessMail
     }
 
     /**
-     * @param $objekt
      * @param $mailContent
      * @throws LocalizedException
      * @throws MailException
      */
-    protected function sendMail($objekt, $mailContent, $replyto = 'aboshop_no_reply@dlv.de')
+    protected function sendMail($mailContent)
     {
-
-        $sender = [
-            'name' => 'DLV-Shop',
-            'email' => 'bestellbestaetigung.dlv-shop@dlv.de',
-        ];
-
         /** @var \Magento\Framework\Mail\Template\TransportBuilder\Interceptor $myMailTransporter */
         $myMailTransporter = $this->transportBuilder;
         $myMailTransporter->setTemplateIdentifier($mailContent['template']);
         $myMailTransporter->setTemplateOptions(['area' => 'frontend', 'store' => 0]);
-        /* Receiver Detail */
-        if (strpos($objekt, 'SoPro') === false && !$mailContent['dropShipping']) {
-            if ($this->config->getConfig('diemayrei/emailnotice/ordersuccess_first')) {
-                $myMailTransporter->addTo($this->config->getConfig('diemayrei/emailnotice/ordersuccess_first'));
-            }
-            if ($objekt) {
-                $myMailTransporter->addCc($this->getObjektRecipient($objekt));
-            }
-        } else {
-            if ($mailContent['dropShipping']) {
-                if ($mailContent['objekt']) {
-                    $myMailTransporter->addTo($mailContent['objekt']);
-                } else {
-                    $myMailTransporter->addTo(['produkt@dlv.de', 'jennifer.taylor@dlv.de']);
-                    $this->logger->error('Keine E-Mail Adresse für Dropshipping gefunden. Bestellung: ' . $mailContent['order_id']);
-                }
-            } else {
-                $myMailTransporter->addTo($this->getObjektRecipient($objekt));
-            }
-        }
-        if ($this->config->getConfig('diemayrei/emailnotice/ordersuccess_second')) {
-            $myMailTransporter->addCc($this->config->getConfig('diemayrei/emailnotice/ordersuccess_second'));
-        }
-        if ($this->config->getConfig('diemayrei/emailnotice/ordersuccess_third')) {
-            $myMailTransporter->addCc($this->config->getConfig('diemayrei/emailnotice/ordersuccess_third'));
-        }
-        if ($this->config->getConfig('diemayrei/emailnotice/ordersuccess_fourth')) {
-            $myMailTransporter->addCc($this->config->getConfig('diemayrei/emailnotice/ordersuccess_fourth'));
-        }
+        
+        // Send to ident_sales (kundenservice@hk-verlag.de)
+        $myMailTransporter->addTo($this->config->getConfig('trans_email/ident_sales/email'));
+        
         $myMailTransporter->setTemplateVars($mailContent);
-        $myMailTransporter->setFrom($sender);
-        $myMailTransporter->setReplyTo($replyto);
+        $myMailTransporter->setFromByScope('sales');
 
         try {
             $myMailTransporter->getTransport()->sendMessage();
@@ -468,51 +419,6 @@ class OrderSuccessMail
         }
 
         return false;
-    }
-
-    /**
-     * @param $objekt
-     * @return mixed|string
-     */
-    public function getObjektRecipient($objekt)
-    {
-        $recipientMail = '';
-
-        $recipients = [
-            'AFZ' => 'leserservice.afz-derwald@dlv.de',
-            'AH' => 'leserservice.agrarheute@dlv.de',
-            'ALM' => 'leserservice.almbauer@dlv.de',
-            'AT' => 'leserservice.agrartechnik@dlv.de',
-            'BIE' => 'leserservice.bienen@dlv.de',
-            'BLW' => 'leserservice.wochenblatt@dlv.de',
-            'BP' => 'leserservice.bayernspferde@dlv.de',
-            'BV' => 'leserservice.braunvieh@dlv.de',
-            'BZ' => 'leserservice.bauernzeitung@dlv.de',
-            'DBJ' => 'leserservice.dbj@dlv.de',
-            'DW' => 'leserservice.waldbesitzer@dlv.de',
-            'FF' => 'leserservice@food-and-farm.com',
-            'FUT' => 'leserservice.forstundtechnik@dlv.de',
-            'FV' => 'leserservice.fleckvieh@dlv.de',
-            'GEM' => 'leserservice.gemuese@dlv.de',
-            'HI' => 'leserservice.holstein@dlv.de',
-            'JGH' => 'leserservice.jagdgebrauchshund@dlv.de',
-            'KUR' => 'leserservice.kur@dlv.de',
-            'LUF' => 'leserservice.landundforst@dlv.de',
-            'LWO' => 'leserservice.wochenblatt@dlv.de',
-            'MPF' => 'leserservice.agrarheute@dlv.de',
-            'MPM' => 'leserservice.agrarheute@dlv.de',
-            'NJ' => 'leserservice.nj@dlv.de',
-            'NLR' => 'leserservice.neuelandwirtschaft@dlv.de',
-            'OL' => 'leserservice.oldenburger@dlv.de',
-            'PI' => 'leserservice.pirsch@dlv.de',
-            'SoPro' => 'bestellung-produkt@dlv.de',
-            'TRA' => 'leserservice.traction@dlv.de',
-            'UJ' => 'leserservice.unserejagd@dlv.de'
-        ];
-
-        $recipientMail = $recipients[$objekt] ?? 'jennifer.taylor@dlv.de';
-
-        return $recipientMail;
     }
 
     /** @return array|ExportOrders[] */
