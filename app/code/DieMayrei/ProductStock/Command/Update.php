@@ -93,7 +93,7 @@ class Update extends Command
         ProductRepositoryInterface $productRepository,
         Action $productAction,
         \Magento\Framework\App\ResourceConnection $connection,
-        ProductCollectionFactory $productCollectionFactory = null
+        ?ProductCollectionFactory $productCollectionFactory = null
     ) {
         $this->_csv = $csv;
         $this->state = $state;

@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-STAGING_SSH_HOST=${STAGING_SSH_HOST:-hk-shop@staging.shop.hk-verlag.de}
+STAGING_SSH_HOST=${STAGING_SSH_HOST:-hkshop@shop.hk-verlag.de}
 STAGING_SSH_PORT=${STAGING_SSH_PORT:-21984}
 STAGING_REMOTE_ROOT=${STAGING_REMOTE_ROOT:-src}
 

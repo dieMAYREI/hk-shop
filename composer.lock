@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "76f291d2d093fbf52886381513db8e41",
+    "content-hash": "7303c0492c5ec044f583c17ee7f721bf",
     "packages": [
         {
             "name": "2tvenom/cborencode",
@@ -2125,6 +2125,63 @@
                 }
             ],
             "time": "2025-07-13T19:59:45+00:00"
+        },
+        {
+            "name": "ethanyehuda/magento2-cronjobmanager",
+            "version": "v2.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Ethan3600/magento2-CronjobManager.git",
+                "reference": "12d952f4f1f768c32d4ec140ba8f4d50b367d73d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Ethan3600/magento2-CronjobManager/zipball/12d952f4f1f768c32d4ec140ba8f4d50b367d73d",
+                "reference": "12d952f4f1f768c32d4ec140ba8f4d50b367d73d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-posix": "*",
+                "magento/framework": "^102.0 || ^103.0",
+                "magento/module-backend": "^100.0 || ^101.0 || ^102.0",
+                "magento/module-cron": "^100.3",
+                "magento/module-store": "^100.0 || ^101.0",
+                "magento/module-ui": "^100.0 || ^101.0",
+                "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0",
+                "psr/log": "^1.0 || ^2.0 || ^3.0",
+                "symfony/console": "^4.0 || ^5.0 || ^6.0"
+            },
+            "require-dev": {
+                "ext-pcntl": "*"
+            },
+            "type": "magento2-module",
+            "autoload": {
+                "files": [
+                    "registration.php"
+                ],
+                "psr-4": {
+                    "EthanYehuda\\CronjobManager\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Test/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "description": "A module for managing scheduled cron jobs from magento's admin panel",
+            "support": {
+                "issues": "https://github.com/Ethan3600/magento2-CronjobManager/issues",
+                "source": "https://github.com/Ethan3600/magento2-CronjobManager/tree/v2.2.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/ethan3600",
+                    "type": "github"
+                }
+            ],
+            "time": "2025-04-11T14:54:47+00:00"
         },
         {
             "name": "ezimuel/guzzlestreams",
@@ -31970,5 +32027,5 @@
     "prefer-lowest": false,
     "platform": {},
     "platform-dev": {},
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
