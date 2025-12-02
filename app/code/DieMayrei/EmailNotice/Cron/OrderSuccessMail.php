@@ -239,7 +239,8 @@ class OrderSuccessMail
             $this->orderModel->save($order);
         }
 
-        return $this;;
+        return $this;
+        ;
     }
 
     /**
