@@ -31,7 +31,10 @@ class OrderSender extends \Magento\Sales\Model\Order\Email\Sender\OrderSender
                     'formattedBillingAddress' => $this->getFormattedBillingAddress($order),
                     'order_data' => [
                         'increment_id' => $order->getIncrementId(),
-                        'created_at_formatted' => $order->getCreatedAtFormatted(2)
+                        'created_at_formatted' => $order->getCreatedAtFormatted(2),
+                        'email_customer_note' => $order->getEmailCustomerNote(),
+                        'customer_name' => $order->getCustomerName(),
+                        'is_not_virtual' => $order->getIsNotVirtual(),
                     ],
                 ];
                 $transportObject = new DataObject($transport);
@@ -57,7 +60,10 @@ class OrderSender extends \Magento\Sales\Model\Order\Email\Sender\OrderSender
                     'formattedBillingAddress' => $this->getFormattedBillingAddress($order),
                     'order_data' => [
                         'increment_id' => $order->getIncrementId(),
-                        'created_at_formatted' => $order->getCreatedAtFormatted(2)
+                        'created_at_formatted' => $order->getCreatedAtFormatted(2),
+                        'email_customer_note' => $order->getEmailCustomerNote(),
+                        'customer_name' => $order->getCustomerName(),
+                        'is_not_virtual' => $order->getIsNotVirtual(),
                     ],
                 ];
 
@@ -72,10 +78,10 @@ class OrderSender extends \Magento\Sales\Model\Order\Email\Sender\OrderSender
                 );
                 $this->templateContainer->setTemplateVars($transportObject->getData());
 
-                $templateId = $order->getCustomerIsGuest() ?
-                    $this->identityContainer->getGuestTemplateId()
-                    : $this->identityContainer->getTemplateId();
-
+                // Verwende das Standard Magento Template (wird vom Theme überschrieben)
+                $templateId = $order->getCustomerIsGuest()
+                    ? 'sales_email_order_guest_template'
+                    : 'sales_email_order_template';
         }
 
         $this->templateContainer->setTemplateId($templateId);

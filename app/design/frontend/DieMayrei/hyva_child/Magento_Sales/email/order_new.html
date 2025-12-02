@@ -1,0 +1,91 @@
+<!--
+/**
+ * HK-Shop Order Confirmation Email
+ */
+-->
+<!--@subject {{trans "Bestätigung Ihrer Bestellung im HK-Shop"}} @-->
+<!--@vars {
+"var formattedBillingAddress|raw":"Billing Address",
+"var order_data.email_customer_note|escape|nl2br":"Email Order Note",
+"var order.increment_id":"Order Id",
+"layout handle=\"sales_email_order_items\" order_id=$order_id area=\"frontend\"":"Order Items Grid",
+"var payment_html|raw":"Payment Details",
+"var formattedShippingAddress|raw":"Shipping Address",
+"var order.shipping_description":"Shipping Description",
+"var shipping_msg":"Shipping message",
+"var created_at_formatted":"Order Created At (datetime)",
+"var store.frontend_name":"Store Frontend Name"
+} @-->
+
+{{template config_path="design/email/header_template"}}
+
+<table>
+    <tr class="email-intro">
+        <td>
+            <p class="greeting">{{trans "%customer_name," customer_name=$order_data.customer_name}}</p>
+            <p>
+                {{trans "Vielen Dank für Ihre Bestellung im HK-Shop."}}
+            </p>
+        </td>
+    </tr>
+    <tr class="email-summary">
+        <td>
+            <h1>{{trans 'Ihre Bestellung <span class="no-link">#%increment_id</span>' increment_id=$order.increment_id |raw}}</h1>
+            <p>{{trans 'Bestellung vom <span class="no-link">%created_at</span>' created_at=$created_at_formatted |raw}}</p>
+        </td>
+    </tr>
+    <tr class="email-information">
+        <td>
+            {{depend order_data.email_customer_note}}
+            <table class="message-info">
+                <tr>
+                    <td>
+                        {{var order_data.email_customer_note|escape|nl2br}}
+                    </td>
+                </tr>
+            </table>
+            {{/depend}}
+            <table class="order-details">
+                <tr>
+                    <td class="address-details">
+                        <h3>{{trans "Rechnungsempfänger"}}</h3>
+                        <p>{{var formattedBillingAddress|raw}}</p>
+                    </td>
+                    {{depend order_data.is_not_virtual}}
+                    <td class="address-details">
+                        <h3>{{trans "Lieferempfänger"}}</h3>
+                        <p>{{var formattedShippingAddress|raw}}</p>
+                    </td>
+                    {{/depend}}
+                </tr>
+                <tr>
+                    <td class="method-info">
+                        <h3>{{trans "Zahlungsart"}}</h3>
+                        {{var payment_html|raw}}
+                    </td>
+                    {{depend order_data.is_not_virtual}}
+                    <td class="method-info">
+                        <h3>{{trans "Versandart"}}</h3>
+                        <p>{{var order.shipping_description}}</p>
+                        {{if shipping_msg}}
+                        <p>{{var shipping_msg}}</p>
+                        {{/if}}
+                    </td>
+                    {{/depend}}
+                </tr>
+            </table>
+            {{layout handle="sales_email_order_items" order_id=$order_id area="frontend"}}
+        </td>
+    </tr>
+    <tr class="email-help">
+        <td>
+            <p>
+                Wenn Sie Fragen zu unseren Zeitschriften haben, können Sie uns diese an <a href="mailto:kundenservice@hk-verlag.de">kundenservice@hk-verlag.de</a> schicken oder rufen Sie uns an unter: <a href="tel:+49 30 293974-47">+49 30 293974-47</a>.
+            </p>
+            <p>{{trans 'Sie erreichen unseren Kundenservice von montags bis freitags von 7:30 Uhr - 19:00 Uhr.'}}
+            </p>
+        </td>
+    </tr>
+</table>
+
+{{template config_path="design/email/footer_template"}}
