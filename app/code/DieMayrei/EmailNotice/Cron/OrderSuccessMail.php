@@ -312,8 +312,13 @@ class OrderSuccessMail
         $myMailTransporter->setTemplateIdentifier($mailContent['template']);
         $myMailTransporter->setTemplateOptions(['area' => 'frontend', 'store' => 0]);
         
-        // Send to ident_sales (kundenservice@hk-verlag.de)
-        $myMailTransporter->addTo($this->config->getConfig('trans_email/ident_sales/email'));
+        // Im Production-Modus an Kundenservice senden, sonst an Test-Adressen
+        if ($this->appState->getMode() == \Magento\Framework\App\State::MODE_PRODUCTION) {
+            $myMailTransporter->addTo($this->config->getConfig('trans_email/ident_sales/email'));
+        } else {
+            $myMailTransporter->addTo('andreas.aichele@diemayrei.de');
+            $myMailTransporter->addTo('jennifer.taylor@dlv.de');
+        }
         
         $myMailTransporter->setTemplateVars($mailContent);
         $myMailTransporter->setFromByScope('sales');
