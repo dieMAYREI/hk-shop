@@ -1,14 +1,10 @@
 <?php
 
-
 namespace DieMayrei\EmailNotice\Cron;
 
 use DieMayrei\EmailNotice\Traits\FormatEmailVars;
-use DieMayrei\Order2Cover\Model\ExportOrders;
-use DieMayrei\Order2Cover\Model\ExportOrdersFactory;
 use Exception;
-use Magento\Framework\Api\AttributeValue;
-use \Magento\Framework\App\ObjectManager;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\State;
 use DieMayrei\EmailNotice\Helper\EmailNotice;
 use Magento\Framework\Exception\LocalizedException;
@@ -16,10 +12,7 @@ use Magento\Framework\Exception\MailException;
 use Magento\Framework\Pricing\Helper\Data;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order\Address;
-use Magento\Sales\Model\Order\Email\Sender\OrderSender;
 use Magento\Sales\Model\Order\Item\Interceptor;
-use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
-use Magento\Catalog\Model\Product\Attribute\Repository;
 use Psr\Log\LoggerInterface;
 use Magento\Framework\Mail\Template\TransportBuilder;
 
@@ -28,12 +21,9 @@ class OrderSuccessMail
     use FormatEmailVars;
 
     /**
-     * @var ObjectManager ObjectManager
+     * @var ObjectManager
      */
     protected $objectManager;
-
-    /** @var ExportOrdersFactory  */
-    protected $_exportOrdersFactory;
 
     /**
      * @var OrderRepositoryInterface
@@ -41,17 +31,9 @@ class OrderSuccessMail
     protected $orderModel;
 
     /**
-     * @var OrderSender
-     */
-    protected $orderSender;
-
-    /**
-     * @var Magento\Framework\Pricing\Helper\Data $pricing
+     * @var Data
      */
     protected $pricing;
-
-    /** @var \GuzzleHttp\Client  */
-    protected $guzzle;
 
     /**
      * @var State
@@ -59,21 +41,11 @@ class OrderSuccessMail
     protected $appState;
 
     /**
-     * @var Attribute
-     */
-    protected $attribute;
-    /**
-     * @var Repository
-     */
-    protected $attributeRepository;
-    /**
      * @var LoggerInterface
      */
     protected $logger;
 
     /**
-     * Payment Helper Data
-     *
      * @var \Magento\Payment\Helper\Data
      */
     protected $_paymentHelper;
@@ -82,6 +54,7 @@ class OrderSuccessMail
      * @var TransportBuilder
      */
     protected $transportBuilder;
+
     /**
      * @var EmailNotice
      */
@@ -89,36 +62,29 @@ class OrderSuccessMail
 
     /**
      * @param OrderRepositoryInterface $orderModel
-     * @param OrderSender $orderSender
-     *
-     * @codeCoverageIgnore
+     * @param Data $pricing
+     * @param TransportBuilder $transportBuilder
+     * @param EmailNotice $config
+     * @param State $appState
+     * @param \Magento\Payment\Helper\Data $paymentHelper
+     * @param LoggerInterface $logger
      */
     public function __construct(
         OrderRepositoryInterface $orderModel,
-        OrderSender $orderSender,
-        Data  $pricing,
+        Data $pricing,
         TransportBuilder $transportBuilder,
         EmailNotice $config,
-        \GuzzleHttp\Client $guzzleClient,
         State $appState,
-        ExportOrdersFactory $exportOrdersFactory,
         \Magento\Payment\Helper\Data $paymentHelper,
-        Attribute $attribute,
-        Repository $attributeRepository,
         LoggerInterface $logger
     ) {
         $this->orderModel = $orderModel;
-        $this->orderSender = $orderSender;
         $this->pricing = $pricing;
         $this->objectManager = ObjectManager::getInstance();
         $this->transportBuilder = $transportBuilder;
         $this->config = $config;
-        $this->guzzle = $guzzleClient;
         $this->appState = $appState;
-        $this->_exportOrdersFactory = $exportOrdersFactory;
         $this->_paymentHelper = $paymentHelper;
-        $this->attribute = $attribute;
-        $this->attributeRepository = $attributeRepository;
         $this->logger = $logger;
     }
 
@@ -240,49 +206,6 @@ class OrderSuccessMail
         }
 
         return $this;
-    }
-
-    /**
-     * Extract gift shipping address data from bundle item options.
-     *
-     * @param Interceptor $item
-     * @return array
-     */
-    public function setShippingAddress($item)
-    {
-        $item_options = $item->getProductOptions();
-        $gift_address = [];
-        if (array_key_exists('options', $item_options)) {
-            foreach ($item_options['options'] as $item_option) {
-                switch ($item_option['label']) {
-                    case 'Anrede':
-                        $gift_address['prefix'] = $item_option['value'];
-                        break;
-                    case 'Vorname':
-                        $gift_address['firstname'] = $item_option['value'];
-                        break;
-                    case 'Nachname':
-                        $gift_address['lastname'] = $item_option['value'];
-                        break;
-                    case 'Straße':
-                        $gift_address['street'] = $item_option['value'];
-                        break;
-                    case 'Hausnr.':
-                        $gift_address['housenumber'] = $item_option['value'];
-                        break;
-                    case 'Postleitzahl':
-                        $gift_address['postcode'] = $item_option['value'];
-                        break;
-                    case 'Ort':
-                        $gift_address['city'] = $item_option['value'];
-                        break;
-                    case 'Land':
-                        $gift_address['country_code'] = $item_option['value'];
-                        break;
-                }
-            }
-        }
-        return $gift_address;
     }
 
     /**
@@ -421,7 +344,11 @@ class OrderSuccessMail
         return false;
     }
 
-    /** @return array|ExportOrders[] */
+    /**
+     * Get orders that haven't been processed yet.
+     *
+     * @return array
+     */
     public function getOrders(): array
     {
         $collection = $this->objectManager->create(\Magento\Sales\Model\ResourceModel\Order\Collection::class);
