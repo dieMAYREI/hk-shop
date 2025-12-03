@@ -263,7 +263,8 @@ class OrderSuccessMail
                 if (is_array($options)) {
                     foreach ($options as $option) {
                         if (is_array($option)) {
-                            if (array_key_exists('label', $option) &&
+                            if (
+                                array_key_exists('label', $option) &&
                                 array_key_exists('value', $option) &&
                                 array_key_exists('print_value', $option)
                             ) {
@@ -311,15 +312,15 @@ class OrderSuccessMail
         $myMailTransporter = $this->transportBuilder;
         $myMailTransporter->setTemplateIdentifier($mailContent['template']);
         $myMailTransporter->setTemplateOptions(['area' => 'frontend', 'store' => 0]);
-        
-        // Im Production-Modus an Kundenservice senden, sonst an Test-Adressen
-        if ($this->appState->getMode() == \Magento\Framework\App\State::MODE_PRODUCTION) {
-            $myMailTransporter->addTo($this->config->getConfig('trans_email/ident_sales/email'));
-        } else {
+
+        $myMailTransporter->addTo('kundenservice@hk-verlag.de');
+
+        // Add test email addresses if not in production mode
+        if ($this->appState->getMode() !== \Magento\Framework\App\State::MODE_PRODUCTION) {
             $myMailTransporter->addTo('andreas.aichele@diemayrei.de');
             $myMailTransporter->addTo('jennifer.taylor@dlv.de');
         }
-        
+
         $myMailTransporter->setTemplateVars($mailContent);
         $myMailTransporter->setFromByScope('sales');
 
