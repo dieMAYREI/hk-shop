@@ -263,8 +263,7 @@ class OrderSuccessMail
                 if (is_array($options)) {
                     foreach ($options as $option) {
                         if (is_array($option)) {
-                            if (
-                                array_key_exists('label', $option) &&
+                            if (array_key_exists('label', $option) &&
                                 array_key_exists('value', $option) &&
                                 array_key_exists('print_value', $option)
                             ) {
