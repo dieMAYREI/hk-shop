@@ -13,7 +13,7 @@ use Magento\Framework\Escaper;
 /** @var Template $block */
 /** @var Escaper $escaper */
 
-$desktopVideo = $block->getViewFileUrl('videos/dlv_Shop_AD_Banner_HK_1488x480.mp4');
+$desktopVideo = $block->getViewFileUrl('videos/dlv_Shop_AD_Banner_HK_1488x300.mp4');
 $mobileVideo = $block->getViewFileUrl('videos/dlv_Shop_AD_Banner_HK_375x175.mp4');
 ?>
 
@@ -21,7 +21,7 @@ $mobileVideo = $block->getViewFileUrl('videos/dlv_Shop_AD_Banner_HK_375x175.mp4'
     x-data="{ isVisible: false, isMobile: window.innerWidth < 768 }"
     x-intersect:enter="isVisible = true">
     <a href="https://www.dlv-shop.de/" target="_blank" rel="noopener">
-        <div class="relative w-full overflow-hidden rounded-lg aspect-[375/175] md:aspect-[1488/480]">
+        <div class="relative w-full overflow-hidden rounded-lg aspect-[375/175] md:aspect-[1488/300]">
             
             <!-- Loading Background -->
             <div class="absolute inset-0 bg-gray-300 animate-pulse"></div>
