@@ -94,7 +94,7 @@ class Order2Cover implements ObserverInterface
         'timestamp' => '',
         'transaction_id' => 'The same Unique transaction-ID of registration by calling system',
         'ext_system_type' => 'WEBSHOP',
-        'ext_system_id' => '40',
+        'ext_system_id' => '1',
         'ext_system_name' => 'shop.hk-verlag.de',
         'webshop_id' => '1',
         'webshop_name' => 'Deutschland HK-Shop Deutsch',
