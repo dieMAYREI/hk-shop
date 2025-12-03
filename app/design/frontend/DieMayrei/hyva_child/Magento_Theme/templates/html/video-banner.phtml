@@ -18,7 +18,7 @@ $mobileVideo = $block->getViewFileUrl('videos/dlv_Shop_AD_Banner_HK_375x175.mp4'
 ?>
 
 <section class="video-banner container mx-auto px-4 py-6"
-    x-data="{ isVisible: false }"
+    x-data="{ isVisible: false, isMobile: window.innerWidth < 768 }"
     x-intersect:enter="isVisible = true">
     <a href="https://www.dlv-shop.de/" target="_blank" rel="noopener">
         <div class="relative w-full overflow-hidden rounded-lg aspect-[375/175] md:aspect-[1488/480]">
@@ -28,26 +28,24 @@ $mobileVideo = $block->getViewFileUrl('videos/dlv_Shop_AD_Banner_HK_375x175.mp4'
             
             <!-- Desktop Video -->
             <video
-                x-ref="desktopVideo"
                 class="hidden md:block w-full h-full object-cover relative"
                 muted
                 loop
                 playsinline
                 autoplay
                 preload="none"
-                :src="isVisible ? '<?= $escaper->escapeUrl($desktopVideo) ?>' : ''">
+                :src="isVisible && !isMobile ? '<?= $escaper->escapeUrl($desktopVideo) ?>' : ''">
             </video>
 
             <!-- Mobile Video -->
             <video
-                x-ref="mobileVideo"
                 class="md:hidden w-full h-full object-cover relative"
                 muted
                 loop
                 playsinline
                 autoplay
                 preload="none"
-                :src="isVisible ? '<?= $escaper->escapeUrl($mobileVideo) ?>' : ''">
+                :src="isVisible && isMobile ? '<?= $escaper->escapeUrl($mobileVideo) ?>' : ''">
             </video>
         </div>
     </a>
