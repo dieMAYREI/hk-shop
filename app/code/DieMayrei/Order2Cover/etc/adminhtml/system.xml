@@ -11,9 +11,14 @@
             <group id="ah" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Cover Api</label>
                 <field id="cover_base_url" type="text" translate="label" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Cover agrarheute</label>
+                    <label>Cover Base URL (Production)</label>
                     <validate>validate-url</validate>
                     <config_path>diemayrei/order_2_cover/cover_base_url</config_path>
+                </field>
+                <field id="cover_base_url_staging" type="text" translate="label" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Cover Base URL (Staging)</label>
+                    <validate>validate-url</validate>
+                    <config_path>diemayrei/order_2_cover/cover_base_url_staging</config_path>
                 </field>
                 <field id="cover_benutzer_id" type="text" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Cover Benutzer ID</label>

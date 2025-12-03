@@ -32,7 +32,7 @@ class QueueWorker
         $this->_exportOrdersFactory = $exportOrdersFactory;
         $this->_appState = $appState;
         $this->_client =  new Client([
-            'base_uri' => $this->_order2CoverConfig->getConfig('diemayrei/order_2_cover/cover_base_url'),
+            'base_uri' => $this->_order2CoverConfig->getCoverBaseUrl(),
             'timeout'  => 30.0,
             'verify' => false, // todo: Maybe trust the Cover cert manually instead of no checking at all
             'headers' => [
