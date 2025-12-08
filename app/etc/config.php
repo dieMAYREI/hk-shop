@@ -360,6 +360,7 @@ return [
         'Magento_WishlistAnalytics' => 1,
         'Magento_WishlistGraphQl' => 1,
         'DieMayrei_CategoryHero' => 1,
+        'DieMayrei_CheckoutFix' => 1,
         'DieMayrei_CoverImageImport' => 1,
         'DieMayrei_CustomBlocks' => 1,
         'DieMayrei_EmailNotice' => 1,
