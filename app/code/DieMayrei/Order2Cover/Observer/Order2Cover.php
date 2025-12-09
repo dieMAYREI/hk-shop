@@ -579,6 +579,14 @@ class Order2Cover implements ObserverInterface
             $orderposition['quantity'] = (int)$quantity;
         }
 
+        if ($product->getCustomAttribute('aktionskennzeichen')) {
+            $orderposition['campaign_code'] = $product->getCustomAttribute('aktionskennzeichen')->getValue();
+        }
+
+        if ($product->getCustomAttribute('unteraktion')) {
+            $orderposition['campaign_subcode'] = $product->getCustomAttribute('unteraktion')->getValue();
+        }
+        
         if ($product->getCustomAttribute('laufende_nummer')) {
             $orderposition['campaign_offer_number'] = $product->getCustomAttribute('laufende_nummer')->getValue();
         }
