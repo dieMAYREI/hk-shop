@@ -586,12 +586,12 @@ class Order2Cover implements ObserverInterface
         if ($product->getCustomAttribute('unteraktion')) {
             $orderposition['campaign_subcode'] = $product->getCustomAttribute('unteraktion')->getValue();
         }
-        
+
         if ($product->getCustomAttribute('laufende_nummer')) {
             $orderposition['campaign_offer_number'] = $product->getCustomAttribute('laufende_nummer')->getValue();
         }
 
-        $orderposition['object_id'] = $this->getObjectCodeFromSku($product->getSku());
+        $orderposition['object_id'] = $this->getObjectCodeFromSku($product->getSku(), $this->isDigitalProduct($product));
 
         $orderposition['edition_id']  = '-';
 
@@ -682,10 +682,15 @@ class Order2Cover implements ObserverInterface
      * @param string $sku
      * @return string
      */
-    protected function getObjectCodeFromSku(string $sku): string
+    protected function getObjectCodeFromSku(string $sku, bool $digital): string
     {
         preg_match('/^[A-Z]+/', $sku, $matches);
-        return $matches[0] ?? '';
+
+        return (
+            $digital ? 'E' : ''
+        ) . (
+            $matches[0] ?? ''
+        );
     }
 
     /**
@@ -745,5 +750,25 @@ class Order2Cover implements ObserverInterface
             $this->_logger->error($exception->getMessage());
         }
         return $salesRule;
+    }
+
+    /**
+     * Prüft, ob es sich um ein digitales Produkt handelt.
+     * Digitale Produkte haben keinen physischen Bestand.
+     *
+     * - virtual: Virtuelle Produkte (inkl. "kein Gewicht" im Admin)
+     * - downloadable: Download-Produkte
+     *
+     * @param ProductInterceptor $product
+     * @return bool
+     */
+    private function isDigitalProduct(ProductInterceptor $product): bool
+    {
+        $digitalTypes = [
+            \Magento\Catalog\Model\Product\Type::TYPE_VIRTUAL,
+            \Magento\Downloadable\Model\Product\Type::TYPE_DOWNLOADABLE,
+        ];
+
+        return in_array($product->getTypeId(), $digitalTypes, true);
     }
 }
